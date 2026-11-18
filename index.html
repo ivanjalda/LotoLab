@@ -8,7 +8,7 @@
 <style>
   :root {
     --bg:#0b1220; --panel:#131c30; --line:#22304d; --text:#e8eefc; --muted:#9fb0d0;
-    --accent:#4da3ff; --accent2:#7c5cff;
+    --accent:#4da3ff; --accent2:#7c5cff; --gold:#ffd166; --red:#ff5d6c;
   }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--text); font-family:Arial,Helvetica,sans-serif; line-height:1.5; }
@@ -20,23 +20,49 @@
   .lang button:first-child { border-radius:8px 0 0 8px; }
   .lang button:last-child { border-radius:0 8px 8px 0; border-left:none; }
   .lang button.on { background:var(--accent); color:#06101f; font-weight:bold; }
-  nav { max-width:1000px; margin:0 auto; padding:0 16px 10px; display:flex; gap:8px; overflow-x:auto; }
+  nav { max-width:1000px; margin:0 auto; padding:0 16px 10px; display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; }
+  nav::-webkit-scrollbar { display:none; }
   nav button { background:transparent; color:var(--muted); border:1px solid var(--line); border-radius:20px; padding:7px 14px; cursor:pointer; white-space:nowrap; font-size:.9rem; }
   nav button.on { background:var(--panel); color:var(--text); border-color:var(--accent); }
   main { max-width:1000px; margin:0 auto; padding:24px 16px 60px; }
   h1 { font-size:1.9rem; margin:0 0 6px; }
-  h2 { font-size:1.3rem; margin:28px 0 12px; }
+  h2 { font-size:1.25rem; margin:30px 0 6px; }
+  h3 { font-size:1.02rem; margin:18px 0 6px; color:var(--text); }
   .sub { color:var(--muted); margin:0 0 20px; }
   .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
-  .card { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px; color:var(--text); text-align:left; font:inherit; }
+  button.card { cursor:pointer; width:100%; }
+  button.card:hover { border-color:var(--accent); }
   .card h3 { margin:0 0 6px; font-size:1.1rem; }
   .card p { margin:4px 0; color:var(--muted); font-size:.92rem; }
   .tag { display:inline-block; font-size:.75rem; color:#06101f; background:var(--accent); border-radius:10px; padding:2px 9px; margin-bottom:8px; }
   .soon { color:var(--accent2); font-weight:bold; font-size:.85rem; }
   .notice { background:#101a2e; border-left:4px solid var(--accent2); padding:14px 16px; border-radius:8px; color:var(--muted); font-size:.9rem; margin-top:26px; }
+  .warn { background:#2a2113; border-left:4px solid var(--gold); padding:12px 16px; border-radius:8px; color:#f3dfb0; font-size:.9rem; margin:12px 0; }
+  .note { color:var(--muted); font-size:.85rem; margin:0 0 10px; }
   .view { display:none; }
   .view.on { display:block; }
+  .back { background:none; border:none; color:var(--accent); cursor:pointer; font-size:.95rem; padding:0; margin-bottom:14px; }
+  .ball { display:inline-flex; width:34px; height:34px; border-radius:50%; align-items:center; justify-content:center; font-weight:bold; font-size:.88rem; background:#e8eefc; color:#06101f; margin:2px; }
+  .ball.b { background:var(--red); color:#fff; }
+  .draws { margin-top:8px; }
+  .drow { display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; padding:8px 0; border-bottom:1px solid var(--line); }
+  .drow:last-child { border-bottom:none; }
+  .drow .d { color:var(--muted); font-size:.88rem; min-width:110px; }
+  .row { display:flex; align-items:center; gap:10px; margin:7px 0; }
+  .row .n { width:30px; text-align:right; font-weight:bold; flex:none; }
+  .row .lab { width:150px; flex:none; font-size:.9rem; }
+  .track { position:relative; flex:1; height:14px; background:#0b1424; border-radius:7px; }
+  .fill { height:100%; background:var(--accent); border-radius:7px; }
+  .mark { position:absolute; top:-3px; bottom:-3px; width:2px; background:var(--gold); }
+  .val { width:96px; text-align:right; font-size:.82rem; color:var(--muted); flex:none; }
+  .loading { color:var(--muted); padding:20px 0; }
   footer { border-top:1px solid var(--line); text-align:center; padding:20px 16px; color:var(--muted); font-size:.82rem; }
+  @media (max-width:520px) {
+    .row .lab { width:110px; font-size:.82rem; }
+    .val { width:78px; font-size:.78rem; }
+    h1 { font-size:1.6rem; }
+  }
 </style>
 </head>
 <body>
@@ -59,10 +85,12 @@
 
 <main>
 
-  <!-- INICIO -->
   <section id="v-home" class="view">
     <h1 data-i18n="home_title"></h1>
     <p class="sub" data-i18n="home_sub"></p>
+    <h2 data-i18n="latest_title"></h2>
+    <div id="home-latest" class="grid"></div>
+    <h2 data-i18n="what_title"></h2>
     <div class="grid">
       <div class="card"><h3 data-i18n="home_c1_t"></h3><p data-i18n="home_c1_p"></p></div>
       <div class="card"><h3 data-i18n="home_c2_t"></h3><p data-i18n="home_c2_p"></p></div>
@@ -71,35 +99,29 @@
     <div class="notice" data-i18n="disclaimer"></div>
   </section>
 
-  <!-- ESPAÑA -->
   <section id="v-es" class="view">
     <h1 data-i18n="es_title"></h1>
     <p class="sub" data-i18n="es_sub"></p>
-    <div class="grid">
-      <div class="card"><span class="tag">ES</span><h3>La Primitiva</h3><p data-i18n="soon_data"></p><p class="soon" data-i18n="soon"></p></div>
-      <div class="card"><span class="tag">ES</span><h3>Euromillones</h3><p data-i18n="soon_data"></p><p class="soon" data-i18n="soon"></p></div>
-      <div class="card"><span class="tag">ES</span><h3>Bonoloto</h3><p data-i18n="soon_data"></p><p class="soon" data-i18n="soon"></p></div>
-    </div>
+    <div id="list-es" class="grid"></div>
   </section>
 
-  <!-- EE.UU. -->
   <section id="v-us" class="view">
     <h1 data-i18n="us_title"></h1>
     <p class="sub" data-i18n="us_sub"></p>
-    <div class="grid">
-      <div class="card"><span class="tag">US</span><h3>Powerball</h3><p data-i18n="soon_data"></p><p class="soon" data-i18n="soon"></p></div>
-      <div class="card"><span class="tag">US</span><h3>Mega Millions</h3><p data-i18n="soon_data"></p><p class="soon" data-i18n="soon"></p></div>
-    </div>
+    <div id="list-us" class="grid"></div>
   </section>
 
-  <!-- NOTICIAS -->
+  <section id="v-lot" class="view">
+    <button class="back" id="lot-back" data-i18n="back"></button>
+    <div id="lot-body"></div>
+  </section>
+
   <section id="v-news" class="view">
     <h1 data-i18n="news_title"></h1>
     <p class="sub" data-i18n="news_sub"></p>
     <div class="card"><p class="soon" data-i18n="soon"></p></div>
   </section>
 
-  <!-- LEGAL -->
   <section id="v-legal" class="view">
     <h1 data-i18n="legal_title"></h1>
     <p class="sub" data-i18n="legal_sub"></p>
@@ -113,49 +135,275 @@
 </footer>
 
 <script>
+// ==PURE-START==
 var T = {
   es: {
     nav_home:"Inicio", nav_es:"España", nav_us:"EE. UU.", nav_news:"Noticias", nav_legal:"Aviso legal",
     home_title:"Estadística de loterías, sin humo",
     home_sub:"Análisis de frecuencias y combinaciones sugeridas a partir de datos oficiales de España y EE. UU.",
+    latest_title:"Últimos resultados", what_title:"Qué encontrarás en LotoLab",
     home_c1_t:"Números más frecuentes", home_c1_p:"Qué números han salido más veces en el histórico oficial de cada lotería.",
     home_c2_t:"Retrasos históricos", home_c2_p:"Cuánto tiempo lleva cada número sin salir.",
     home_c3_t:"Combinaciones sugeridas", home_c3_p:"Combinaciones equilibradas según criterios estadísticos. Son una ayuda, no una predicción.",
     disclaimer:"Importante: cada sorteo es independiente y ningún método puede predecir el resultado. LotoLab ofrece estadística informativa y no garantiza premios. Juega con responsabilidad y solo si eres mayor de edad.",
     es_title:"Loterías de España", es_sub:"Loterías y Apuestas del Estado",
     us_title:"Loterías de EE. UU.", us_sub:"Las grandes loterías de Estados Unidos",
-    soon_data:"Estadísticas y combinaciones sugeridas.", soon:"Muy pronto",
+    soon:"Muy pronto", card_last:"Último sorteo: {d}", card_open:"Ver estadísticas",
+    back:"← Volver",
     news_title:"Noticias", news_sub:"Premios y novedades del mundo de las loterías.",
-    legal_title:"Aviso legal y políticas", legal_sub:"Privacidad, cookies y condiciones de uso."
+    legal_title:"Aviso legal y políticas", legal_sub:"Privacidad, cookies y condiciones de uso.",
+    src:"Fuente oficial: {src}. {n} sorteos en total, del {a} al {b}.",
+    last_draw:"Último sorteo", last10:"Últimos 10 sorteos",
+    freq_title:"Los números que más han salido",
+    freq_note:"Porcentaje de sorteos en los que ha salido cada número, desde el {d} ({n} sorteos). La línea amarilla es lo que se esperaría solo por azar ({x}). Con tantos sorteos, algunas diferencias aparecen por pura casualidad.",
+    delay_title:"Los que más tiempo llevan sin salir",
+    delay_note:"Sorteos seguidos sin salir. Es un dato curioso: no significa que vayan a salir antes, porque cada sorteo es independiente.",
+    bonus_freq:"{b}: los más frecuentes", bonus_delay:"{b}: los más retrasados",
+    profile_title:"Perfil del sorteo típico",
+    profile_note:"Cómo suelen ser los sorteos reales. Sirve para descartar combinaciones muy raras, no para predecir.",
+    odd_title:"Impares y pares", odd_row:"{o} impares · {e} pares",
+    low_title:"Bajos y altos", low_row:"{l} bajos · {h} altos", low_note:"Bajos: del 1 al {m}.",
+    sum_title:"Suma de los cinco números", sum_text:"8 de cada 10 sorteos suman entre {p10} y {p90}. La media es {mean}.",
+    digit_title:"Terminaciones (última cifra)", digit_row:"Acaba en {d}",
+    draws_unit:"sorteos", draws_one:"sorteo",
+    warn_small_main:"Muestra pequeña para los números principales ({n} sorteos): interpretar con cautela.",
+    warn_small_bonus:"Muestra pequeña para {b} ({n} sorteos desde el último cambio de reglas): interpretar con cautela.",
+    loading:"Cargando datos…", load_error:"No se pudieron cargar los datos. Inténtalo más tarde."
   },
   en: {
     nav_home:"Home", nav_es:"Spain", nav_us:"USA", nav_news:"News", nav_legal:"Legal notice",
     home_title:"Lottery statistics, no hype",
     home_sub:"Frequency analysis and suggested combinations based on official data from Spain and the USA.",
+    latest_title:"Latest results", what_title:"What you will find on LotoLab",
     home_c1_t:"Most frequent numbers", home_c1_p:"Which numbers have appeared most often in each lottery's official history.",
     home_c2_t:"Historical delays", home_c2_p:"How long each number has gone without being drawn.",
     home_c3_t:"Suggested combinations", home_c3_p:"Balanced combinations based on statistical criteria. They are an aid, not a prediction.",
     disclaimer:"Important: every draw is independent and no method can predict the result. LotoLab provides informational statistics and does not guarantee prizes. Play responsibly and only if you are of legal age.",
     es_title:"Spanish lotteries", es_sub:"Loterías y Apuestas del Estado",
     us_title:"US lotteries", us_sub:"The major lotteries of the United States",
-    soon_data:"Statistics and suggested combinations.", soon:"Coming soon",
+    soon:"Coming soon", card_last:"Latest draw: {d}", card_open:"View statistics",
+    back:"← Back",
     news_title:"News", news_sub:"Prizes and updates from the lottery world.",
-    legal_title:"Legal notice and policies", legal_sub:"Privacy, cookies and terms of use."
+    legal_title:"Legal notice and policies", legal_sub:"Privacy, cookies and terms of use.",
+    src:"Official source: {src}. {n} draws in total, from {a} to {b}.",
+    last_draw:"Latest draw", last10:"Last 10 draws",
+    freq_title:"Most frequently drawn numbers",
+    freq_note:"Share of draws in which each number appeared, since {d} ({n} draws). The yellow line is what pure chance would give ({x}). With so many draws, some differences appear by pure luck.",
+    delay_title:"Numbers that have gone longest without being drawn",
+    delay_note:"Consecutive draws without appearing. It is a curiosity: it does not mean they are due, because every draw is independent.",
+    bonus_freq:"{b}: most frequent", bonus_delay:"{b}: longest overdue",
+    profile_title:"Profile of a typical draw",
+    profile_note:"What real draws usually look like. It helps rule out very unusual combinations, not to predict.",
+    odd_title:"Odd and even", odd_row:"{o} odd · {e} even",
+    low_title:"Low and high", low_row:"{l} low · {h} high", low_note:"Low: 1 to {m}.",
+    sum_title:"Sum of the five numbers", sum_text:"8 out of 10 draws add up to between {p10} and {p90}. The average is {mean}.",
+    digit_title:"Last digit", digit_row:"Ends in {d}",
+    draws_unit:"draws", draws_one:"draw",
+    warn_small_main:"Small sample for the main numbers ({n} draws): read with caution.",
+    warn_small_bonus:"Small sample for {b} ({n} draws since the last rule change): read with caution.",
+    loading:"Loading data…", load_error:"Data could not be loaded. Please try again later."
   }
 };
 
+var CATALOG = {
+  es: [
+    {id:"es_primitiva", name:"La Primitiva"}, {id:"es_euromillones", name:"Euromillones"},
+    {id:"es_bonoloto", name:"Bonoloto"}, {id:"es_elgordo", name:"El Gordo de la Primitiva"},
+    {id:"es_eurodreams", name:"EuroDreams"}, {id:"es_lototurf", name:"Lototurf"}
+  ],
+  us: [
+    {id:"us_powerball", name:"Powerball"}, {id:"us_megamillions", name:"Mega Millions"},
+    {id:"us_millionaire", name:"Millionaire for Life"}, {id:"us_cash4life", name:"Cash4Life"}
+  ]
+};
+
+function fmt(s, vars) {
+  return s.replace(/\{(\w+)\}/g, function (m, k) { return vars[k] !== undefined ? vars[k] : m; });
+}
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, function (c) {
+    return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c];
+  });
+}
+function pad(n) { return n < 10 ? "0" + n : "" + n; }
+function loc(lang) { return lang === "es" ? "es-ES" : "en-US"; }
+function fmtNum(n, lang) { return Number(n).toLocaleString(loc(lang)); }
+function fmtPct(x, lang) {
+  return Number(x).toLocaleString(loc(lang), { minimumFractionDigits: 1, maximumFractionDigits: 2 }) + "%";
+}
+function fmtDate(iso, lang) {
+  var p = iso.split("-");
+  var d = new Date(+p[0], +p[1] - 1, +p[2]);
+  return d.toLocaleDateString(loc(lang), { day: "numeric", month: "short", year: "numeric" });
+}
+function balls(main, bonus) {
+  var h = "";
+  for (var i = 0; i < main.length; i++) h += '<span class="ball">' + pad(main[i]) + '</span>';
+  if (bonus !== null && bonus !== undefined) h += '<span class="ball b">' + pad(bonus) + '</span>';
+  return h;
+}
+function rowHtml(label, widthPct, valText, markPct) {
+  var w = Math.max(0, Math.min(100, widthPct));
+  var m = (markPct === null || markPct === undefined) ? "" :
+    '<div class="mark" style="left:' + Math.max(0, Math.min(100, markPct)).toFixed(1) + '%"></div>';
+  return '<div class="row">' + label +
+    '<div class="track"><div class="fill" style="width:' + w.toFixed(1) + '%"></div>' + m + '</div>' +
+    '<span class="val">' + valText + '</span></div>';
+}
+function numLabel(n) { return '<span class="n">' + pad(n) + '</span>'; }
+function textLabel(s) { return '<span class="lab">' + s + '</span>'; }
+
+function topBy(rows, key, k) {
+  var c = rows.slice();
+  c.sort(function (a, b) { return (b[key] - a[key]) || (a.n - b.n); });
+  return c.slice(0, k);
+}
+function freqBars(block, k, lang) {
+  var top = topBy(block.numbers, "count", k);
+  var exp = block.expected_pct_draws;
+  var scale = Math.max(exp * 1.5, top.length ? top[0].pct_draws * 1.1 : 1);
+  var h = "";
+  for (var i = 0; i < top.length; i++) {
+    var r = top[i];
+    h += rowHtml(numLabel(r.n), r.pct_draws / scale * 100,
+      fmtPct(r.pct_draws, lang) + " (" + fmtNum(r.count, lang) + ")", exp / scale * 100);
+  }
+  return h;
+}
+function delayBars(block, k, lang, t) {
+  var top = topBy(block.numbers, "delay", k);
+  var scale = top.length && top[0].delay > 0 ? top[0].delay * 1.05 : 1;
+  var h = "";
+  for (var i = 0; i < top.length; i++) {
+    var r = top[i];
+    h += rowHtml(numLabel(r.n), r.delay / scale * 100, fmtNum(r.delay, lang) + " " + t.draws_unit, null);
+  }
+  return h;
+}
+function profileBars(list, labelFn, lang) {
+  var mx = 1, i;
+  for (i = 0; i < list.length; i++) if (list[i].pct > mx) mx = list[i].pct;
+  var h = "";
+  for (i = 0; i < list.length; i++) {
+    h += rowHtml(textLabel(labelFn(list[i])), list[i].pct / mx * 100, fmtPct(list[i].pct, lang), null);
+  }
+  return h;
+}
+
+function cardHtml(j, lang) {
+  var t = T[lang], l = j.last_draws[0];
+  return '<button class="card" data-lot="' + esc(j.lottery) + '">' +
+    '<span class="tag">' + esc(j.country.toUpperCase()) + '</span>' +
+    '<h3>' + esc(j.name) + '</h3>' +
+    '<div>' + balls(l.main, l.bonus) + '</div>' +
+    '<p>' + fmt(t.card_last, { d: fmtDate(l.date, lang) }) + '</p>' +
+    '<p class="soon">' + t.card_open + ' →</p></button>';
+}
+function soonCardHtml(c, country, lang) {
+  var t = T[lang];
+  return '<div class="card"><span class="tag">' + country.toUpperCase() + '</span><h3>' + esc(c.name) +
+    '</h3><p class="soon">' + t.soon + '</p></div>';
+}
+
+function detailHtml(j, lang) {
+  var t = T[lang], h = "", i;
+  h += '<h1>' + esc(j.name) + '</h1>';
+  h += '<p class="sub">' + fmt(t.src, {
+    src: esc(j.source.name), n: fmtNum(j.total_draws_in_source, lang),
+    a: fmtDate(j.first_draw, lang), b: fmtDate(j.last_draw, lang) }) + '</p>';
+
+  var bn = esc(j.rules.bonus_name);
+  if (j.draws_used_main < 300) h += '<div class="warn">' + fmt(t.warn_small_main, { n: j.draws_used_main }) + '</div>';
+  if (j.draws_used_bonus < 300) h += '<div class="warn">' + fmt(t.warn_small_bonus, { b: bn, n: j.draws_used_bonus }) + '</div>';
+  for (i = 0; i < j.warnings.length; i++) {
+    if (j.warnings[i].indexOf("Muestra pequena") === 0) continue;
+    if (j.warnings[i].indexOf("Muestra pequeña") === 0) continue;
+    if (lang === "es") h += '<div class="warn">' + esc(j.warnings[i]) + '</div>';
+  }
+
+  var l = j.last_draws[0];
+  h += '<div class="card"><h2 style="margin-top:0">' + t.last_draw + '</h2>' +
+    '<p class="note">' + fmtDate(l.date, lang) + '</p><div>' + balls(l.main, l.bonus) + '</div>' +
+    '<h3>' + t.last10 + '</h3><div class="draws">';
+  for (i = 0; i < j.last_draws.length; i++) {
+    var d = j.last_draws[i];
+    h += '<div class="drow"><span class="d">' + fmtDate(d.date, lang) + '</span><span>' + balls(d.main, d.bonus) + '</span></div>';
+  }
+  h += '</div></div>';
+
+  h += '<div class="card" style="margin-top:14px"><h2 style="margin-top:0">' + t.freq_title + '</h2>' +
+    '<p class="note">' + fmt(t.freq_note, { d: fmtDate(j.rules.main_from, lang), n: fmtNum(j.draws_used_main, lang),
+      x: fmtPct(j.main.expected_pct_draws, lang) }) + '</p>' + freqBars(j.main, 10, lang) +
+    '<h3>' + fmt(t.bonus_freq, { b: bn }) + '</h3>' + freqBars(j.bonus, 5, lang) + '</div>';
+
+  h += '<div class="card" style="margin-top:14px"><h2 style="margin-top:0">' + t.delay_title + '</h2>' +
+    '<p class="note">' + t.delay_note + '</p>' + delayBars(j.main, 10, lang, t) +
+    '<h3>' + fmt(t.bonus_delay, { b: bn }) + '</h3>' + delayBars(j.bonus, 5, lang, t) + '</div>';
+
+  h += '<div class="card" style="margin-top:14px"><h2 style="margin-top:0">' + t.profile_title + '</h2>' +
+    '<p class="note">' + t.profile_note + '</p>' +
+    '<h3>' + t.odd_title + '</h3>' +
+    profileBars(j.odd_even, function (r) { return fmt(t.odd_row, { o: r.odd, e: r.even }); }, lang) +
+    '<h3>' + t.low_title + '</h3><p class="note">' + fmt(t.low_note, { m: Math.floor(j.rules.main_max / 2) }) + '</p>' +
+    profileBars(j.low_high, function (r) { return fmt(t.low_row, { l: r.low, h: r.high }); }, lang) +
+    '<h3>' + t.sum_title + '</h3><p class="note">' + fmt(t.sum_text, {
+      p10: j.sum.p10, p90: j.sum.p90, mean: Number(j.sum.mean).toLocaleString(loc(lang)) }) + '</p>' +
+    '<h3>' + t.digit_title + '</h3>' +
+    profileBars(j.last_digit, function (r) { return fmt(t.digit_row, { d: r.digit }); }, lang) + '</div>';
+
+  h += '<div class="notice">' + t.disclaimer + '</div>';
+  return h;
+}
+// ==PURE-END==
+
+var DATA = {};
+var INDEX = null;
+var loadState = "loading";
 var lang = "es";
 var view = "home";
+var currentLot = null;
+
+function ids() {
+  var out = [], i;
+  if (!INDEX) return out;
+  for (i = 0; i < INDEX.lotteries.length; i++) out.push(INDEX.lotteries[i].id);
+  return out;
+}
+
+function renderCountry(c) {
+  var el = document.getElementById("list-" + c);
+  if (loadState === "loading") { el.innerHTML = '<p class="loading">' + T[lang].loading + '</p>'; return; }
+  var h = "";
+  for (var i = 0; i < CATALOG[c].length; i++) {
+    var item = CATALOG[c][i];
+    h += DATA[item.id] ? cardHtml(DATA[item.id], lang) : soonCardHtml(item, c, lang);
+  }
+  el.innerHTML = h;
+}
+
+function renderHome() {
+  var el = document.getElementById("home-latest");
+  if (loadState === "loading") { el.innerHTML = '<p class="loading">' + T[lang].loading + '</p>'; return; }
+  if (loadState === "error") { el.innerHTML = '<p class="loading">' + T[lang].load_error + '</p>'; return; }
+  var h = "", list = ids();
+  for (var i = 0; i < list.length; i++) if (DATA[list[i]]) h += cardHtml(DATA[list[i]], lang);
+  el.innerHTML = h;
+}
+
+function renderLot() {
+  var el = document.getElementById("lot-body");
+  if (currentLot && DATA[currentLot]) el.innerHTML = detailHtml(DATA[currentLot], lang);
+}
 
 function applyText() {
   var els = document.querySelectorAll("[data-i18n]");
   for (var i = 0; i < els.length; i++) {
-    var k = els[i].getAttribute("data-i18n");
-    els[i].textContent = T[lang][k];
+    els[i].textContent = T[lang][els[i].getAttribute("data-i18n")];
   }
   document.documentElement.lang = lang;
   document.getElementById("btn-es").className = lang === "es" ? "on" : "";
   document.getElementById("btn-en").className = lang === "en" ? "on" : "";
+  renderHome(); renderCountry("es"); renderCountry("us"); renderLot();
 }
 
 function setLang(l) {
@@ -169,11 +417,43 @@ function show(v) {
   var views = document.querySelectorAll(".view");
   for (var i = 0; i < views.length; i++) views[i].className = "view";
   document.getElementById("v-" + v).className = "view on";
+  var navView = v;
+  if (v === "lot" && currentLot && DATA[currentLot]) navView = DATA[currentLot].country;
   var btns = document.querySelectorAll("nav button");
   for (var j = 0; j < btns.length; j++) {
-    btns[j].className = btns[j].getAttribute("data-view") === v ? "on" : "";
+    btns[j].className = btns[j].getAttribute("data-view") === navView ? "on" : "";
   }
   window.scrollTo(0, 0);
+}
+
+function showLot(id) {
+  currentLot = id;
+  renderLot();
+  show("lot");
+}
+
+function loadData() {
+  var v = "?v=" + Math.floor(Date.now() / 600000);
+  fetch("data/index.json" + v).then(function (r) {
+    if (!r.ok) throw new Error("index");
+    return r.json();
+  }).then(function (idx) {
+    INDEX = idx;
+    return Promise.all(idx.lotteries.map(function (it) {
+      return fetch("data/" + it.file + v).then(function (r) {
+        if (!r.ok) throw new Error(it.file);
+        return r.json();
+      }).then(function (j) { DATA[it.id] = j; });
+    }));
+  }).then(function () {
+    loadState = "ok";
+    applyText();
+  }).catch(function () {
+    loadState = "error";
+    applyText();
+    var a = document.getElementById("list-es"), b = document.getElementById("list-us");
+    a.innerHTML = b.innerHTML = '<p class="loading">' + T[lang].load_error + '</p>';
+  });
 }
 
 (function init() {
@@ -186,9 +466,17 @@ function show(v) {
   for (var i = 0; i < btns.length; i++) {
     btns[i].onclick = function () { show(this.getAttribute("data-view")); };
   }
+  document.addEventListener("click", function (ev) {
+    var el = ev.target.closest ? ev.target.closest("[data-lot]") : null;
+    if (el) showLot(el.getAttribute("data-lot"));
+  });
+  document.getElementById("lot-back").onclick = function () {
+    show(currentLot && DATA[currentLot] ? DATA[currentLot].country : "home");
+  };
   document.getElementById("year").textContent = new Date().getFullYear();
   applyText();
   show("home");
+  loadData();
 })();
 </script>
 </body>
