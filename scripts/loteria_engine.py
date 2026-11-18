@@ -50,6 +50,10 @@ LOTTERIES = [
         "bonus_from": "2015-10-07",
         "prize_min_main": 3, "prize_min_main_with_bonus": 0,   # premio con 3+ numeros, o solo con la bola extra
         "draw_days": [0, 2, 5], "draw_time_et": "22:59",       # lunes, miercoles, sabado (powerball.com)
+        "price_usd": 2,
+        "prize_source": "powerball.com (tabla de premios)",
+        "prize_note": "Premios en dolares. El premio gordo cambia en cada sorteo.",
+        "prizes": {"5-0": 1000000, "4-1": 50000, "4-0": 100, "3-1": 100, "3-0": 7, "2-1": 7, "1-1": 4, "0-1": 4},
     },
     {
         "id": "us_megamillions",
@@ -67,6 +71,10 @@ LOTTERIES = [
         "bonus_from": "2025-04-08",
         "prize_min_main": 3, "prize_min_main_with_bonus": 0,
         "draw_days": [1, 4], "draw_time_et": "23:00",        # martes y viernes, 11 p.m. ET (NBC New York)
+        "price_usd": 5,
+        "prize_source": "North Dakota Lottery (lottery.nd.gov)",
+        "prize_note": "Premio base: cada jugada de 5 $ lleva un multiplicador de x2 a x10 en los premios menores. El premio gordo cambia en cada sorteo.",
+        "prizes": {"5-0": 1000000, "4-1": 10000, "4-0": 500, "3-1": 200, "3-0": 10, "2-1": 10, "1-1": 7, "0-1": 5},
     },
     {
         # Sustituye a Cash4Life (retirado en 2026). Primer sorteo: 22/02/2026. Sorteo todas las noches.
@@ -85,6 +93,10 @@ LOTTERIES = [
         "bonus_from": "2026-02-22",
         "prize_min_main": 2, "prize_min_main_with_bonus": 1,   # con 2 numeros, o 1 numero + bola
         "draw_days": [0, 1, 2, 3, 4, 5, 6], "draw_time_et": "23:15",   # todas las noches
+        "price_usd": 5,
+        "prize_source": "Wikipedia (Millionaire for Life)",
+        "prize_note": "Los dos premios mayores se pagan por vida; aqui va la opcion de pago unico (18.000.000 $ y 2.200.000 $).",
+        "prizes": {"5-1": 18000000, "5-0": 2200000, "4-1": 7500, "4-0": 500, "3-1": 250, "3-0": 50, "2-1": 25, "2-0": 8, "1-1": 8},
     },
 ]
 
@@ -262,6 +274,10 @@ def build(cfg, draws, bad):
             "prize_min_main_with_bonus": cfg["prize_min_main_with_bonus"],
             "draw_days": cfg["draw_days"],
             "draw_time_et": cfg["draw_time_et"],
+            "price_usd": cfg.get("price_usd"),
+            "prizes": cfg.get("prizes"),
+            "prize_source": cfg.get("prize_source"),
+            "prize_note": cfg.get("prize_note"),
         },
         "total_draws_in_source": len(draws),
         "first_draw": draws[0]["date"],

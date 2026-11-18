@@ -99,6 +99,11 @@ GENERAL = [
 for _l, _u in GENERAL:
     FEEDS.append({"lang": _l, "kind": "general", "url": _u})
 
+# Titulares que no queremos mostrar (contenido sexual o violencia grafica). Se descartan antes de guardar.
+BLOCK_RE = re.compile(
+    r"sexual|sexo|porn|er[oó]tic|desnud|nude|naked|violaci|violad|\brape|asesin|murder|killed|apu[ñn]al|"
+    r"suicid|atentado|masacre|massacre|pedofil|abuso de menores|child abuse|cad[aá]ver|decapit|tortur", re.I)
+
 
 def clean_title(title, source):
     t = (title or "").strip()
@@ -159,7 +164,7 @@ def build_news(fetch=http_get):
         general = f["kind"] == "general"
         taken = 0
         for i in sorted(items, key=lambda x: x["date"], reverse=True):
-            if i["date"] < limit or i["title"].lower() in seen:
+            if i["date"] < limit or i["title"].lower() in seen or BLOCK_RE.search(i["title"]):
                 continue
             if general:
                 if taken >= 12:
@@ -327,6 +332,9 @@ def check_site(add, fetch=http_get):
     if code != 200:
         add("web", "error", "La web no responde (codigo %s)" % code)
         return
+    for sec in ("v-sug", "v-calc", "v-guide", "rail-left", "rail-right", "bottom-mix"):
+        if 'id="%s"' % sec not in html:
+            add("web", "error", "A la web publicada le falta la seccion %s" % sec)
     if "LotoLab" not in html or 'id="v-home"' not in html:
         add("web", "error", "La web carga pero le falta contenido esencial")
         return
@@ -371,6 +379,126 @@ def check_links(add, fetch=http_get):
         add("web", "warn", "index.html pesa %d KB, conviene aligerarlo" % (size // 1024))
 
 
+def check_content(add):
+    """Comprueba que los datos traen todo lo que la web necesita (calendario y premios)."""
+    try:
+        idx = read_json(os.path.join(DATA_DIR, "index.json"))
+    except Exception:  # noqa: BLE001
+        return
+    for it in idx.get("lotteries", []):
+        try:
+            j = read_json(os.path.join(DATA_DIR, it["file"]))
+        except Exception:  # noqa: BLE001
+            continue
+        r = j.get("rules", {})
+        miss = [k for k in ("draw_days", "draw_time_et", "prizes", "prize_min_main") if not r.get(k) and r.get(k) != 0]
+        if miss:
+            add("contenido", "error", "%s: faltan datos nuevos en el JSON (%s). Hay que ejecutar 'Actualizar datos LotoLab'." % (it["id"], ", ".join(miss)))
+        else:
+            add("contenido", "ok", "%s: calendario y premios presentes" % it["id"])
+
+
+def check_predictions(add):
+    """Las combinaciones sugeridas deben existir, ser de sorteos futuros y evaluarse al terminar."""
+    today = now_utc().date()
+    try:
+        sug = read_json(os.path.join(DATA_DIR, "sugerencias.json"))
+        hist = read_json(os.path.join(DATA_DIR, "historial.json"))
+    except Exception as e:  # noqa: BLE001
+        add("predicciones", "error", "No se pueden leer sugerencias/historial (%s)" % e)
+        return
+    lots = sug.get("lotteries", {})
+    if not lots:
+        add("predicciones", "error", "No hay combinaciones sugeridas guardadas")
+        return
+    for k, v in lots.items():
+        try:
+            d = datetime.strptime(v["for_draw"], "%Y-%m-%d").date()
+        except Exception:  # noqa: BLE001
+            add("predicciones", "error", "%s: fecha de sorteo ilegible" % k)
+            continue
+        if d < today - timedelta(days=1):
+            add("predicciones", "error", "%s: las combinaciones son de un sorteo ya pasado (%s)" % (k, v["for_draw"]))
+        elif len(v.get("combos", [])) < 5:
+            add("predicciones", "error", "%s: faltan combinaciones" % k)
+        else:
+            add("predicciones", "ok", "%s: combinaciones guardadas para el %s" % (k, v["for_draw"]))
+    stuck = [e for e in hist.get("live", []) if e.get("result") is None
+             and datetime.strptime(e["for_draw"], "%Y-%m-%d").date() < today - timedelta(days=4)]
+    if stuck:
+        add("predicciones", "error", "%d sorteos pasados siguen sin evaluarse en el historial" % len(stuck))
+    else:
+        add("predicciones", "ok", "El historial evalua los sorteos que ya han pasado")
+    # Las combinaciones guardadas antes del sorteo no se pueden cambiar: se comprueba que se guardaron antes
+    def _late(e):
+        try:
+            c = datetime.strptime(e["created_utc"][:10], "%Y-%m-%d").date()
+            d = datetime.strptime(e["for_draw"], "%Y-%m-%d").date()
+            return c > d + timedelta(days=1)     # margen de un dia por la diferencia horaria con Nueva York
+        except Exception:  # noqa: BLE001
+            return True
+    late = [e for e in hist.get("live", []) if _late(e)]
+    if late:
+        add("predicciones", "error", "%d combinaciones se guardaron DESPUES de su sorteo (no valen para el historial)" % len(late))
+
+
+def check_photos(add, fetch=http_get):
+    """Noticias y anuncios deben tener foto. Las fotos de los anuncios deben cargar."""
+    try:
+        n = read_json(os.path.join(DATA_DIR, "news.json"))
+        tot = img = 0
+        for l in ("es", "en"):
+            for k in ("news", "winners", "general"):
+                for it in n.get(l, {}).get(k, []):
+                    tot += 1
+                    img += 1 if it.get("image") else 0
+        if tot:
+            pct = 100 * img // tot
+            add("fotos", "ok" if pct >= 40 else "warn", "%d%% de las noticias traen foto (%d de %d)" % (pct, img, tot))
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        with open(os.path.join(BASE_DIR, "index.html"), "r", encoding="utf-8") as f:
+            html = f.read()
+    except Exception:  # noqa: BLE001
+        return
+    for name, src in re.findall(r'n:"([^"]+)"[^\n]*?img:"([^"]+)"', html):
+        if src.startswith("http"):
+            code, body = fetch(src, headers={"User-Agent": "Mozilla/5.0"})
+            if code == 200 and len(body) > 1000:
+                add("fotos", "ok", "Foto del anuncio %s carga bien" % name)
+            else:
+                add("fotos", "warn", "La foto del anuncio %s no carga (codigo %s): el anuncio no se muestra" % (name, code))
+        elif os.path.exists(os.path.join(BASE_DIR, src)):
+            add("fotos", "ok", "Foto del anuncio %s presente (%s)" % (name, src))
+        else:
+            add("fotos", "warn", "Falta la foto %s del anuncio %s: no se muestra hasta que la subas" % (src, name))
+
+
+def check_script(add):
+    """Revisa que el codigo de la web no tenga errores de sintaxis (si hay Node disponible)."""
+    import shutil
+    import tempfile
+    node = shutil.which("node")
+    if not node:
+        add("codigo", "ok", "Sin Node en este equipo: no se revisa la sintaxis")
+        return
+    try:
+        with open(os.path.join(BASE_DIR, "index.html"), "r", encoding="utf-8") as f:
+            html = f.read()
+        js = html.split("<script>", 1)[1].rsplit("</script>", 1)[0]
+        with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False, encoding="utf-8") as t:
+            t.write(js)
+        r = subprocess.run([node, "--check", t.name], capture_output=True, text=True)
+        os.unlink(t.name)
+        if r.returncode == 0:
+            add("codigo", "ok", "El codigo de la web no tiene errores de sintaxis")
+        else:
+            add("codigo", "error", "Error de sintaxis en index.html: %s" % r.stderr.strip()[:200])
+    except Exception as e:  # noqa: BLE001
+        add("codigo", "warn", "No se pudo revisar el codigo (%s)" % e)
+
+
 def run_checks(fetch=http_get):
     checks = []
 
@@ -381,6 +509,10 @@ def run_checks(fetch=http_get):
     check_news(add)
     check_site(add, fetch)
     check_links(add, fetch)
+    check_content(add)
+    check_predictions(add)
+    check_photos(add, fetch)
+    check_script(add)
     return checks, data_ok
 
 
@@ -443,10 +575,19 @@ def revisar():
         if data_ok:
             checks.append({"area": "datos", "level": "ok",
                            "detail": "Corregido automaticamente: se volvieron a descargar los datos"})
+    if any(c["area"] == "predicciones" and c["level"] == "error" for c in checks):
+        print("Problema con las combinaciones: se vuelven a calcular.")
+        sug = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sugerencias.py")
+        subprocess.run([sys.executable, sug], check=False)
+        checks, data_ok = run_checks()
+        fixed = True
+        if not any(c["area"] == "predicciones" and c["level"] == "error" for c in checks):
+            checks.append({"area": "predicciones", "level": "ok",
+                           "detail": "Corregido automaticamente: se recalcularon las combinaciones"})
     errors = ["[%s] %s" % (c["area"], c["detail"]) for c in checks if c["level"] == "error"]
     warnings = ["[%s] %s" % (c["area"], c["detail"]) for c in checks if c["level"] == "warn"]
     informe = {"checked_utc": iso(now_utc()), "ok": not errors, "errors": errors,
-               "warnings": warnings, "auto_fixed": fixed and data_ok, "checks": checks}
+               "warnings": warnings, "auto_fixed": bool(fixed and not errors), "checks": checks}
     save_json_if_changed(os.path.join(DATA_DIR, "revision.json"), informe, ignore_keys=("checked_utc",))
     for c in checks:
         print("%-7s %-9s %s" % (c["level"].upper(), c["area"], c["detail"]))
