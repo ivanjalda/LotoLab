@@ -994,6 +994,29 @@ var TX7 = {
 };
 (function () { for (var l in TX7) for (var k in TX7[l]) T[l][k] = TX7[l][k]; })();
 
+var TX8 = {
+  es: {
+    meth_t:"Combinaciones según la estadística", meth_p:"Elige cómo quieres construirlas. Se calculan al momento con todos los sorteos reales de esta lotería.",
+    meth_frec:"Más frecuentes", meth_ret:"Más retrasados", meth_mix:"Mixta", meth_bal:"Equilibradas",
+    meth_d_frec:"Los números que más han salido en el histórico real tienen más peso al formar cada combinación.",
+    meth_d_ret:"Los números que más tiempo llevan sin salir tienen más peso al formar cada combinación.",
+    meth_d_mix:"Combina los más frecuentes y los más retrasados.",
+    meth_d_bal:"Reparte pares/impares y bajos/altos, mantiene una suma habitual y evita seguidos y solo fechas.",
+    meth_note:"Calculadas con {n} sorteos reales. Cada día salen otras; pulsa para ver 5 nuevas."
+  },
+  en: {
+    meth_t:"Combinations from the statistics", meth_p:"Choose how to build them. They are calculated instantly from all real draws of this lottery.",
+    meth_frec:"Most frequent", meth_ret:"Most overdue", meth_mix:"Mixed", meth_bal:"Balanced",
+    meth_d_frec:"Numbers that have come up most in the real history get more weight when building each combination.",
+    meth_d_ret:"Numbers that have gone longest without coming up get more weight when building each combination.",
+    meth_d_mix:"Combines the most frequent and the most overdue.",
+    meth_d_bal:"Spreads odd/even and low/high, keeps a usual sum and avoids consecutive numbers and all-dates picks.",
+    meth_note:"Calculated with {n} real draws. A different set comes out each day; press for 5 new ones."
+  }
+};
+(function () { for (var l in TX8) for (var k in TX8[l]) T[l][k] = TX8[l][k]; })();
+
+
 
 
 
@@ -1365,6 +1388,7 @@ function detailHtml(j, lang) {
   }
   h += '</div></div>';
   h += jackpotCardHtml(j.lottery, lang);
+  h += methodCardHtml(j.lottery, j.main, j.rules.main_count, j.rules.main_max, [{ rows: j.bonus.numbers.filter(function (x) { return x.n <= j.rules.bonus_max; }), cnt: 1 }], null, lang, Date.now());
   h += usSugHtml(j.lottery, lang, Date.now());
   h += engineHtml(j.main, [{ name: j.rules.bonus_name, block: j.bonus }], lang);
   h += prizeTableHtml(j, lang);
@@ -1670,8 +1694,10 @@ function esDataHtml(id, j, lang, nowMs) {
     h += '<div class="warn"><b>' + t.es_nodata_t + ':</b> ' + t.es_nobote + '<br><a class="btn" style="margin-top:8px" href="https://www.loteriasyapuestas.es/" target="_blank" rel="noopener">' + t.es_open + '</a></div>';
   }
   h += '<h2 style="margin-top:22px">' + t.combo_h + '</h2><div class="grid" style="grid-template-columns:minmax(260px,520px)">' + esSugFromData(id, j, lang, "ES") + '</div>';
-  var exs = [], gi;
-  for (gi = 0; gi < j.groups.length; gi++) exs.push({ name: j.groups[gi][lang], block: j.groups[gi].stats });
+  var exs = [], gi, spx = [];
+  for (gi = 0; gi < j.groups.length; gi++) { exs.push({ name: j.groups[gi][lang], block: j.groups[gi].stats }); spx.push({ rows: j.groups[gi].stats.numbers, cnt: j.groups[gi].picks }); }
+  h = h.replace(/$/, "");
+  h += methodCardHtml(id, j.main, j.rules.main_count, j.rules.main_max, spx, gr, lang, nowMs);
   h += engineHtml(j.main, exs, lang);
   h += '<div class="card" style="margin-top:14px"><h2>' + t.odds_title + '</h2>' + oddsTableHtml(esTiers(id), lang) + '<p class="note" style="margin-top:8px">' + t.prizes_col5_note + '</p><p class="note">' + t.odds_src + '</p></div>';
   h += esLearnHtml(j, lang);
@@ -1816,6 +1842,47 @@ function usSugHtml(id, lang, nowMs) {
   var t = T[lang];
   if (!(SUG && SUG.lotteries && SUG.lotteries[id] && DATA[id])) return "";
   return '<h2 style="margin-top:22px">' + t.combo_h + '</h2><div class="grid" style="grid-template-columns:minmax(260px,520px)">' + sugCardHtml(id, SUG.lotteries[id], DATA[id].rules, lang, nowMs) + '</div>';
+}
+
+
+// ---- Combinaciones por metodo (calculadas en el navegador con la estadistica real de cada loteria) ----
+var METHOD = "frec";
+function wPick(rows, cnt, mode, rnd) {
+  var avgC = 0, avgD = 0, i, pool = [], out = [], c, tot, r, acc, k;
+  for (i = 0; i < rows.length; i++) { avgC += rows[i].count; avgD += rows[i].delay; }
+  avgC = avgC / rows.length || 1; avgD = avgD / rows.length || 1;
+  for (i = 0; i < rows.length; i++) {
+    var fc = 0.2 + rows[i].count / avgC, dl = 0.2 + rows[i].delay / avgD;
+    pool.push({ n: rows[i].n, w: mode === "frec" ? fc : (mode === "ret" ? dl : (mode === "mix" ? fc * dl : 1)) });
+  }
+  for (c = 0; c < cnt && pool.length; c++) {
+    tot = 0; for (i = 0; i < pool.length; i++) tot += pool[i].w;
+    r = rnd() * tot; acc = 0; k = pool.length - 1;
+    for (i = 0; i < pool.length; i++) { acc += pool[i].w; if (acc >= r) { k = i; break; } }
+    out.push(pool[k].n); pool.splice(k, 1);
+  }
+  return out.sort(function (a, b) { return a - b; });
+}
+function methodCombos(id, mainBlock, k, n, extras, mode, nowMs) {
+  var rnd = mulberry32(seedOf(id + "|" + madridDay(nowMs) + "|" + mode + "|" + REGEN)), out = [], c, m, t, e, ex, rows;
+  rows = mainBlock.numbers.filter(function (x) { return x.n >= 1 && x.n <= n; });
+  for (c = 0; c < 5; c++) {
+    if (mode === "bal") { for (t = 0; t < 4000; t++) { m = pickDistinct(k, 1, n, rnd); if (okMain(m, n)) break; } }
+    else m = wPick(rows, k, mode, rnd);
+    ex = [];
+    for (e = 0; e < extras.length; e++) ex = ex.concat(wPick(extras[e].rows, extras[e].cnt, mode === "bal" ? "uni" : mode, rnd));
+    out.push({ main: m, extras: ex });
+  }
+  return out;
+}
+function methodCardHtml(id, mainBlock, k, n, extras, groups, lang, nowMs) {
+  var t = T[lang], modes = [["frec", t.meth_frec], ["ret", t.meth_ret], ["mix", t.meth_mix], ["bal", t.meth_bal]], i, h, cs;
+  h = '<div class="card" style="margin-top:14px"><h2>' + t.meth_t + '</h2><p class="note">' + t.meth_p + '</p><p>';
+  for (i = 0; i < modes.length; i++) h += '<button class="btn' + (METHOD === modes[i][0] ? '' : ' alt') + '" data-method="' + modes[i][0] + '" style="margin:2px 4px 2px 0">' + modes[i][1] + '</button>';
+  h += '</p><p class="note"><b>' + t["meth_d_" + METHOD] + '</b></p>';
+  cs = methodCombos(id, mainBlock, k, n, extras, METHOD, nowMs);
+  for (i = 0; i < cs.length; i++) h += '<div class="combo">' + (groups ? ballsE(cs[i].main, cs[i].extras, groups) : ballsX(cs[i].main, cs[i].extras, false)) + '</div>';
+  return h + '<p class="note" style="margin-top:8px">' + fmt(t.meth_note, { n: fmtNum(mainBlock.draws, lang) }) + '</p><p><button class="btn alt" data-regen="1">' + t.regen + '</button></p></div>';
 }
 
 // ==PURE-END==
@@ -2174,6 +2241,8 @@ function loadRev() {
   } catch (e) {}
   document.addEventListener("click", function (ev) {
     var t = ev.target;
+    var mt = t.closest ? t.closest("[data-method]") : null;
+    if (mt) { METHOD = mt.getAttribute("data-method"); renderLot(); return; }
     var rg = t.closest ? t.closest("[data-regen]") : null;
     if (rg) { REGEN++; renderSpecial(); renderSug(); renderLot(); return; }
     var lot = t.closest ? t.closest("[data-lot]") : null;
