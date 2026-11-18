@@ -149,10 +149,52 @@ def build_news(fetch=http_get):
     return out, errors
 
 
+
+OG_RE = re.compile(r'<meta[^>]+property=["\']og:image["\'][^>]*content=["\']([^"\']+)["\']|<meta[^>]+content=["\']([^"\']+)["\'][^>]*property=["\']og:image["\']', re.I)
+
+
+def og_image(url):
+    """Foto de portada que el propio medio declara en su pagina (og:image). Vacio si no hay."""
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "text/html"})
+        with urllib.request.urlopen(req, timeout=8) as r:
+            final = r.geturl()
+            if "google." in urllib.parse.urlparse(final).netloc:
+                return ""          # Google no ha redirigido: esa imagen no es del medio
+            html = r.read(300000).decode("utf-8", "ignore")
+    except Exception:  # noqa: BLE001
+        return ""
+    m = OG_RE.search(html)
+    img = (m.group(1) or m.group(2)) if m else ""
+    return img if img.startswith("https://") else ""
+
+
+def enrich_images(out, max_calls=40, max_seconds=120):
+    """Intenta poner foto a las noticias que no la traen. Si falla, se queda sin foto."""
+    import time
+    t0 = time.time()
+    calls = got = 0
+    for lang in out:
+        for kind in out[lang]:
+            for it in out[lang][kind]:
+                if it.get("image") or calls >= max_calls or time.time() - t0 > max_seconds:
+                    continue
+                calls += 1
+                img = og_image(it["url"])
+                if img:
+                    it["image"] = img
+                    got += 1
+    print("Fotos: %d de %d intentos" % (got, calls))
+
+
 def actualizar_noticias():
     os.makedirs(DATA_DIR, exist_ok=True)
     path = os.path.join(DATA_DIR, "news.json")
     nuevo, errors = build_news()
+    try:
+        enrich_images(nuevo)
+    except Exception as e:  # noqa: BLE001
+        print("AVISO fotos:", e, file=sys.stderr)
     total = sum(len(nuevo[l][k]) for l in nuevo for k in nuevo[l])
     for e in errors:
         print("AVISO noticias:", e, file=sys.stderr)

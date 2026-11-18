@@ -48,6 +48,8 @@ LOTTERIES = [
         "bonus_column": None,
         "main_from": "2015-10-07",
         "bonus_from": "2015-10-07",
+        "prize_min_main": 3, "prize_min_main_with_bonus": 0,   # premio con 3+ numeros, o solo con la bola extra
+        "draw_days": [0, 2, 5], "draw_time_et": "22:59",       # lunes, miercoles, sabado (powerball.com)
     },
     {
         "id": "us_megamillions",
@@ -63,6 +65,26 @@ LOTTERIES = [
         "bonus_column": "mega_ball",
         "main_from": "2017-10-31",
         "bonus_from": "2025-04-08",
+        "prize_min_main": 3, "prize_min_main_with_bonus": 0,
+        "draw_days": [1, 4], "draw_time_et": "23:00",        # martes y viernes, 11 p.m. ET (NBC New York)
+    },
+    {
+        # Sustituye a Cash4Life (retirado en 2026). Primer sorteo: 22/02/2026. Sorteo todas las noches.
+        "id": "us_millionaire",
+        "country": "us",
+        "name": "Millionaire for Life",
+        "source_name": "New York State Open Data (data.ny.gov)",
+        "source_page": "https://data.ny.gov/d/a4w9-a3tp",
+        "url": "https://data.ny.gov/api/views/a4w9-a3tp/rows.csv?accessType=DOWNLOAD",
+        "main_count": 5,
+        "main_max": 58,
+        "bonus_name": "Millionaire Ball",
+        "bonus_max": 5,
+        "bonus_column": None,
+        "main_from": "2026-02-22",
+        "bonus_from": "2026-02-22",
+        "prize_min_main": 2, "prize_min_main_with_bonus": 1,   # con 2 numeros, o 1 numero + bola
+        "draw_days": [0, 1, 2, 3, 4, 5, 6], "draw_time_et": "23:15",   # todas las noches
     },
 ]
 
@@ -107,6 +129,12 @@ def parse_rows(text, cfg):
             d = parse_date(row.get("draw_date", ""))
             nums = [int(x) for x in row.get("winning_numbers", "").replace(",", " ").split()]
             col = cfg.get("bonus_column")
+            if not col and len(nums) == cfg["main_count"]:
+                # Si la fuente trae la bola extra en una columna aparte, la buscamos por su nombre
+                for k in row:
+                    if "ball" in k and row[k]:
+                        col = k
+                        break
             if col and row.get(col):
                 bonus = int(row[col])
                 main = nums
@@ -230,6 +258,10 @@ def build(cfg, draws, bad):
             "bonus_name": cfg["bonus_name"],
             "bonus_max": cfg["bonus_max"],
             "bonus_from": cfg["bonus_from"],
+            "prize_min_main": cfg["prize_min_main"],
+            "prize_min_main_with_bonus": cfg["prize_min_main_with_bonus"],
+            "draw_days": cfg["draw_days"],
+            "draw_time_et": cfg["draw_time_et"],
         },
         "total_draws_in_source": len(draws),
         "first_draw": draws[0]["date"],
