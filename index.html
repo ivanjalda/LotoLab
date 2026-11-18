@@ -4,14 +4,192 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LotoLab</title>
+<meta name="description" content="Estadística de loterías de España y EE. UU. / Lottery statistics for Spain and the USA.">
 <style>
-  body { background:#0b1220; color:#e8eefc; font-family:Arial,sans-serif; text-align:center; padding:60px 20px; }
-  h1 { font-size:2.4rem; margin-bottom:10px; }
-  p { color:#9fb0d0; }
+  :root {
+    --bg:#0b1220; --panel:#131c30; --line:#22304d; --text:#e8eefc; --muted:#9fb0d0;
+    --accent:#4da3ff; --accent2:#7c5cff;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:Arial,Helvetica,sans-serif; line-height:1.5; }
+  header { position:sticky; top:0; z-index:10; background:rgba(11,18,32,.95); border-bottom:1px solid var(--line); }
+  .bar { max-width:1000px; margin:0 auto; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+  .logo { font-size:1.4rem; font-weight:bold; color:var(--text); text-decoration:none; }
+  .logo span { color:var(--accent); }
+  .lang button { background:var(--panel); color:var(--muted); border:1px solid var(--line); padding:6px 12px; cursor:pointer; font-size:.9rem; }
+  .lang button:first-child { border-radius:8px 0 0 8px; }
+  .lang button:last-child { border-radius:0 8px 8px 0; border-left:none; }
+  .lang button.on { background:var(--accent); color:#06101f; font-weight:bold; }
+  nav { max-width:1000px; margin:0 auto; padding:0 16px 10px; display:flex; gap:8px; overflow-x:auto; }
+  nav button { background:transparent; color:var(--muted); border:1px solid var(--line); border-radius:20px; padding:7px 14px; cursor:pointer; white-space:nowrap; font-size:.9rem; }
+  nav button.on { background:var(--panel); color:var(--text); border-color:var(--accent); }
+  main { max-width:1000px; margin:0 auto; padding:24px 16px 60px; }
+  h1 { font-size:1.9rem; margin:0 0 6px; }
+  h2 { font-size:1.3rem; margin:28px 0 12px; }
+  .sub { color:var(--muted); margin:0 0 20px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px; }
+  .card h3 { margin:0 0 6px; font-size:1.1rem; }
+  .card p { margin:4px 0; color:var(--muted); font-size:.92rem; }
+  .tag { display:inline-block; font-size:.75rem; color:#06101f; background:var(--accent); border-radius:10px; padding:2px 9px; margin-bottom:8px; }
+  .soon { color:var(--accent2); font-weight:bold; font-size:.85rem; }
+  .notice { background:#101a2e; border-left:4px solid var(--accent2); padding:14px 16px; border-radius:8px; color:var(--muted); font-size:.9rem; margin-top:26px; }
+  .view { display:none; }
+  .view.on { display:block; }
+  footer { border-top:1px solid var(--line); text-align:center; padding:20px 16px; color:var(--muted); font-size:.82rem; }
 </style>
 </head>
 <body>
-  <h1>LotoLab</h1>
-  <p>Estadística de loterías de España y EE. UU. Muy pronto.</p>
+
+<header>
+  <div class="bar">
+    <a class="logo" href="#" onclick="show('home');return false;">Loto<span>Lab</span></a>
+    <div class="lang">
+      <button id="btn-es" onclick="setLang('es')">ES</button><button id="btn-en" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+  <nav>
+    <button data-view="home"   data-i18n="nav_home"></button>
+    <button data-view="es"     data-i18n="nav_es"></button>
+    <button data-view="us"     data-i18n="nav_us"></button>
+    <button data-view="news"   data-i18n="nav_news"></button>
+    <button data-view="legal"  data-i18n="nav_legal"></button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- INICIO -->
+  <section id="v-home" class="view">
+    <h1 data-i18n="home_title"></h1>
+    <p class="sub" data-i18n="home_sub"></p>
+    <div class="grid">
+      <div class="card"><h3 data-i18n="home_c1_t"></h3><p data-i18n="home_c1_p"></p></div>
+      <div class="card"><h3 data-i18n="home_c2_t"></h3><p data-i18n="home_c2_p"></p></div>
+      <div class="card"><h3 data-i18n="home_c3_t"></h3><p data-i18n="home_c3_p"></p></div>
+    </div>
+    <div class="notice" data-i18n="disclaimer"></div>
+  </section>
+
+  <!-- ESPAÑA -->
+  <section id="v-es" class="view">
+    <h1 data-i18n="es_title"></h1>
+    <p class="sub" data-i18n="es_sub"></p>
+    <div class="grid">
+      <div class="card"><span class="tag">ES</span><h3>La Primitiva</h3><p data-i18n="soon_data"></p><p class="soon" data-i18n="soon"></p></div>
+      <div class="card"><span class="tag">ES</span><h3>Euromillones</h3><p data-i18n="soon_data"></p><p class="soon" data-i18n="soon"></p></div>
+      <div class="card"><span class="tag">ES</span><h3>Bonoloto</h3><p data-i18n="soon_data"></p><p class="soon" data-i18n="soon"></p></div>
+    </div>
+  </section>
+
+  <!-- EE.UU. -->
+  <section id="v-us" class="view">
+    <h1 data-i18n="us_title"></h1>
+    <p class="sub" data-i18n="us_sub"></p>
+    <div class="grid">
+      <div class="card"><span class="tag">US</span><h3>Powerball</h3><p data-i18n="soon_data"></p><p class="soon" data-i18n="soon"></p></div>
+      <div class="card"><span class="tag">US</span><h3>Mega Millions</h3><p data-i18n="soon_data"></p><p class="soon" data-i18n="soon"></p></div>
+    </div>
+  </section>
+
+  <!-- NOTICIAS -->
+  <section id="v-news" class="view">
+    <h1 data-i18n="news_title"></h1>
+    <p class="sub" data-i18n="news_sub"></p>
+    <div class="card"><p class="soon" data-i18n="soon"></p></div>
+  </section>
+
+  <!-- LEGAL -->
+  <section id="v-legal" class="view">
+    <h1 data-i18n="legal_title"></h1>
+    <p class="sub" data-i18n="legal_sub"></p>
+    <div class="card"><p class="soon" data-i18n="soon"></p></div>
+  </section>
+
+</main>
+
+<footer>
+  <span>© <span id="year"></span> Community16 LLC · LotoLab</span>
+</footer>
+
+<script>
+var T = {
+  es: {
+    nav_home:"Inicio", nav_es:"España", nav_us:"EE. UU.", nav_news:"Noticias", nav_legal:"Aviso legal",
+    home_title:"Estadística de loterías, sin humo",
+    home_sub:"Análisis de frecuencias y combinaciones sugeridas a partir de datos oficiales de España y EE. UU.",
+    home_c1_t:"Números más frecuentes", home_c1_p:"Qué números han salido más veces en el histórico oficial de cada lotería.",
+    home_c2_t:"Retrasos históricos", home_c2_p:"Cuánto tiempo lleva cada número sin salir.",
+    home_c3_t:"Combinaciones sugeridas", home_c3_p:"Combinaciones equilibradas según criterios estadísticos. Son una ayuda, no una predicción.",
+    disclaimer:"Importante: cada sorteo es independiente y ningún método puede predecir el resultado. LotoLab ofrece estadística informativa y no garantiza premios. Juega con responsabilidad y solo si eres mayor de edad.",
+    es_title:"Loterías de España", es_sub:"Loterías y Apuestas del Estado",
+    us_title:"Loterías de EE. UU.", us_sub:"Las grandes loterías de Estados Unidos",
+    soon_data:"Estadísticas y combinaciones sugeridas.", soon:"Muy pronto",
+    news_title:"Noticias", news_sub:"Premios y novedades del mundo de las loterías.",
+    legal_title:"Aviso legal y políticas", legal_sub:"Privacidad, cookies y condiciones de uso."
+  },
+  en: {
+    nav_home:"Home", nav_es:"Spain", nav_us:"USA", nav_news:"News", nav_legal:"Legal notice",
+    home_title:"Lottery statistics, no hype",
+    home_sub:"Frequency analysis and suggested combinations based on official data from Spain and the USA.",
+    home_c1_t:"Most frequent numbers", home_c1_p:"Which numbers have appeared most often in each lottery's official history.",
+    home_c2_t:"Historical delays", home_c2_p:"How long each number has gone without being drawn.",
+    home_c3_t:"Suggested combinations", home_c3_p:"Balanced combinations based on statistical criteria. They are an aid, not a prediction.",
+    disclaimer:"Important: every draw is independent and no method can predict the result. LotoLab provides informational statistics and does not guarantee prizes. Play responsibly and only if you are of legal age.",
+    es_title:"Spanish lotteries", es_sub:"Loterías y Apuestas del Estado",
+    us_title:"US lotteries", us_sub:"The major lotteries of the United States",
+    soon_data:"Statistics and suggested combinations.", soon:"Coming soon",
+    news_title:"News", news_sub:"Prizes and updates from the lottery world.",
+    legal_title:"Legal notice and policies", legal_sub:"Privacy, cookies and terms of use."
+  }
+};
+
+var lang = "es";
+var view = "home";
+
+function applyText() {
+  var els = document.querySelectorAll("[data-i18n]");
+  for (var i = 0; i < els.length; i++) {
+    var k = els[i].getAttribute("data-i18n");
+    els[i].textContent = T[lang][k];
+  }
+  document.documentElement.lang = lang;
+  document.getElementById("btn-es").className = lang === "es" ? "on" : "";
+  document.getElementById("btn-en").className = lang === "en" ? "on" : "";
+}
+
+function setLang(l) {
+  lang = l;
+  try { localStorage.setItem("lotolab_lang", l); } catch (e) {}
+  applyText();
+}
+
+function show(v) {
+  view = v;
+  var views = document.querySelectorAll(".view");
+  for (var i = 0; i < views.length; i++) views[i].className = "view";
+  document.getElementById("v-" + v).className = "view on";
+  var btns = document.querySelectorAll("nav button");
+  for (var j = 0; j < btns.length; j++) {
+    btns[j].className = btns[j].getAttribute("data-view") === v ? "on" : "";
+  }
+  window.scrollTo(0, 0);
+}
+
+(function init() {
+  try {
+    var saved = localStorage.getItem("lotolab_lang");
+    if (saved === "es" || saved === "en") lang = saved;
+    else if ((navigator.language || "").slice(0, 2) === "en") lang = "en";
+  } catch (e) {}
+  var btns = document.querySelectorAll("nav button");
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].onclick = function () { show(this.getAttribute("data-view")); };
+  }
+  document.getElementById("year").textContent = new Date().getFullYear();
+  applyText();
+  show("home");
+})();
+</script>
 </body>
 </html>
