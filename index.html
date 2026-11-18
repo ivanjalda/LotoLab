@@ -110,6 +110,7 @@
   .fcard:hover { border-color:var(--green); }
   .fimg { display:flex; align-items:center; justify-content:center; width:100%; height:110px; object-fit:cover; font-size:2.4rem; background:linear-gradient(135deg,var(--green),#0e4d2a); color:#fff; }
   .fb { padding:10px 12px 12px; }
+  .fcard.ad .fimg { height:56px; font-size:1.4rem; }
   .badge { display:inline-block; font-size:.68rem; font-weight:bold; text-transform:uppercase; letter-spacing:.05em; border-radius:6px; padding:1px 7px; margin-bottom:5px; background:var(--green-soft); color:var(--green); }
   .badge.ad { background:var(--warn-bg); color:var(--warn-fg); }
   .fb b { display:block; font-size:.92rem; line-height:1.3; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
@@ -329,7 +330,7 @@ var T = {
     winners_empty:"Todavía no hay titulares cargados. Se actualizan automáticamente cada pocas horas.",
     news_title:"Noticias", news_sub:"Premios y novedades del mundo de las loterías. Titulares con enlace al medio original, actualizados varias veces al día.",
     news_empty:"Todavía no hay noticias cargadas. Se actualizan automáticamente cada pocas horas.",
-    news_badge:"Noticia", ad_badge:"Publicidad",
+    news_badge:"Noticia", ad_badge:"Publicidad", rail_empty:"Las noticias aparecerán aquí en cuanto se carguen.",
     ago_now:"hace un momento", ago_h:"hace {h} h", ago_d:"hace {d} d",
     guide_title:"Guía de la lotería", guide_sub:"Historia, quién gestiona cada juego, qué hacer si te toca y cómo tributan los premios.",
     g1:"Historia de las loterías", g2:"Quién gestiona cada lotería", g3:"Qué hacer si te toca", g4:"Impuestos sobre los premios", g5:"Curiosidades",
@@ -395,7 +396,7 @@ var T = {
     winners_empty:"No headlines loaded yet. They update automatically every few hours.",
     news_title:"News", news_sub:"Prizes and updates from the lottery world. Headlines linking to the original outlet, updated several times a day.",
     news_empty:"No news loaded yet. They update automatically every few hours.",
-    news_badge:"News", ad_badge:"Advertising",
+    news_badge:"News", ad_badge:"Advertising", rail_empty:"News will appear here as soon as they load.",
     ago_now:"just now", ago_h:"{h} h ago", ago_d:"{d} d ago",
     guide_title:"Lottery guide", guide_sub:"History, who runs each game, what to do if you win and how prizes are taxed.",
     g1:"History of lotteries", g2:"Who runs each lottery", g3:"What to do if you win", g4:"Taxes on prizes", g5:"Curiosities",
@@ -563,7 +564,7 @@ function adCardHtml(s, lang) {
   var t = T[lang], img = safeUrl(s.img);
   var top = img ? '<img class="fimg" src="' + img + '" alt="" loading="lazy">' :
     '<div class="fimg" style="background:linear-gradient(135deg,' + esc(s.c) + ',#0b1a12)">' + s.ic + '</div>';
-  return '<a class="fcard" href="' + safeUrl(s.u) + '" target="_blank" rel="noopener sponsored">' + top +
+  return '<a class="fcard ad" href="' + safeUrl(s.u) + '" target="_blank" rel="noopener sponsored">' + top +
     '<div class="fb"><span class="badge ad">' + t.ad_badge + '</span><b>' + esc(s.n) + '</b><small>' +
     esc(s[lang]) + '</small><em>' + t.ads_visit + '</em></div></a>';
 }
@@ -583,6 +584,24 @@ function mixFeed(news, ads, rnd) {
     for (k = 0; k < 2 && ni < n.length; k++) out.push({ k: "n", v: n[ni++] });
     if (ai < a.length) out.push({ k: "a", v: a[ai++] });
     else if (ni >= n.length) break;
+  }
+  return out;
+}
+// Reparte noticias y anuncios entre izquierda, derecha y abajo, sin repetir.
+// Pocos anuncios (1 por zona) y siempre mezclados entre las noticias, en sitio al azar.
+function planZones(news, ads, rnd) {
+  var n = shuffled(news, rnd), a = shuffled(ads, rnd);
+  var sizes = { left: 6, right: 6, bottom: 4 }, names = ["left", "right", "bottom"], out = {}, ni = 0, z;
+  var total = sizes.left + sizes.right + sizes.bottom;
+  var per = n.length >= total ? null : Math.ceil(n.length / 3);
+  for (z = 0; z < 3; z++) {
+    var cnt = per === null ? sizes[names[z]] : per, items = [], k;
+    for (k = 0; k < cnt && ni < n.length; k++) items.push({ k: "n", v: n[ni++] });
+    if (a[z]) {
+      var pos = Math.floor(rnd() * (items.length + 1));
+      items.splice(pos, 0, { k: "a", v: a[z] });
+    }
+    out[names[z]] = items;
   }
   return out;
 }
@@ -768,16 +787,25 @@ function renderLot() {
 }
 
 // Noticias + publicidad entremezcladas al azar (laterales, abajo, portada, noticias, premiados)
+function renderRails() {
+  var now = Date.now(), nw = newsList("news").concat(newsList("winners"));
+  var z = planZones(nw, SITES, Math.random);
+  var empty = '<div class="card"><p class="note">' + T[lang].rail_empty + '</p></div>';
+  document.getElementById("rail-left").innerHTML = z.left.length ? feedHtml(z.left, lang, now) : empty;
+  document.getElementById("rail-right").innerHTML = z.right.length ? feedHtml(z.right, lang, now) : empty;
+  document.getElementById("bottom-mix").innerHTML = feedHtml(z.bottom, lang, now);
+}
 function renderFeeds() {
-  var now = Date.now(), ads = SITES.slice(), nw = newsList("news"), wn = newsList("winners");
-  var sides = splitSides(mixFeed(nw.concat(wn), ads, Math.random), 10);
-  document.getElementById("rail-left").innerHTML = feedHtml(sides.left, lang, now);
-  document.getElementById("rail-right").innerHTML = feedHtml(sides.right, lang, now);
-  document.getElementById("bottom-mix").innerHTML = feedHtml(mixFeed(nw.concat(wn), ads, Math.random).slice(0, 6), lang, now);
-  document.getElementById("home-news").innerHTML = feedHtml(mixFeed(nw, ads.slice(0, 2), Math.random).slice(0, 8), lang, now);
-  var t = T[lang], nl = document.getElementById("news-list"), wl = document.getElementById("winners-list");
-  nl.innerHTML = nw.length ? feedHtml(mixFeed(nw, ads.slice(0, 3), Math.random), lang, now) : '<div class="card"><p>' + t.news_empty + '</p></div>';
-  wl.innerHTML = wn.length ? feedHtml(mixFeed(wn, ads.slice(0, 3), Math.random), lang, now) : '<div class="card"><p>' + t.winners_empty + '</p></div>';
+  var now = Date.now(), nw = newsList("news"), wn = newsList("winners"), t = T[lang], i, h;
+  function plain(list, max) {
+    var h = "";
+    for (var i = 0; i < list.length && i < max; i++) h += newsCardHtml(list[i], lang, now);
+    return h;
+  }
+  document.getElementById("home-news").innerHTML = nw.length ? plain(nw, 8) : '<div class="card"><p>' + t.news_empty + '</p></div>';
+  document.getElementById("news-list").innerHTML = nw.length ? plain(nw, 60) : '<div class="card"><p>' + t.news_empty + '</p></div>';
+  document.getElementById("winners-list").innerHTML = wn.length ? plain(wn, 60) : '<div class="card"><p>' + t.winners_empty + '</p></div>';
+  renderRails();
 }
 
 function renderRev() {
@@ -960,6 +988,7 @@ function loadRev() {
   loadData();
   loadNews();
   loadRev();
+  setInterval(renderRails, 25 * 1000);   // los laterales y la franja de abajo cambian al azar cada 25 s
   setInterval(loadNews, 30 * 60 * 1000);   // si la pagina sigue abierta, refresca noticias y publicidad
 })();
 </script>
