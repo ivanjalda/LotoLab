@@ -27,6 +27,10 @@ jobs:
         continue-on-error: true
         run: python scripts/sugerencias.py
 
+      - name: Datos de España (varias fuentes, aprende solo)
+        continue-on-error: true
+        run: python scripts/espana.py
+
       - name: Guardar botes (premio gordo y ganadores)
         continue-on-error: true
         run: python scripts/botes.py
