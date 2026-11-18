@@ -26,11 +26,11 @@
   /* Cabecera */
   header { position:sticky; top:0; z-index:20; background:var(--panel); border-bottom:1px solid var(--line); box-shadow:var(--shadow); }
   .top { padding:10px 20px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
-  .logo { display:flex; align-items:center; gap:9px; font-size:1.45rem; font-weight:bold; text-decoration:none; color:var(--text); }
+  .logo { display:flex; align-items:center; gap:9px; font-size:1.4rem; font-weight:600; text-decoration:none; color:var(--text); }
   .logo i { width:34px; height:34px; border-radius:9px; background:var(--green); color:var(--on-green); display:inline-flex; align-items:center; justify-content:center; font-style:normal; font-size:1.05rem; }
   .logo span { color:var(--green); }
   .actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-  .btn { display:inline-flex; align-items:center; gap:6px; background:var(--green); color:var(--on-green); border:1px solid var(--green); border-radius:10px; padding:8px 14px; font-size:.9rem; font-weight:bold; cursor:pointer; text-decoration:none; font-family:inherit; }
+  .btn { display:inline-flex; align-items:center; gap:6px; background:var(--green); color:var(--on-green); border:1px solid var(--green); border-radius:10px; padding:8px 14px; font-size:.88rem; font-weight:600; cursor:pointer; text-decoration:none; font-family:inherit; }
   .btn.alt { background:var(--panel); color:var(--text); border-color:var(--line); }
   .btn.disabled { background:var(--panel); color:var(--muted); border-color:var(--line); cursor:default; }
   .iconbtn { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:7px 11px; cursor:pointer; font-size:1rem; color:var(--text); }
@@ -41,35 +41,35 @@
   .lang button.on { background:var(--gold); color:#1d1500; border-color:var(--gold); }
   .menu { padding:0 20px 10px; display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; }
   .menu::-webkit-scrollbar { display:none; }
-  .menu button { background:transparent; color:var(--muted); border:none; border-bottom:3px solid transparent; padding:8px 12px; cursor:pointer; white-space:nowrap; font-size:.92rem; font-weight:bold; font-family:inherit; }
-  .menu button.on { color:var(--green); border-bottom-color:var(--green); }
+  .menu button { background:transparent; color:var(--muted); border:none; border-bottom:3px solid transparent; padding:8px 12px; cursor:pointer; white-space:nowrap; font-size:.9rem; font-weight:500; font-family:inherit; }
+  .menu button.on { font-weight:600; color:var(--green); border-bottom-color:var(--green); }
 
   /* Estructura a pantalla completa */
-  .page { display:grid; grid-template-columns:minmax(0,1fr); gap:20px; padding:20px 20px 10px; }
+  .page { display:grid; grid-template-columns:minmax(0,1fr); gap:28px; padding:24px 24px 10px; }
   .rail { display:none; }
   @media (min-width:1100px) {
-    .page { grid-template-columns:clamp(220px,15vw,340px) minmax(0,1fr) clamp(220px,15vw,340px); }
+    .page { grid-template-columns:clamp(250px,17vw,360px) minmax(0,1fr) clamp(250px,17vw,360px); }
     .rail { display:flex; flex-direction:column; gap:12px; position:sticky; top:120px; align-self:start;
             max-height:calc(100vh - 135px); overflow-y:auto; scrollbar-width:none; }
     .rail::-webkit-scrollbar { display:none; }
     .mix { grid-template-columns:repeat(6,1fr) !important; }
   }
-  h1 { font-size:2.1rem; margin:0 0 8px; line-height:1.2; }
+  h1 { font-size:1.9rem; font-weight:600; margin:0 0 8px; line-height:1.25; letter-spacing:-.01em; }
   h1 .hl { color:var(--green); }
-  h2 { font-size:1.1rem; margin:30px 0 10px; text-transform:uppercase; letter-spacing:.04em; color:var(--gold); }
-  h3 { font-size:1.02rem; margin:18px 0 6px; }
+  h2 { font-size:.95rem; font-weight:600; margin:34px 0 12px; text-transform:uppercase; letter-spacing:.06em; color:var(--gold); }
+  h3 { font-size:1rem; font-weight:600; margin:18px 0 6px; }
   .sub { color:var(--muted); margin:0 0 20px; max-width:900px; }
   .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; }
   .card { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px; color:var(--text); text-align:left; font:inherit; box-shadow:var(--shadow); }
   button.card { cursor:pointer; width:100%; }
   button.card:hover { border-color:var(--green); }
-  .card h3 { margin:0 0 6px; font-size:1.1rem; }
+  .card h3 { margin:0 0 6px; font-size:1.05rem; font-weight:600; }
   .card p { margin:4px 0; color:var(--muted); font-size:.92rem; }
   .card h2 { margin-top:0; }
   .tag { display:inline-block; font-size:.72rem; font-weight:bold; color:var(--on-green); background:var(--green); border-radius:10px; padding:2px 9px; margin-bottom:8px; }
   .soon { color:var(--green); font-weight:bold; font-size:.85rem; }
   .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin:18px 0; }
-  .stat b { display:block; font-size:1.7rem; }
+  .stat b { display:block; font-size:1.6rem; font-weight:600; }
   .stat span { color:var(--muted); font-size:.9rem; }
   .notice { background:var(--green-soft); border-left:4px solid var(--green); padding:14px 16px; border-radius:8px; color:var(--text); font-size:.9rem; margin-top:26px; }
   .warn { background:var(--warn-bg); border-left:4px solid var(--warn-line); padding:12px 16px; border-radius:8px; color:var(--warn-fg); font-size:.9rem; margin:12px 0; }
@@ -108,19 +108,30 @@
   /* Noticias y publicidad mezcladas */
   .fcard { display:block; text-decoration:none; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); flex:none; }
   .fcard:hover { border-color:var(--green); }
-  .fimg { display:flex; align-items:center; justify-content:center; width:100%; height:110px; object-fit:cover; font-size:2.4rem; background:linear-gradient(135deg,var(--green),#0e4d2a); color:#fff; }
+  .fimg { display:flex; align-items:center; justify-content:center; width:100%; height:150px; object-fit:cover; font-size:2.4rem; background:linear-gradient(135deg,var(--green),#0e4d2a); color:#fff; }
   .fb { padding:10px 12px 12px; }
-  .fcard.ad .fimg { height:100px; font-size:2rem; }
+  .fcard.ad .fimg { height:130px; font-size:2rem; }
   .imgwrap { display:block; position:relative; }
   .imgwrap .over { position:absolute; left:0; top:0; }
   .clocks { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:6px; }
   .clock { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 14px; box-shadow:var(--shadow); }
-  .clock b { display:block; font-size:1.55rem; font-variant-numeric:tabular-nums; }
-  .clock span { display:block; font-weight:bold; font-size:.92rem; }
+  .clock b { display:block; font-size:1.5rem; font-weight:600; font-variant-numeric:tabular-nums; }
+  .clock span { display:block; font-weight:500; font-size:.9rem; }
   .clock small { color:var(--muted); font-size:.78rem; }
+  .nextc b { font-size:1.05rem; }
+  .combo { display:flex; align-items:center; gap:4px; flex-wrap:wrap; padding:6px 0; border-bottom:1px solid var(--line); }
+  .combo:last-child { border-bottom:none; }
+  .tbl { width:100%; border-collapse:collapse; font-size:.9rem; }
+  .tbl th, .tbl td { text-align:left; padding:8px 6px; border-bottom:1px solid var(--line); }
+  .tbl th { color:var(--muted); font-weight:bold; font-size:.8rem; }
+  .prz { width:130px; text-align:right; }
+  .big { font-size:1.6rem; font-weight:bold; }
+  .neg { color:var(--red); } .pos { color:var(--green); }
+  .card ul { margin:6px 0 6px 18px; padding:0; color:var(--muted); font-size:.9rem; }
+  .card a { color:var(--green); }
   .badge { display:inline-block; font-size:.68rem; font-weight:bold; text-transform:uppercase; letter-spacing:.05em; border-radius:6px; padding:1px 7px; margin-bottom:5px; background:var(--green-soft); color:var(--green); }
   .badge.ad { background:var(--warn-bg); color:var(--warn-fg); }
-  .fb b { display:block; font-size:.92rem; line-height:1.3; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+  .fb b { display:block; font-size:.9rem; font-weight:500; line-height:1.35; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
   .fb small { display:block; color:var(--muted); font-size:.78rem; margin-top:4px; }
   .fb em { color:var(--green); font-style:normal; font-weight:bold; font-size:.8rem; }
   .mix { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px; }
@@ -162,6 +173,8 @@
     <button data-view="home"    data-i18n="nav_home"></button>
     <button data-view="es"      data-i18n="nav_es"></button>
     <button data-view="us"      data-i18n="nav_us"></button>
+    <button data-view="sug"     data-i18n="nav_sug"></button>
+    <button data-view="calc"    data-i18n="nav_calc"></button>
     <button data-view="check"   data-i18n="nav_check"></button>
     <button data-view="winners" data-i18n="nav_winners"></button>
     <button data-view="news"    data-i18n="nav_news"></button>
@@ -179,6 +192,8 @@
       <p class="sub" data-i18n="home_sub"></p>
       <h2 data-i18n="clocks_title"></h2>
       <div id="home-clocks" class="clocks"></div>
+      <h2 data-i18n="next_title"></h2>
+      <div id="home-next" class="clocks"></div>
       <div id="home-stats" class="stats"></div>
       <h2 data-i18n="latest_title"></h2>
       <div id="home-latest" class="grid"></div>
@@ -211,6 +226,7 @@
       <h1 data-i18n="us_title"></h1>
       <p class="sub" data-i18n="us_sub"></p>
       <div id="list-us" class="grid"></div>
+      <div class="notice" data-i18n="us_note"></div>
     </section>
 
     <section id="v-lot" class="view">
@@ -237,16 +253,26 @@
       <div id="news-list" class="mix"></div>
     </section>
 
+    <section id="v-sug" class="view">
+      <h1 data-i18n="sug_title"></h1>
+      <p class="sub" data-i18n="sug_sub"></p>
+      <div class="warn" data-i18n="sug_honest"></div>
+      <div id="sug-list" class="grid"></div>
+      <h2 data-i18n="hist_title"></h2>
+      <div id="hist-body"></div>
+    </section>
+
+    <section id="v-calc" class="view">
+      <h1 data-i18n="calc_title"></h1>
+      <p class="sub" data-i18n="calc_sub"></p>
+      <div class="card form" id="calc-form"></div>
+      <div id="calc-result"></div>
+    </section>
+
     <section id="v-guide" class="view">
       <h1 data-i18n="guide_title"></h1>
       <p class="sub" data-i18n="guide_sub"></p>
-      <div class="grid">
-        <div class="card"><h3 data-i18n="g1"></h3><p class="soon" data-i18n="soon"></p></div>
-        <div class="card"><h3 data-i18n="g2"></h3><p class="soon" data-i18n="soon"></p></div>
-        <div class="card"><h3 data-i18n="g3"></h3><p class="soon" data-i18n="soon"></p></div>
-        <div class="card"><h3 data-i18n="g4"></h3><p class="soon" data-i18n="soon"></p></div>
-        <div class="card"><h3 data-i18n="g5"></h3><p class="soon" data-i18n="soon"></p></div>
-      </div>
+      <div id="guide-body" class="grid"></div>
     </section>
 
     <section id="v-subs" class="view">
@@ -329,7 +355,7 @@ var T = {
     back:"← Volver",
     check_title:"Comprueba tu número",
     check_sub:"Elige la lotería y el sorteo, escribe tus números y te decimos si hay premio. Todo se calcula en tu navegador: no guardamos nada.",
-    ck_lot:"Lotería", ck_draw:"Sorteo", ck_nums:"Tus números", ck_go:"Comprobar", ck_soon:"Las loterías de España se añadirán en cuanto tengamos su histórico.",
+    ck_lot:"Lotería", ck_draw:"Sorteo", ck_nums:"Tus números", ck_go:"Comprobar", ck_soon:"Las loterías de España se añadirán cuando tengamos una fuente oficial verificada de sus resultados.",
     ck_err_empty:"Rellena todos los números.", ck_err_range:"Cada número debe estar entre 1 y {max}.",
     ck_err_bonus:"{b} debe estar entre 1 y {max}.", ck_err_dup:"No repitas números.",
     ck_hit:"¡Hay premio!", ck_miss:"Esta vez no hay premio",
@@ -443,6 +469,219 @@ var T = {
   }
 };
 
+
+var TX = {
+  es: {
+    nav_sug:"Combinaciones", nav_calc:"Calculadora",
+    next_title:"Próximos sorteos (a tu hora)", next_in:"en {t}", next_now:"ahora mismo", next_none:"Sin datos de calendario todavía.",
+    t_d:"{d} d {h} h", t_h:"{h} h {m} min", t_m:"{m} min",
+    sug_title:"Combinaciones sugeridas",
+    sug_sub:"Cada combinación se guarda antes del sorteo y después se compara con el resultado real y con combinaciones hechas al azar.",
+    sug_honest:"Aviso claro: ninguna combinación tiene más probabilidad de ganar que otra. Estas están equilibradas (mezcla de pares e impares, bajos y altos, suma habitual) y evitan lo que mucha gente juega (todo fechas, números seguidos), por si hay que compartir el premio. Los números se eligen al azar dentro de esos filtros.",
+    sug_for:"Para el sorteo del {d}", sug_saved:"Guardada el {d}", sug_based:"Calculada con {n} sorteos reales.",
+    sug_crit:"Filtros usados: pares/impares habituales, bajos/altos habituales y suma entre {lo} y {hi}.",
+    sug_none:"Todavía no hay combinaciones guardadas. Se generan solas cada día.",
+    hist_title:"Historial de aciertos",
+    hist_sim:"Simulación con sorteos pasados",
+    hist_sim_note:"Para cada sorteo pasado, el programa sugiere cinco combinaciones usando solo los sorteos anteriores y las compara con cinco hechas al azar. Un premio es cualquier premio de esa lotería.",
+    hist_cols:"Sorteos|Combinaciones|Premios sugeridas|Premios al azar|Aciertos medios sugeridas|Aciertos medios al azar",
+    hist_live:"Registro en vivo", hist_live_note:"Combinaciones guardadas antes de cada sorteo y comparadas con el resultado oficial.",
+    hist_live_none:"El registro en vivo empieza ahora: cada combinación se guarda antes del sorteo y aquí aparecerá su resultado.",
+    hist_live_cols:"Sorteo|Lotería|Mejor sugerida|Mejor al azar|Premios (sug. / azar)",
+    hist_same:"Si las cifras son parecidas, es lo esperado: el azar no se puede predecir. Lo mostramos tal cual para que lo compruebes tú.",
+    hist_matches:"{n} números",
+    calc_title:"Calculadora de valor esperado",
+    calc_sub:"Cuánto recuperas de media por cada billete. Las probabilidades se calculan con las reglas de cada juego. Los premios los escribes tú, con los datos oficiales del sorteo.",
+    calc_lot:"Lotería", calc_price:"Precio del billete (USD)", calc_prize:"Premio (USD)",
+    calc_tier:"Acierto", calc_odds:"Probabilidad", calc_one_in:"1 entre {n}",
+    calc_ev:"Valor esperado por billete", calc_ev_text:"De media, por cada billete de {p} recuperas {r}, y la diferencia es {d}.",
+    calc_note:"Solo cuenta los premios que escribas arriba. No incluye impuestos ni el reparto del premio gordo entre varios ganadores, que lo reducen. Casi siempre el resultado es negativo.",
+    calc_need_price:"Escribe el precio del billete para ver el resultado.",
+    calc_prefill:"Los premios de esta lotería son los publicados en Wikipedia (opción de pago único). Compruébalos en la web oficial.",
+    calc_cash:"Premio gordo", calc_win_any:"Probabilidad de ganar algún premio: {p} ({o}).",
+    guide_html:{
+      g_who:"<h3>Quién gestiona cada lotería</h3><ul><li>España: Loterías y Apuestas del Estado (SELAE). <a href=\"https://www.loteriasyapuestas.es/\" target=\"_blank\" rel=\"noopener\">Web oficial</a></li><li>Powerball: Multi-State Lottery Association. <a href=\"https://www.powerball.com/\" target=\"_blank\" rel=\"noopener\">Web oficial</a></li><li>Los resultados de EE. UU. que usamos vienen del portal de datos abiertos del Estado de Nueva York. <a href=\"https://data.ny.gov/\" target=\"_blank\" rel=\"noopener\">data.ny.gov</a></li></ul>",
+      g_win:"<h3>Qué hacer si te toca (EE. UU.)</h3><ul><li>Mira la fecha de caducidad del billete: suele ir entre 90 días y un año según el estado.</li><li>Los premios se cobran en el estado donde compraste el billete.</li><li>Hasta 600 dólares se suelen cobrar en un punto de venta autorizado; los premios mayores, en oficinas de la lotería.</li><li>Las cifras de los premios gordos se anuncian antes de impuestos.</li><li>Puedes elegir pago único o pagos anuales (el estado te explica cómo elegir).</li></ul><p class=\"note\">Fuente: <a href=\"https://www.powerball.com/faqs\" target=\"_blank\" rel=\"noopener\">preguntas frecuentes de Powerball</a>.</p>",
+      g_tax_es:"<h3>Impuestos en España</h3><ul><li>Los premios de 40.000 € o menos no llevan retención.</li><li>Si el premio es mayor, se retiene el 20 % solo de la parte que pasa de 40.000 €.</li><li>En El Millón, el límite sin retención es de 24.000 €.</li></ul><p class=\"note\">Fuente: <a href=\"https://www.loteriasyapuestas.es/es/paginas-informativas/ayudas/cobro-de-premios/como-tributan-los-premios-de-selae-2\" target=\"_blank\" rel=\"noopener\">Loterías y Apuestas del Estado</a>. La página no indica fecha: confirma las cifras actuales en la Agencia Tributaria.</p>",
+      g_tax_us:"<h3>Impuestos en EE. UU.</h3><ul><li>Según el IRS (instrucciones del formulario W-2G, enero de 2026), a los premios de lotería de 5.000 dólares o más (restando lo apostado) se les retiene el 24 %.</li><li>Una retención no es siempre el impuesto final: depende de tu situación. Consulta a un asesor fiscal.</li></ul><p class=\"note\">Fuente: <a href=\"https://www.irs.gov/instructions/iw2g\" target=\"_blank\" rel=\"noopener\">IRS</a>.</p>",
+      g_new:"<h3>Novedades</h3><ul><li>Millionaire for Life empezó el 22 de febrero de 2026 y sustituyó a Cash4Life en la mayoría de los estados. Tiene sorteo todas las noches a las 11:15 p. m. (hora del Este).</li><li>Se eligen 5 números del 1 al 58 y una bola Millionaire del 1 al 5.</li></ul><p class=\"note\">Fuente: <a href=\"https://en.wikipedia.org/wiki/Millionaire_for_Life\" target=\"_blank\" rel=\"noopener\">Wikipedia</a> y el catálogo de datos de EE. UU. (data.gov), que marca Cash4Life como juego retirado.</p>",
+      g_disc:"<h3>Importante</h3><p>Información general, no es asesoramiento fiscal ni legal. Las normas cambian: confirma siempre en las fuentes oficiales.</p>"
+    },
+    us_note:"Cash4Life se retiró en 2026 y lo sustituyó Millionaire for Life."
+  },
+  en: {
+    nav_sug:"Combinations", nav_calc:"Calculator",
+    next_title:"Next draws (your time)", next_in:"in {t}", next_now:"right now", next_none:"No schedule data yet.",
+    t_d:"{d} d {h} h", t_h:"{h} h {m} min", t_m:"{m} min",
+    sug_title:"Suggested combinations",
+    sug_sub:"Each combination is saved before the draw and later compared with the real result and with randomly generated combinations.",
+    sug_honest:"Clear notice: no combination is more likely to win than another. These are balanced (mix of odd and even, low and high, usual sum) and avoid what many people play (all birthdays, consecutive numbers), in case a prize has to be shared. Numbers are chosen at random within those filters.",
+    sug_for:"For the draw on {d}", sug_saved:"Saved on {d}", sug_based:"Based on {n} real draws.",
+    sug_crit:"Filters used: usual odd/even, usual low/high and a sum between {lo} and {hi}.",
+    sug_none:"No combinations saved yet. They are generated automatically every day.",
+    hist_title:"Hit history",
+    hist_sim:"Simulation with past draws",
+    hist_sim_note:"For every past draw, the program suggests five combinations using only the earlier draws and compares them with five random ones. A prize means any prize in that lottery.",
+    hist_cols:"Draws|Combinations|Prizes suggested|Prizes random|Avg. matches suggested|Avg. matches random",
+    hist_live:"Live record", hist_live_note:"Combinations saved before each draw and compared with the official result.",
+    hist_live_none:"The live record starts now: each combination is saved before the draw and its result will appear here.",
+    hist_live_cols:"Draw|Lottery|Best suggested|Best random|Prizes (sug. / random)",
+    hist_same:"If the figures are similar, that is expected: chance cannot be predicted. We show it as is so you can check it yourself.",
+    hist_matches:"{n} numbers",
+    calc_title:"Expected value calculator",
+    calc_sub:"How much you get back on average per ticket. Probabilities are calculated from each game's rules. You enter the prizes, using the official figures for the draw.",
+    calc_lot:"Lottery", calc_price:"Ticket price (USD)", calc_prize:"Prize (USD)",
+    calc_tier:"Match", calc_odds:"Probability", calc_one_in:"1 in {n}",
+    calc_ev:"Expected value per ticket", calc_ev_text:"On average, for each {p} ticket you get back {r}, and the difference is {d}.",
+    calc_note:"It only counts the prizes you enter above. It does not include taxes or the sharing of the jackpot between several winners, which reduce it. The result is almost always negative.",
+    calc_need_price:"Enter the ticket price to see the result.",
+    calc_prefill:"This lottery's prizes are those published on Wikipedia (lump-sum option). Check them on the official website.",
+    calc_cash:"Jackpot", calc_win_any:"Chance of winning any prize: {p} ({o}).",
+    guide_html:{
+      g_who:"<h3>Who runs each lottery</h3><ul><li>Spain: Loterías y Apuestas del Estado (SELAE). <a href=\"https://www.loteriasyapuestas.es/\" target=\"_blank\" rel=\"noopener\">Official site</a></li><li>Powerball: Multi-State Lottery Association. <a href=\"https://www.powerball.com/\" target=\"_blank\" rel=\"noopener\">Official site</a></li><li>The US results we use come from the New York State open data portal. <a href=\"https://data.ny.gov/\" target=\"_blank\" rel=\"noopener\">data.ny.gov</a></li></ul>",
+      g_win:"<h3>What to do if you win (USA)</h3><ul><li>Check the ticket's expiry date: it usually ranges from 90 days to one year depending on the state.</li><li>Prizes are claimed in the state where you bought the ticket.</li><li>Prizes up to $600 can generally be claimed at a licensed retailer; larger prizes at lottery offices.</li><li>Advertised jackpot amounts are before taxes.</li><li>You can choose a lump sum or annual payments (your lottery explains how to choose).</li></ul><p class=\"note\">Source: <a href=\"https://www.powerball.com/faqs\" target=\"_blank\" rel=\"noopener\">Powerball FAQs</a>.</p>",
+      g_tax_es:"<h3>Taxes in Spain</h3><ul><li>Prizes of €40,000 or less have no withholding.</li><li>For larger prizes, 20% is withheld only on the part above €40,000.</li><li>For El Millón, the no-withholding limit is €24,000.</li></ul><p class=\"note\">Source: <a href=\"https://www.loteriasyapuestas.es/es/paginas-informativas/ayudas/cobro-de-premios/como-tributan-los-premios-de-selae-2\" target=\"_blank\" rel=\"noopener\">Loterías y Apuestas del Estado</a>. The page shows no date: confirm current figures with the Spanish tax agency.</p>",
+      g_tax_us:"<h3>Taxes in the USA</h3><ul><li>According to the IRS (Form W-2G instructions, January 2026), lottery winnings of $5,000 or more (minus the wager) have 24% withheld.</li><li>Withholding is not always the final tax: it depends on your situation. Ask a tax adviser.</li></ul><p class=\"note\">Source: <a href=\"https://www.irs.gov/instructions/iw2g\" target=\"_blank\" rel=\"noopener\">IRS</a>.</p>",
+      g_new:"<h3>What's new</h3><ul><li>Millionaire for Life started on February 22, 2026 and replaced Cash4Life in most states. It has a draw every night at 11:15 p.m. Eastern Time.</li><li>You pick 5 numbers from 1 to 58 and one Millionaire Ball from 1 to 5.</li></ul><p class=\"note\">Source: <a href=\"https://en.wikipedia.org/wiki/Millionaire_for_Life\" target=\"_blank\" rel=\"noopener\">Wikipedia</a> and the US data catalog (data.gov), which marks Cash4Life as a retired game.</p>",
+      g_disc:"<h3>Important</h3><p>General information, not tax or legal advice. Rules change: always confirm with official sources.</p>"
+    },
+    us_note:"Cash4Life was retired in 2026 and replaced by Millionaire for Life."
+  }
+};
+(function () { for (var l in TX) for (var k in TX[l]) T[l][k] = TX[l][k]; })();
+
+// Calendario de sorteos (hora de Nueva York -> hora del visitante)
+function etOffsetMin(ms) {
+  var p = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", hour12: false, year: "numeric", month: "numeric", day: "numeric", hour: "numeric", minute: "numeric" }).formatToParts(new Date(ms));
+  var o = {}, i;
+  for (i = 0; i < p.length; i++) o[p[i].type] = +p[i].value;
+  var h = o.hour === 24 ? 0 : o.hour;
+  return (Date.UTC(o.year, o.month - 1, o.day, h, o.minute) - Math.floor(ms / 60000) * 60000) / 60000;
+}
+function etToUtcMs(y, mo, d, h, mi) {
+  var base = Date.UTC(y, mo - 1, d, h, mi);
+  var t = base - etOffsetMin(base) * 60000;
+  return base - etOffsetMin(t) * 60000;
+}
+function etToday(nowMs) {
+  var p = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", year: "numeric", month: "numeric", day: "numeric" }).formatToParts(new Date(nowMs)), o = {}, i;
+  for (i = 0; i < p.length; i++) o[p[i].type] = +p[i].value;
+  return o;
+}
+// Proximo sorteo segun las reglas del JSON (draw_days: lunes=0 ... domingo=6, draw_time_et: "HH:MM")
+function nextDraw(rules, nowMs) {
+  if (!rules || !rules.draw_days || !rules.draw_time_et) return null;
+  var t = etToday(nowMs), hm = rules.draw_time_et.split(":"), add;
+  for (add = 0; add < 9; add++) {
+    var dt = new Date(Date.UTC(t.year, t.month - 1, t.day + add));
+    var py = (dt.getUTCDay() + 6) % 7;
+    if (rules.draw_days.indexOf(py) < 0) continue;
+    var ms = etToUtcMs(dt.getUTCFullYear(), dt.getUTCMonth() + 1, dt.getUTCDate(), +hm[0], +hm[1]);
+    if (ms > nowMs) return ms;
+  }
+  return null;
+}
+function countdown(ms, nowMs, lang) {
+  var t = T[lang], diff = Math.floor((ms - nowMs) / 60000);
+  if (diff < 1) return t.next_now;
+  var d = Math.floor(diff / 1440), h = Math.floor((diff % 1440) / 60), m = diff % 60;
+  var txt = d > 0 ? fmt(t.t_d, { d: d, h: h }) : (h > 0 ? fmt(t.t_h, { h: h, m: m }) : fmt(t.t_m, { m: m }));
+  return fmt(t.next_in, { t: txt });
+}
+function drawLocalText(ms, lang) {
+  return new Intl.DateTimeFormat(loc(lang), { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false }).format(new Date(ms));
+}
+function nextHtml(list, lang, nowMs) {
+  var h = "", i;
+  for (i = 0; i < list.length; i++) {
+    var ms = nextDraw(list[i].rules, nowMs);
+    if (!ms) continue;
+    h += '<div class="clock nextc"><span>' + esc(list[i].name) + '</span><b>' + esc(drawLocalText(ms, lang)) + '</b><small>' + countdown(ms, nowMs, lang) + '</small></div>';
+  }
+  return h || '<div class="card"><p class="note">' + T[lang].next_none + '</p></div>';
+}
+
+// Calculadora de valor esperado
+function choose(n, k) { var r = 1, i; for (i = 1; i <= k; i++) r = r * (n - k + i) / i; return r; }
+function tierTable(rules) {
+  var N = rules.main_max, k = rules.main_count, B = rules.bonus_max, out = [], m, bi;
+  var tot = choose(N, k);
+  for (m = k; m >= 0; m--) {
+    for (bi = 1; bi >= 0; bi--) {
+      var b = bi === 1;
+      if (!isPrizeRules(rules, m, b)) continue;
+      var p = choose(k, m) * choose(N - k, k - m) / tot * (b ? 1 / B : (B - 1) / B);
+      out.push({ m: m, b: b, p: p, key: m + "-" + bi });
+    }
+  }
+  return out;
+}
+function evCalc(tiers, prizes, price) {
+  var ev = 0, i, anyp = 0;
+  for (i = 0; i < tiers.length; i++) { ev += tiers[i].p * (prizes[tiers[i].key] || 0); anyp += tiers[i].p; }
+  return { ev: ev, net: ev - price, anyp: anyp };
+}
+function money(x, lang) { return Number(x).toLocaleString(loc(lang), { style: "currency", currency: "USD", maximumFractionDigits: x < 10 ? 3 : 2 }); }
+var PREFILL = { us_millionaire: { price: 5, prizes: { "5-1": 18000000, "5-0": 2200000, "4-1": 7500, "4-0": 500, "3-1": 250, "3-0": 50, "2-1": 25, "2-0": 8, "1-1": 8 } },
+                us_megamillions: { price: 5, prizes: {} }, us_powerball: { price: null, prizes: {} } };
+
+// Combinaciones sugeridas e historial
+function comboRows(combos) {
+  var h = "";
+  for (var i = 0; i < combos.length; i++) h += '<div class="combo">' + balls(combos[i].main, combos[i].bonus) + '</div>';
+  return h;
+}
+function sugCardHtml(id, s, rules, lang, nowMs) {
+  var t = T[lang], ms = nextDraw(rules, nowMs);
+  return '<div class="card"><span class="tag">' + esc(s.name) + '</span><h3>' + fmt(t.sug_for, { d: fmtDate(s.for_draw, lang) }) + '</h3>' +
+    (ms ? '<p class="soon">' + esc(drawLocalText(ms, lang)) + ' · ' + countdown(ms, nowMs, lang) + '</p>' : '') +
+    comboRows(s.combos) +
+    '<p class="note" style="margin-top:8px">' + fmt(t.sug_crit, { lo: s.criteria.sum_lo, hi: s.criteria.sum_hi }) + ' ' + fmt(t.sug_based, { n: fmtNum(s.based_on_draws, lang) }) +
+    ' ' + fmt(t.sug_saved, { d: fmtDate(s.created_utc.slice(0, 10), lang) }) + '</p></div>';
+}
+function histHtml(h, lang) {
+  var t = T[lang], out = "", ids = [], k;
+  if (!h || !h.summary) return '<div class="card"><p class="note">' + t.hist_live_none + '</p></div>';
+  for (k in h.summary) ids.push(k);
+  var rows = "";
+  var head = t.hist_cols.split("|"), i;
+  for (i = 0; i < ids.length; i++) {
+    var v = h.summary[ids[i]], bt = v.backtest;
+    if (!bt) continue;
+    rows += '<tr><td><b>' + esc(v.name) + '</b></td><td>' + fmtNum(bt.draws, lang) + '</td><td>' + fmtNum(bt.tickets, lang) + '</td><td>' + bt.suggested.prizes +
+      '</td><td>' + bt.random.prizes + '</td><td>' + Number(bt.suggested.avg_main_matches).toLocaleString(loc(lang)) + '</td><td>' + Number(bt.random.avg_main_matches).toLocaleString(loc(lang)) + '</td></tr>';
+  }
+  out += '<div class="card"><h3 style="margin-top:0">' + t.hist_sim + '</h3><p class="note">' + t.hist_sim_note + '</p>';
+  if (rows) {
+    out += '<div style="overflow-x:auto"><table class="tbl"><tr><th>' + t.calc_lot + '</th>';
+    for (i = 0; i < head.length; i++) out += '<th>' + head[i] + '</th>';
+    out += '</tr>' + rows + '</table></div><p class="note" style="margin-top:8px">' + t.hist_same + '</p>';
+  }
+  out += '</div>';
+  var done = [], l = h.live || [];
+  for (i = l.length - 1; i >= 0; i--) if (l[i].result) done.push(l[i]);
+  out += '<div class="card" style="margin-top:14px"><h3 style="margin-top:0">' + t.hist_live + '</h3><p class="note">' + t.hist_live_note + '</p>';
+  if (!done.length) out += '<p>' + t.hist_live_none + '</p>';
+  else {
+    var hl = t.hist_live_cols.split("|");
+    out += '<div style="overflow-x:auto"><table class="tbl"><tr>';
+    for (i = 0; i < hl.length; i++) out += '<th>' + hl[i] + '</th>';
+    out += '</tr>';
+    for (i = 0; i < done.length && i < 15; i++) {
+      var e = done[i], nm = (h.summary[e.lottery] || {}).name || e.lottery;
+      out += '<tr><td>' + fmtDate(e.for_draw, lang) + '</td><td>' + esc(nm) + '</td><td>' + fmt(t.hist_matches, { n: e.result.suggested.best_main }) +
+        '</td><td>' + fmt(t.hist_matches, { n: e.result.random.best_main }) + '</td><td>' + e.result.suggested.prizes + ' / ' + e.result.random.prizes + '</td></tr>';
+    }
+    out += '</table></div>';
+  }
+  return out + '</div>';
+}
+function guideHtml(lang) {
+  var g = T[lang].guide_html, k, h = "";
+  for (k in g) h += '<div class="card">' + g[k] + '</div>';
+  return h;
+}
+
 var CATALOG = {
   es: [
     {id:"es_primitiva", name:"La Primitiva"}, {id:"es_euromillones", name:"Euromillones"},
@@ -451,7 +690,7 @@ var CATALOG = {
   ],
   us: [
     {id:"us_powerball", name:"Powerball"}, {id:"us_megamillions", name:"Mega Millions"},
-    {id:"us_millionaire", name:"Millionaire for Life"}, {id:"us_cash4life", name:"Cash4Life"}
+    {id:"us_millionaire", name:"Millionaire for Life"}
   ]
 };
 
@@ -597,8 +836,7 @@ function timeAgo(isoDate, lang, nowMs) {
 function safeUrl(u) { return /^https?:\/\//i.test(u || "") ? esc(u) : ""; }
 function newsCardHtml(it, lang, nowMs) {
   var t = T[lang], img = safeUrl(it.image);
-  var top = img ? '<img class="fimg" src="' + img + '" alt="" loading="lazy" referrerpolicy="no-referrer">' :
-    '<div class="fimg">📰</div>';
+  var top = img ? '<img class="fimg" src="' + img + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' : "";
   return '<a class="fcard" href="' + safeUrl(it.url) + '" target="_blank" rel="noopener noreferrer">' + top +
     '<div class="fb"><span class="badge">' + t.news_badge + '</span><b>' + esc(it.title) + '</b><small>' +
     esc(it.source || "") + (it.source ? " · " : "") + timeAgo(it.date, lang, nowMs) + '</small></div></a>';
@@ -719,20 +957,17 @@ function detailHtml(j, lang) {
 /* ---------- Comprobador de números ---------- */
 // Gana con 3 o mas numeros, o con la bola extra aunque no se acierte ningun numero
 // (regla comun a Powerball y Mega Millions). Orden de menor a mayor premio.
-function tierRank(m, b) {
-  if (m === 5) return b ? 9 : 8;
-  if (m === 4) return b ? 7 : 6;
-  if (m === 3) return b ? 5 : 4;
-  if (m === 2 && b) return 3;
-  if (m === 1 && b) return 2;
-  if (m === 0 && b) return 1;
-  return 0;
+function tierRank(m, b) { return m * 2 + (b ? 1 : 0); }
+function isPrizeRules(rules, m, b) {
+  var mm = rules && rules.prize_min_main !== undefined ? rules.prize_min_main : 3;
+  var mb = rules && rules.prize_min_main_with_bonus !== undefined ? rules.prize_min_main_with_bonus : 0;
+  return m >= mm || (b && m >= mb);
 }
-function compareDraw(picks, bonus, draw) {
+function compareDraw(picks, bonus, draw, rules) {
   var hits = [], i;
   for (i = 0; i < draw[1].length; i++) if (picks.indexOf(draw[1][i]) >= 0) hits.push(draw[1][i]);
   var bHit = draw[2] === bonus;
-  return { hits: hits, m: hits.length, b: bHit, rank: tierRank(hits.length, bHit) };
+  return { hits: hits, m: hits.length, b: bHit, rank: tierRank(hits.length, bHit), prize: isPrizeRules(rules, hits.length, bHit) };
 }
 function validatePicks(j, vals, bonusVal, lang) {
   var t = T[lang], i, seen = {};
@@ -755,8 +990,8 @@ function tierText(j, m, b, lang) {
 function checkHtml(j, picks, bonus, drawIdx, lang) {
   var t = T[lang], h = "";
   var draw = j.draws[drawIdx];
-  var r = compareDraw(picks, bonus, draw);
-  var win = r.rank > 0;
+  var r = compareDraw(picks, bonus, draw, j.rules);
+  var win = r.prize;
   h += '<div class="card result' + (win ? ' win' : '') + '"><h3>' + (win ? t.ck_hit : t.ck_miss) + '</h3>';
   h += '<p>' + fmt(t.ck_result, { tier: tierText(j, r.m, r.b, lang) }) + '</p>';
   if (win) h += '<p class="note">' + t.ck_prize_note + '</p>';
@@ -765,8 +1000,8 @@ function checkHtml(j, picks, bonus, drawIdx, lang) {
 
   var n = j.draws.length, prized = 0, best = { rank: -1, m: 0, b: false, date: "" }, i;
   for (i = 0; i < n; i++) {
-    var c = compareDraw(picks, bonus, j.draws[i]);
-    if (c.rank > 0) prized++;
+    var c = compareDraw(picks, bonus, j.draws[i], j.rules);
+    if (c.prize) prized++;
     if (c.rank > best.rank || (c.rank === best.rank && j.draws[i][0] > best.date)) {
       best = { rank: c.rank, m: c.m, b: c.b, date: j.draws[i][0] };
     }
@@ -782,6 +1017,9 @@ function checkHtml(j, picks, bonus, drawIdx, lang) {
 var DATA = {};
 var INDEX = null;
 var NEWS = null;
+var SUG = null;
+var HIST = null;
+var calcLot = null;
 var REV = null;
 var loadState = "loading";
 var lang = "es";
@@ -855,6 +1093,58 @@ function renderFeeds() {
 function renderClocks() {
   var el = document.getElementById("home-clocks");
   if (el) el.innerHTML = clocksHtml(lang, Date.now());
+}
+
+
+function renderNext() {
+  var el = document.getElementById("home-next");
+  if (el) el.innerHTML = loadState === "ok" ? nextHtml(loadedList(), lang, Date.now()) : "";
+}
+function renderSug() {
+  var el = document.getElementById("sug-list"), t = T[lang], h = "", k, now = Date.now();
+  if (SUG && SUG.lotteries) {
+    for (k in SUG.lotteries) if (DATA[k]) h += sugCardHtml(k, SUG.lotteries[k], DATA[k].rules, lang, now);
+  }
+  el.innerHTML = h || '<div class="card"><p class="note">' + t.sug_none + '</p></div>';
+  document.getElementById("hist-body").innerHTML = histHtml(HIST, lang);
+}
+function renderGuide() { document.getElementById("guide-body").innerHTML = guideHtml(lang); }
+
+function renderCalc() {
+  var el = document.getElementById("calc-form"), t = T[lang], list = loadedList(), i, h = "";
+  if (loadState !== "ok" || !list.length) { el.innerHTML = '<p class="loading">' + t.loading + '</p>'; return; }
+  if (!calcLot || !DATA[calcLot]) calcLot = list[0].lottery;
+  var j = DATA[calcLot], tiers = tierTable(j.rules), pre = PREFILL[calcLot] || { price: null, prizes: {} };
+  h += '<label for="calc-lot">' + t.calc_lot + '</label><select id="calc-lot">';
+  for (i = 0; i < list.length; i++) h += '<option value="' + esc(list[i].lottery) + '"' + (list[i].lottery === calcLot ? " selected" : "") + '>' + esc(list[i].name) + '</option>';
+  h += '</select><label for="calc-price">' + t.calc_price + '</label><input type="number" id="calc-price" min="0" step="0.01" value="' + (pre.price === null ? "" : pre.price) + '">';
+  h += '<table class="tbl" style="margin-top:14px"><tr><th>' + t.calc_tier + '</th><th>' + t.calc_odds + '</th><th class="prz">' + t.calc_prize + '</th></tr>';
+  for (i = 0; i < tiers.length; i++) {
+    var x = tiers[i], lab = x.m + " / " + j.rules.main_count + (x.b ? " + " + esc(j.rules.bonus_name) : "");
+    if (x.m === j.rules.main_count && x.b) lab += " (" + t.calc_cash + ")";
+    var pv = pre.prizes[x.key];
+    h += '<tr><td>' + lab + '</td><td>' + fmt(t.calc_one_in, { n: fmtNum(Math.round(1 / x.p), lang) }) + '</td><td class="prz"><input class="prz-in" data-key="' + x.key + '" type="number" min="0" step="any" style="width:120px" value="' + (pv === undefined ? "" : pv) + '"></td></tr>';
+  }
+  h += '</table>';
+  if (PREFILL[calcLot] && Object.keys(pre.prizes).length) h += '<p class="note">' + t.calc_prefill + '</p>';
+  h += '<div id="calc-out" class="card result" style="margin-top:14px"></div><p class="note">' + t.calc_note + '</p>';
+  el.innerHTML = h;
+  document.getElementById("calc-lot").onchange = function () { calcLot = this.value; renderCalc(); };
+  var ins = el.querySelectorAll("input");
+  for (i = 0; i < ins.length; i++) ins[i].oninput = updateCalc;
+  updateCalc();
+}
+function updateCalc() {
+  var j = DATA[calcLot], t = T[lang], out = document.getElementById("calc-out");
+  if (!j || !out) return;
+  var tiers = tierTable(j.rules), prizes = {}, ins = document.querySelectorAll(".prz-in"), i;
+  for (i = 0; i < ins.length; i++) { var v = parseFloat(ins[i].value); prizes[ins[i].getAttribute("data-key")] = isFinite(v) ? v : 0; }
+  var pr = parseFloat(document.getElementById("calc-price").value);
+  var r = evCalc(tiers, prizes, isFinite(pr) ? pr : 0);
+  var h = '<p>' + fmt(t.calc_win_any, { p: fmtPct(r.anyp * 100, lang), o: fmt(t.calc_one_in, { n: fmtNum(Math.round(1 / r.anyp), lang) }) }) + '</p>';
+  if (!isFinite(pr) || pr <= 0) h += '<p class="note">' + t.calc_need_price + '</p>';
+  else h += '<h3>' + t.calc_ev + '</h3><p class="big ' + (r.net < 0 ? "neg" : "pos") + '">' + money(r.net, lang) + '</p><p>' + fmt(t.calc_ev_text, { p: money(pr, lang), r: money(r.ev, lang), d: money(r.net, lang) }) + '</p>';
+  out.innerHTML = h;
 }
 
 function renderRev() {
@@ -944,7 +1234,7 @@ function applyText() {
   document.getElementById("btn-es").className = lang === "es" ? "on" : "";
   document.getElementById("btn-en").className = lang === "en" ? "on" : "";
   renderHome(); renderCountry("es"); renderCountry("us"); renderLot();
-  renderFeeds(); renderClocks(); renderTelegram(); renderCheckForm(); renderRev();
+  renderFeeds(); renderClocks(); renderNext(); renderSug(); renderCalc(); renderGuide(); renderTelegram(); renderCheckForm(); renderRev();
   var res = document.getElementById("ck-result");
   if (res) res.innerHTML = "";
 }
@@ -1000,6 +1290,10 @@ function loadData() {
 function loadNews() {
   fetchJson("data/news.json").then(function (n) { NEWS = n; renderFeeds(); }).catch(function () {});
 }
+function loadSug() {
+  fetchJson("data/sugerencias.json").then(function (r) { SUG = r; renderSug(); }).catch(function () {});
+  fetchJson("data/historial.json").then(function (r) { HIST = r; renderSug(); }).catch(function () {});
+}
 function loadRev() {
   fetchJson("data/revision.json").then(function (r) { REV = r; renderRev(); }).catch(function () {});
 }
@@ -1037,7 +1331,8 @@ function loadRev() {
   loadData();
   loadNews();
   loadRev();
-  setInterval(renderClocks, 15 * 1000);
+  loadSug();
+  setInterval(function () { renderClocks(); renderNext(); renderSug(); }, 30 * 1000);
   setInterval(renderRails, 25 * 1000);   // los laterales y la franja de abajo cambian al azar cada 25 s
   setInterval(loadNews, 30 * 60 * 1000);   // si la pagina sigue abierta, refresca noticias y publicidad
 })();
