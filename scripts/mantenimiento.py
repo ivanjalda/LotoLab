@@ -82,6 +82,15 @@ FEEDS = [
     {"lang": "en", "kind": "winners",
      "url": gnews('"lottery winner" OR "claimed" Powerball OR "Mega Millions" winner', "en")},
 ]
+# Premiados por loteria: una busqueda por cada loteria para que ninguna se quede sin noticias
+for _q in ('Euromillones acertante OR ganador OR premio', 'Primitiva acertante OR premiado OR bote',
+           'Bonoloto acertante OR premiado', '"El Gordo de la Primitiva" acertante OR premiado',
+           'EuroDreams acertante OR ganador', 'Lototurf acertante', '"Lotería Nacional" premiado OR "primer premio"',
+           'Lotería de Navidad premiado OR administración', '"Lotería del Niño" premiado OR administración'):
+    FEEDS.append({"lang": "es", "kind": "winners", "url": gnews(_q, "es")})
+for _q in ('Powerball winner OR jackpot winner', '"Mega Millions" winner OR jackpot winner',
+           '"Millionaire for Life" winner OR "Cash4Life" winner'):
+    FEEDS.append({"lang": "en", "kind": "winners", "url": gnews(_q, "en")})
 
 # Periodicos y medios de actualidad (con foto en el propio RSS). Si alguno falla, se ignora y se avisa en el registro.
 GENERAL = [
@@ -175,7 +184,7 @@ def build_news(fetch=http_get):
             seen.add(i["title"].lower())
             out[f["lang"]][f["kind"]].append(i)
         lst = sorted(out[f["lang"]][f["kind"]], key=lambda x: x["date"], reverse=True)
-        out[f["lang"]][f["kind"]] = lst[:(60 if general else MAX_ITEMS)]
+        out[f["lang"]][f["kind"]] = lst[:(120 if f["kind"] == "winners" else (60 if general else MAX_ITEMS))]
     return out, errors
 
 
@@ -426,6 +435,31 @@ def check_botes(add):
         add("botes", "ok", "Mega Millions: bote del proximo sorteo (%s) guardado" % mm["next"]["date"])
 
 
+def check_espana(add):
+    """Cada loteria de Espana debe tener datos reales al dia; si la fuente falla se avisa (no se inventa nada)."""
+    try:
+        idx = read_json(os.path.join(DATA_DIR, "es_index.json"))
+    except Exception:  # noqa: BLE001
+        add("espana", "warn", "Todavia no existe data/es_index.json (motor de Espana sin ejecutar)")
+        return
+    today = now_utc().date()
+    have = {x["id"]: x for x in idx.get("lotteries", [])}
+    for cid in ("es_primitiva", "es_bonoloto", "es_euromillones", "es_elgordo", "es_eurodreams", "es_lototurf"):
+        it = have.get(cid)
+        if not it:
+            add("espana", "warn", "%s: sin datos (todas las fuentes fallaron)" % cid)
+            continue
+        try:
+            last = datetime.strptime(it["last_draw"], "%Y-%m-%d").date()
+        except Exception:  # noqa: BLE001
+            add("espana", "error", "%s: fecha del ultimo sorteo ilegible" % cid)
+            continue
+        if (today - last).days > 10:
+            add("espana", "warn", "%s: el ultimo sorteo guardado es del %s" % (cid, it["last_draw"]))
+        else:
+            add("espana", "ok", "%s: datos al dia (%s)" % (cid, it["last_draw"]))
+
+
 def check_predictions(add):
     """Las combinaciones sugeridas deben existir, ser de sorteos futuros y evaluarse al terminar."""
     today = now_utc().date()
@@ -540,6 +574,7 @@ def run_checks(fetch=http_get):
     check_content(add)
     check_predictions(add)
     check_botes(add)
+    check_espana(add)
     check_photos(add, fetch)
     check_script(add)
     return checks, data_ok
