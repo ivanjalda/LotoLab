@@ -59,6 +59,12 @@
   h2 { font-size:.95rem; font-weight:600; margin:34px 0 12px; text-transform:uppercase; letter-spacing:.06em; color:var(--gold); }
   h3 { font-size:1rem; font-weight:600; margin:18px 0 6px; }
   .sub { color:var(--muted); margin:0 0 20px; max-width:900px; }
+  .jp { margin:8px 0 2px; font-size:.9rem; color:var(--muted); }
+  .jp b { color:var(--green); font-size:1.15rem; font-weight:700; }
+  .xcard h3 { margin:2px 0 4px; }
+  .xcard details { margin-top:10px; }
+  .xcard summary { cursor:pointer; font-weight:600; color:var(--green); }
+  .xcard .days { font-size:1.6rem; font-weight:700; color:var(--green); margin:6px 0 0; }
   .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; }
   .card { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px; color:var(--text); text-align:left; font:inherit; box-shadow:var(--shadow); }
   button.card { cursor:pointer; width:100%; }
@@ -131,6 +137,8 @@
   .neg { color:var(--red); } .pos { color:var(--green); }
   .card ul { margin:6px 0 6px 18px; padding:0; color:var(--muted); font-size:.9rem; }
   .card a { color:var(--green); }
+  .card a.btn { color:var(--on-green); }
+  .card a.btn.alt { color:var(--text); }
   .flinks { margin:6px 0; font-weight:600; }
   .flinks a { color:var(--green); text-decoration:none; margin:0 8px; }
   .badge { display:inline-block; font-size:.68rem; font-weight:bold; text-transform:uppercase; letter-spacing:.05em; border-radius:6px; padding:1px 7px; margin-bottom:5px; background:var(--green-soft); color:var(--green); }
@@ -216,7 +224,10 @@
     <section id="v-es" class="view">
       <h1 data-i18n="es_title"></h1>
       <p class="sub" data-i18n="es_sub"></p>
+      <h2 data-i18n="es_h_regular"></h2>
       <div id="list-es" class="grid"></div>
+      <h2 data-i18n="es_h_special"></h2>
+      <div id="special-es" class="grid"></div>
       <h2 data-i18n="qn_h"></h2>
       <div class="card">
         <div class="banner">⚽</div>
@@ -229,6 +240,7 @@
     <section id="v-us" class="view">
       <h1 data-i18n="us_title"></h1>
       <p class="sub" data-i18n="us_sub"></p>
+      <h2 data-i18n="us_h_regular"></h2>
       <div id="list-us" class="grid"></div>
       <div class="notice" data-i18n="us_note"></div>
     </section>
@@ -748,6 +760,131 @@ function taxHtml(country, prize, wager, lang) {
     '<p class="note" style="margin:0">' + t.tax_net + '</p><p class="big pos">' + m(prize - wh) + '</p>' +
     '<p class="note">' + (country === "es" ? t.tax_es_note : t.tax_us_note) + '</p><p class="note">' + t.tax_final + '</p></div>';
 }
+var TX3 = {
+  es: {
+    es_h_regular:"Sorteos habituales", es_h_special:"Sorteos especiales: Navidad y El Niño", us_h_regular:"Sorteos y botes",
+    jp_title:"Bote (premio gordo)", jp_next:"Bote del próximo sorteo:", jp_cash:"en pago único (efectivo)",
+    jp_next_line:"Próximo sorteo ({d}): bote de <b>{j}</b> · {c}: <b>{k}</b>.",
+    jp_last_line:"Último sorteo ({d}): el bote era de <b>{j}</b>.", jp_roll:"Nadie acertó el premio gordo: el bote pasa al siguiente sorteo.",
+    jp_won:"Hubo {n} ganador(es) del premio gordo.", jp_unver:"(dato pendiente de confirmar por la lotería)",
+    jp_hist_h:"Historial del bote", jp_cols:"Fecha|Bote|Premio gordo", jp_pending:"pendiente",
+    jp_src:"Fuente: {src}. El historial se guarda desde que LotoLab empezó a registrarlo; no se inventa nada del pasado.",
+    jp_none:"Todavía no tenemos una fuente oficial comprobada para el bote de este sorteo. En cuanto la tengamos aparecerá aquí.",
+    jp_winners_none:"El número de ganadores de cada categoría menor no está publicado en una fuente abierta, por eso aquí solo se muestran los premios fijos por categoría.",
+    sx_date:"Se celebra cada año el {d}", sx_days:"Faltan {n} días", sx_today:"Es hoy", sx_nav:"Lotería de Navidad", sx_nino:"Lotería del Niño",
+    sx_nav_d:"22 de diciembre", sx_nino_d:"6 de enero", sx_nums:"Sorteo de números de 5 cifras (del 00000 al 99999): todos tienen la misma probabilidad.",
+    sx_prizes:"Premios por décimo (edición {y})", sx_note:"Importes de la edición anterior según la prensa ({src}). Los oficiales de este año los publica Loterías y Apuestas del Estado y pueden cambiar.",
+    sx_nopred:"No hay combinaciones ni predicciones posibles: es un sorteo de números completos, no de bolas. Lo que sí puedes hacer es comprobar tu décimo en la web oficial y calcular lo que te queda en «¿Cuánto me llevo?».",
+    sx_official:"Comprobar en la web oficial →", sx_calc:"Calcular lo que me llevo",
+    sx_nav_rows:[["El Gordo (1 número)","400.000 €"],["Segundo premio (1)","125.000 €"],["Tercer premio (1)","50.000 €"],["Cuartos premios (2 números)","20.000 €"],["Quintos premios (8 números)","6.000 €"],["Aproximaciones al Gordo (anterior y posterior)","2.000 €"],["Aproximación al segundo","1.250 €"],["Aproximación al tercero","960 €"],["Pedrea (resto de bolas)","100 €"],["Reintegro (última cifra del Gordo)","20 €"]],
+    sx_nino_rows:[["Primer premio","200.000 €"],["Segundo premio","75.000 €"],["Tercer premio","25.000 €"],["Aproximaciones al primero (anterior y posterior)","1.200 €"],["Aproximaciones al segundo","610 €"],["Reintegro (última cifra del primero)","20 €"]],
+    sx_nino_more:"Además hay otros premios menores por terminaciones y centenas.",
+    tax_region:"Tu comunidad (opcional)", tax_region_none:"— Elige tu comunidad —",
+    reg_common:"El impuesto sobre el premio (20 % sobre lo que pase de 40.000 €) es igual en toda España y lo retiene Loterías al pagarte. Lo que sí depende de tu comunidad es el impuesto de donaciones: puede aparecer si cobras tú un décimo compartido y luego repartes el dinero, y sus reducciones cambian mucho de una comunidad a otra. Consulta la Hacienda de tu comunidad. Para evitarlo, cobrad todos juntos y con vuestros DNI (mira la Guía).",
+    reg_foral:"País Vasco y Navarra tienen su propia Hacienda (régimen foral) con normas propias. No hemos podido confirmar en una fuente oficial si el cálculo cambia en tu caso: consúltalo con tu Hacienda foral antes de cobrar. El impuesto de donaciones también es propio de tu territorio.",
+    reg_note_src:"Fuentes: Agencia Tributaria y Loterías y Apuestas del Estado. No es asesoramiento fiscal.",
+    sug_xmas:"Navidad y El Niño: sin combinaciones. Son sorteos de número completo (00000 a 99999) y todos tienen la misma probabilidad. Mira sus premios en España."
+  },
+  en: {
+    es_h_regular:"Regular draws", es_h_special:"Special draws: Christmas and El Niño", us_h_regular:"Draws and jackpots",
+    jp_title:"Jackpot (top prize)", jp_next:"Next draw jackpot:", jp_cash:"cash option",
+    jp_next_line:"Next draw ({d}): jackpot <b>{j}</b> · {c}: <b>{k}</b>.",
+    jp_last_line:"Last draw ({d}): the jackpot was <b>{j}</b>.", jp_roll:"Nobody matched the jackpot: it rolls over to the next draw.",
+    jp_won:"There were {n} jackpot winner(s).", jp_unver:"(figure pending confirmation by the lottery)",
+    jp_hist_h:"Jackpot history", jp_cols:"Date|Jackpot|Top prize", jp_pending:"pending",
+    jp_src:"Source: {src}. The history is kept since LotoLab started recording it; nothing from the past is made up.",
+    jp_none:"We do not have a verified official source for this draw's jackpot yet. It will appear here as soon as we do.",
+    jp_winners_none:"The number of winners in each lower prize category is not published in an open source, so only the fixed prize per category is shown here.",
+    sx_date:"Held every year on {d}", sx_days:"{n} days to go", sx_today:"It is today", sx_nav:"Christmas Lottery", sx_nino:"El Niño Lottery",
+    sx_nav_d:"December 22", sx_nino_d:"January 6", sx_nums:"A draw of 5-digit numbers (00000 to 99999): every number has the same chance.",
+    sx_prizes:"Prizes per tenth ({y} edition)", sx_note:"Amounts from the previous edition according to the press ({src}). This year's official amounts are published by Loterías y Apuestas del Estado and may change.",
+    sx_nopred:"No combinations or predictions are possible: it is a draw of whole numbers, not balls. You can check your ticket on the official website and calculate what you keep in “How much do I keep?”.",
+    sx_official:"Check on the official website →", sx_calc:"Calculate what I keep",
+    sx_nav_rows:[["El Gordo (1 number)","€400,000"],["Second prize (1)","€125,000"],["Third prize (1)","€50,000"],["Fourth prizes (2 numbers)","€20,000"],["Fifth prizes (8 numbers)","€6,000"],["Near the Gordo (before and after)","€2,000"],["Near the second","€1,250"],["Near the third","€960"],["Pedrea (other balls)","€100"],["Refund (last digit of the Gordo)","€20"]],
+    sx_nino_rows:[["First prize","€200,000"],["Second prize","€75,000"],["Third prize","€25,000"],["Near the first (before and after)","€1,200"],["Near the second","€610"],["Refund (last digit of the first)","€20"]],
+    sx_nino_more:"There are also smaller prizes for endings and hundreds.",
+    tax_region:"Your region (optional)", tax_region_none:"— Choose your region —",
+    reg_common:"The tax on the prize (20% on the part above €40,000) is the same across Spain and is withheld by the lottery when it pays you. What does depend on your region is the gift tax: it can appear if you collect a shared ticket alone and then share the money, and its reductions vary a lot between regions. Check with your region's tax office. To avoid it, collect together with your ID cards (see the Guide).",
+    reg_foral:"The Basque Country and Navarre have their own tax authority (foral regime) with their own rules. We could not confirm in an official source whether the calculation changes in your case: ask your foral tax office before collecting. The gift tax is also set by your territory.",
+    reg_note_src:"Sources: Spanish Tax Agency and Loterías y Apuestas del Estado. This is not tax advice.",
+    sug_xmas:"Christmas and El Niño: no combinations. They are whole-number draws (00000 to 99999) and every number has the same chance. See their prizes under Spain."
+  }
+};
+(function () { for (var l in TX3) for (var k in TX3[l]) T[l][k] = TX3[l][k]; })();
+
+var REGIONS = [
+  ["Andalucía",0],["Aragón",0],["Asturias",0],["Illes Balears",0],["Canarias",0],["Cantabria",0],["Castilla-La Mancha",0],
+  ["Castilla y León",0],["Cataluña",0],["Comunitat Valenciana",0],["Extremadura",0],["Galicia",0],["La Rioja",0],
+  ["Comunidad de Madrid",0],["Región de Murcia",0],["Navarra",1],["País Vasco · Álava",1],["País Vasco · Bizkaia",1],
+  ["País Vasco · Gipuzkoa",1],["Ceuta",0],["Melilla",0]
+];
+var taxRegion = "";
+
+var BOTES = null;
+function isoDaysAgo(n) { return new Date(Date.now() - n * 864e5).toISOString().slice(0, 10); }
+function bigMoney(x, lang) {
+  var m = Math.round(x / 1e5) / 10;
+  return lang === "es" ? fmtNum(m, lang) + " millones de $" : "$" + fmtNum(m, lang) + " million";
+}
+function botesFor(id) { return BOTES && BOTES.lotteries && BOTES.lotteries[id] ? BOTES.lotteries[id] : null; }
+function jackpotLine(id, lang) {
+  var B = botesFor(id);
+  if (!B || !B.next || B.next.date < isoDaysAgo(1)) return "";
+  return '<p class="jp">' + T[lang].jp_next + ' <b>' + bigMoney(B.next.jackpot, lang) + '</b></p>';
+}
+function jackpotCardHtml(id, lang) {
+  var t = T[lang], B = botesFor(id), h = '<div class="card" style="margin-top:14px"><h2>' + t.jp_title + '</h2>';
+  if (!B) return h + '<p class="note">' + t.jp_none + '</p><p class="note">' + t.jp_winners_none + '</p></div>';
+  if (B.next && B.next.date >= isoDaysAgo(1)) {
+    h += '<p>' + fmt(t.jp_next_line, { d: fmtDate(B.next.date, lang), j: bigMoney(B.next.jackpot, lang), c: t.jp_cash, k: bigMoney(B.next.cash, lang) }) + '</p>';
+  }
+  if (B.last) {
+    h += '<p>' + fmt(t.jp_last_line, { d: fmtDate(B.last.date, lang), j: bigMoney(B.last.jackpot, lang) }) + ' ' +
+      (B.last.winners > 0 ? fmt(t.jp_won, { n: B.last.winners }) : t.jp_roll) + (B.last.verified ? '' : ' <span class="note">' + t.jp_unver + '</span>') + '</p>';
+  }
+  var rows = (B.history || []).slice().reverse().slice(0, 12), i;
+  if (rows.length > 1) {
+    var cols = t.jp_cols.split("|");
+    h += '<h3>' + t.jp_hist_h + '</h3><div style="overflow-x:auto"><table class="tbl"><tr><th>' + cols.join('</th><th>') + '</th></tr>';
+    for (i = 0; i < rows.length; i++) {
+      var r = rows[i], res = r.winners === null ? t.jp_pending : (r.winners > 0 ? fmt(t.jp_won, { n: r.winners }) : t.jp_roll.split(":")[0]);
+      h += '<tr><td>' + fmtDate(r.date, lang) + '</td><td>' + bigMoney(r.jackpot, lang) + '</td><td>' + res + '</td></tr>';
+    }
+    h += '</table></div>';
+  }
+  h += '<p class="note" style="margin-top:8px">' + fmt(t.jp_src, { src: esc(B.source || "") }) + '</p><p class="note">' + t.jp_winners_none + '</p></div>';
+  return h;
+}
+function daysTo(month, day) {
+  var n = new Date(), y = n.getFullYear(), tgt = new Date(y, month, day), today = new Date(y, n.getMonth(), n.getDate());
+  if (tgt < today) { y++; tgt = new Date(y, month, day); }
+  return { days: Math.round((tgt - today) / 864e5), year: y };
+}
+function specialCardHtml(kind, lang) {
+  var t = T[lang], nav = kind === "nav", d = nav ? daysTo(11, 22) : daysTo(0, 6), rows = nav ? t.sx_nav_rows : t.sx_nino_rows, i, h = '';
+  var edY = nav ? 2025 : 2026, src = "El Debate";
+  h += '<div class="card xcard"><span class="tag">ES</span><h3>' + (nav ? t.sx_nav : t.sx_nino) + '</h3>';
+  h += '<p class="note">' + fmt(t.sx_date, { d: nav ? t.sx_nav_d : t.sx_nino_d }) + '</p>';
+  h += '<p class="days">' + (d.days === 0 ? t.sx_today : fmt(t.sx_days, { n: d.days })) + '</p>';
+  h += '<p class="note">' + t.sx_nums + '</p>';
+  h += '<details><summary>' + fmt(t.sx_prizes, { y: edY }) + '</summary><div style="overflow-x:auto"><table class="tbl">';
+  for (i = 0; i < rows.length; i++) h += '<tr><td>' + rows[i][0] + '</td><td><b>' + rows[i][1] + '</b></td></tr>';
+  h += '</table></div>' + (nav ? '' : '<p class="note">' + t.sx_nino_more + '</p>') + '<p class="note">' + fmt(t.sx_note, { src: src }) + '</p></details>';
+  h += '<p class="note" style="margin-top:10px">' + t.sx_nopred + '</p>';
+  h += '<p><a class="btn" href="https://www.loteriasyapuestas.es/" target="_blank" rel="noopener">' + t.sx_official + '</a> <button class="btn alt" data-view="calc">' + t.sx_calc + '</button></p></div>';
+  return h;
+}
+function renderSpecial() {
+  var el = document.getElementById("special-es");
+  if (el) el.innerHTML = specialCardHtml("nav", lang) + specialCardHtml("nino", lang);
+}
+function regionNoteHtml(lang) {
+  var t = T[lang], r = null, i;
+  for (i = 0; i < REGIONS.length; i++) if (REGIONS[i][0] === taxRegion) r = REGIONS[i];
+  if (!r) return "";
+  return '<div class="card" style="margin-top:14px"><h3>' + esc(r[0]) + '</h3><p>' + (r[1] ? t.reg_foral : t.reg_common) + '</p><p class="note">' + t.reg_note_src + '</p></div>';
+}
+
 function prizeTableHtml(j, lang) {
   var r = j.rules, t = T[lang];
   if (!r.prizes) return "";
@@ -764,7 +901,7 @@ function prizeTableHtml(j, lang) {
     var pr = v !== undefined ? "$" + Number(v).toLocaleString(loc(lang)) : (x.m === r.main_count && x.b ? t.prizes_jackpot + " (" + t.prizes_var + ")" : "—");
     h += '<tr><td>' + lab + '</td><td>' + fmt(t.calc_one_in, { n: fmtNum(Math.round(1 / x.p), lang) }) + '</td><td><b>' + pr + '</b></td></tr>';
   }
-  h += '</table></div><p class="note" style="margin-top:8px">' + fmt(t.prizes_src, { src: esc(r.prize_source || ""), note: esc(r.prize_note || "") }) + '</p></div>';
+  h += '</table></div><p class="note" style="margin-top:8px">' + fmt(t.prizes_src, { src: esc(r.prize_source || ""), note: lang === "es" ? esc(r.prize_note || "") : "" }) + '</p></div>';
   return h;
 }
 
@@ -892,7 +1029,7 @@ function cardHtml(j, lang) {
     '<span class="tag">' + esc(j.country.toUpperCase()) + '</span>' +
     '<h3>' + esc(j.name) + '</h3>' +
     '<div>' + balls(l.main, l.bonus) + '</div>' +
-    '<p>' + fmt(t.card_last, { d: fmtDate(l.date, lang) }) + '</p>' +
+    '<p>' + fmt(t.card_last, { d: fmtDate(l.date, lang) }) + '</p>' + jackpotLine(j.lottery, lang) +
     '<p class="soon">' + t.card_open + ' →</p></button>';
 }
 function soonCardHtml(c, country, lang) {
@@ -1021,6 +1158,8 @@ function detailHtml(j, lang) {
     h += '<div class="drow"><span class="d">' + fmtDate(d.date, lang) + '</span><span>' + balls(d.main, d.bonus) + '</span></div>';
   }
   h += '</div></div>';
+  h += jackpotCardHtml(j.lottery, lang);
+  h += prizeTableHtml(j, lang);
 
   h += '<div class="card" style="margin-top:14px"><h2>' + t.freq_title + '</h2>' +
     '<p class="note">' + fmt(t.freq_note, { d: fmtDate(j.rules.main_from, lang), n: fmtNum(j.draws_used_main, lang),
@@ -1042,7 +1181,6 @@ function detailHtml(j, lang) {
     '<h3>' + t.digit_title + '</h3>' +
     profileBars(j.last_digit, function (r) { return fmt(t.digit_row, { d: r.digit }); }, lang) + '</div>';
 
-  h += prizeTableHtml(j, lang);
   h += '<div class="notice">' + t.disclaimer + '</div>';
   return h;
 }
@@ -1207,6 +1345,7 @@ function renderSug() {
       h += '<div class="card"><span class="tag">' + c.toUpperCase() + '</span><h3>' + esc(it.name) + '</h3><p class="soon">' + t.sug_soon + '</p></div>';
     }
   }
+  h += '<div class="card"><span class="tag">ES</span><h3>' + T[lang].sx_nav + ' · ' + T[lang].sx_nino + '</h3><p class="note">' + T[lang].sug_xmas + '</p></div>';
   el.innerHTML = h || '<div class="card"><p class="note">' + t.sug_none + '</p></div>';
   document.getElementById("hist-body").innerHTML = histHtml(HIST, lang);
 }
@@ -1230,10 +1369,17 @@ function renderCalc() {
     }
     if (opts) h += '<label for="tax-pick">' + t.tax_pick + '</label><select id="tax-pick"><option value="">' + t.tax_custom + '</option>' + opts + '</select>';
   }
+  if (taxCountry === "es") {
+    var ro = '<option value="">' + t.tax_region_none + '</option>';
+    for (i = 0; i < REGIONS.length; i++) ro += '<option value="' + esc(REGIONS[i][0]) + '"' + (taxRegion === REGIONS[i][0] ? " selected" : "") + '>' + esc(REGIONS[i][0]) + '</option>';
+    h += '<label for="tax-r">' + t.tax_region + '</label><select id="tax-r">' + ro + '</select>';
+  }
   h += '<label for="tax-amt">' + t.tax_amount + '</label><input type="number" id="tax-amt" min="0" step="any">';
   if (taxCountry === "us") h += '<label for="tax-w">' + t.tax_wager + ' (USD)</label><input type="number" id="tax-w" min="0" step="any" value="0">';
   el.innerHTML = h;
   document.getElementById("tax-c").onchange = function () { taxCountry = this.value; renderCalc(); };
+  var rg = document.getElementById("tax-r");
+  if (rg) rg.onchange = function () { taxRegion = this.value; updateCalc(); };
   var pk = document.getElementById("tax-pick");
   if (pk) pk.onchange = function () {
     if (!this.value) return;
@@ -1251,7 +1397,7 @@ function updateCalc() {
   if (!out) return;
   var amt = parseFloat(document.getElementById("tax-amt").value), wEl = document.getElementById("tax-w");
   var w = wEl ? parseFloat(wEl.value) : 0;
-  out.innerHTML = (isFinite(amt) && amt > 0) ? taxHtml(taxCountry, amt, isFinite(w) ? w : 0, lang) : "";
+  out.innerHTML = ((isFinite(amt) && amt > 0) ? taxHtml(taxCountry, amt, isFinite(w) ? w : 0, lang) : "") + (taxCountry === "es" ? regionNoteHtml(lang) : "");
 }
 
 function renderRev() {
@@ -1344,7 +1490,7 @@ function applyText() {
   document.documentElement.lang = lang;
   document.getElementById("btn-es").className = lang === "es" ? "on" : "";
   document.getElementById("btn-en").className = lang === "en" ? "on" : "";
-  renderHome(); renderCountry("es"); renderCountry("us"); renderLot();
+  renderHome(); renderCountry("es"); renderCountry("us"); renderSpecial(); renderLot();
   renderFeeds(); renderClocks(); renderNext(); renderSug(); renderCalc(); renderGuide(); renderTelegram(); renderCheckForm(); renderRev();
   var res = document.getElementById("ck-result");
   if (res) res.innerHTML = "";
@@ -1401,6 +1547,9 @@ function loadData() {
 function loadNews() {
   fetchJson("data/news.json").then(function (n) { NEWS = n; renderFeeds(); }).catch(function () {});
 }
+function loadBotes() {
+  fetchJson("data/botes.json").then(function (b) { BOTES = b; renderHome(); renderCountry("es"); renderCountry("us"); renderLot(); }).catch(function () {});
+}
 function loadSug() {
   fetchJson("data/sugerencias.json").then(function (r) { SUG = r; renderSug(); }).catch(function () {});
   fetchJson("data/historial.json").then(function (r) { HIST = r; renderSug(); }).catch(function () {});
@@ -1443,9 +1592,10 @@ function loadRev() {
   loadNews();
   loadRev();
   loadSug();
-  setInterval(function () { renderClocks(); renderNext(); renderSug(); }, 30 * 1000);
+  loadBotes();
+  setInterval(function () { renderClocks(); renderSpecial(); renderNext(); renderSug(); }, 30 * 1000);
   setInterval(renderRails, 25 * 1000);   // los laterales y la franja de abajo cambian al azar cada 25 s
-  setInterval(loadNews, 30 * 60 * 1000);   // si la pagina sigue abierta, refresca noticias y publicidad
+  setInterval(function () { loadNews(); loadBotes(); }, 30 * 60 * 1000);   // si la pagina sigue abierta, refresca noticias y publicidad
 })();
 </script>
 </body>
