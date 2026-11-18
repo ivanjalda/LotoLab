@@ -60,18 +60,26 @@
   h3 { font-size:1rem; font-weight:600; margin:18px 0 6px; }
   .sub { color:var(--muted); margin:0 0 20px; max-width:900px; }
   .jp { margin:8px 0 2px; font-size:.9rem; color:var(--muted); }
-  .jp b { color:var(--green); font-size:1.15rem; font-weight:700; }
+  .jp b { display:block; color:var(--ec,var(--green)); font-size:1.75rem; line-height:1.15; font-weight:800; white-space:nowrap; }
   .xcard h3 { margin:2px 0 4px; }
   .xcard details { margin-top:10px; }
   .xcard summary { cursor:pointer; font-weight:600; color:var(--green); }
-  .xcard .days { font-size:1.6rem; font-weight:700; color:var(--green); margin:6px 0 0; }
+  .xcard .days { font-size:1.6rem; font-weight:800; color:var(--ec,var(--green)); margin:6px 0 0; }
   .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; }
   .card { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px; color:var(--text); text-align:left; font:inherit; box-shadow:var(--shadow); }
-  button.card { cursor:pointer; width:100%; }
+  button.card { cursor:pointer; width:100%; display:flex; flex-direction:column; justify-content:flex-start; align-items:flex-start; text-align:left; font:inherit; color:inherit; }
+  button.card .ball { width:30px; height:30px; font-size:.78rem; margin:1px; }
   button.card:hover { border-color:var(--green); }
   .card h3 { margin:0 0 6px; font-size:1.05rem; font-weight:600; }
   .card p { margin:4px 0; color:var(--muted); font-size:.92rem; }
   .card h2 { margin-top:0; }
+  .emb { display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:50%; background:var(--ec,var(--green)); color:var(--et,#fff); font-weight:800; font-size:.95rem; letter-spacing:.02em; flex:none; box-shadow:0 2px 6px rgba(0,0,0,.18), inset 0 -3px 0 rgba(0,0,0,.14); }
+  .emb.big { width:60px; height:60px; font-size:1.2rem; }
+  .lhead { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+  .lhead h3 { margin:0; }
+  .lbanner { display:flex; align-items:center; gap:16px; padding:18px 20px; border-radius:14px; color:var(--et,#fff); background:linear-gradient(120deg,var(--ec),color-mix(in srgb,var(--ec) 65%,#000)); margin-bottom:14px; }
+  .lbanner h1 { margin:0; color:inherit; }
+  .lbanner .emb { background:rgba(255,255,255,.22); color:inherit; box-shadow:none; border:2px solid rgba(255,255,255,.55); }
   .tag { display:inline-block; font-size:.72rem; font-weight:bold; color:var(--on-green); background:var(--green); border-radius:10px; padding:2px 9px; margin-bottom:8px; }
   .soon { color:var(--green); font-weight:bold; font-size:.85rem; }
   .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin:18px 0; }
@@ -644,7 +652,7 @@ function comboRows(combos) {
 }
 function sugCardHtml(id, s, rules, lang, nowMs) {
   var t = T[lang], ms = nextDraw(rules, nowMs);
-  return '<div class="card"><span class="tag">' + esc(s.name) + '</span><h3>' + fmt(t.sug_for, { d: fmtDate(s.for_draw, lang) }) + '</h3>' +
+  return '<div class="card" style="' + lstyle(id) + 'border-top:5px solid var(--ec)"><div class="lhead">' + emblem(id) + '<div><span class="tag" style="margin:0 0 3px">' + esc(s.name) + '</span><h3>' + fmt(t.sug_for, { d: fmtDate(s.for_draw, lang) }) + '</h3></div></div>' +
     (ms ? '<p class="soon">' + esc(drawLocalText(ms, lang)) + ' · ' + countdown(ms, nowMs, lang) + '</p>' : '') +
     comboRows(s.combos) +
     '<p class="note" style="margin-top:8px">' + fmt(t.sug_crit, { lo: s.criteria.sum_lo, hi: s.criteria.sum_hi }) + ' ' + fmt(t.sug_based, { n: fmtNum(s.based_on_draws, lang) }) +
@@ -822,6 +830,7 @@ var taxRegion = "";
 
 var BOTES = null;
 function isoDaysAgo(n) { return new Date(Date.now() - n * 864e5).toISOString().slice(0, 10); }
+function shortMoney(x, lang) { return "$" + fmtNum(Math.round(x / 1e5) / 10, lang) + " M"; }
 function bigMoney(x, lang) {
   var m = Math.round(x / 1e5) / 10;
   return lang === "es" ? fmtNum(m, lang) + " millones de $" : "$" + fmtNum(m, lang) + " million";
@@ -830,7 +839,7 @@ function botesFor(id) { return BOTES && BOTES.lotteries && BOTES.lotteries[id] ?
 function jackpotLine(id, lang) {
   var B = botesFor(id);
   if (!B || !B.next || B.next.date < isoDaysAgo(1)) return "";
-  return '<p class="jp">' + T[lang].jp_next + ' <b>' + bigMoney(B.next.jackpot, lang) + '</b></p>';
+  return '<p class="jp">' + T[lang].jp_next + ' <b>' + shortMoney(B.next.jackpot, lang) + '</b></p>';
 }
 function jackpotCardHtml(id, lang) {
   var t = T[lang], B = botesFor(id), h = '<div class="card" style="margin-top:14px"><h2>' + t.jp_title + '</h2>';
@@ -863,7 +872,8 @@ function daysTo(month, day) {
 function specialCardHtml(kind, lang) {
   var t = T[lang], nav = kind === "nav", d = nav ? daysTo(11, 22) : daysTo(0, 6), rows = nav ? t.sx_nav_rows : t.sx_nino_rows, i, h = '';
   var edY = nav ? 2025 : 2026, src = "El Debate";
-  h += '<div class="card xcard"><span class="tag">ES</span><h3>' + (nav ? t.sx_nav : t.sx_nino) + '</h3>';
+  var sid = nav ? "es_navidad" : "es_nino";
+  h += '<div class="card xcard" style="' + lstyle(sid) + 'border-top:5px solid var(--ec)"><div class="lhead">' + emblem(sid) + '<div><span class="tag" style="margin:0 0 3px">ES</span><h3>' + (nav ? t.sx_nav : t.sx_nino) + '</h3></div></div>';
   h += '<p class="note">' + fmt(t.sx_date, { d: nav ? t.sx_nav_d : t.sx_nino_d }) + '</p>';
   h += '<p class="days">' + (d.days === 0 ? t.sx_today : fmt(t.sx_days, { n: d.days })) + '</p>';
   h += '<p class="note">' + t.sx_nums + '</p>';
@@ -904,6 +914,22 @@ function prizeTableHtml(j, lang) {
   h += '</table></div><p class="note" style="margin-top:8px">' + fmt(t.prizes_src, { src: esc(r.prize_source || ""), note: lang === "es" ? esc(r.prize_note || "") : "" }) + '</p></div>';
   return h;
 }
+
+var LSTY = {
+  us_powerball:    { c: "#d4244b", t: "#fff",    i: "PB" },
+  us_megamillions: { c: "#e9a800", t: "#2a1f00", i: "MM" },
+  us_millionaire:  { c: "#6f3fd6", t: "#fff",    i: "M4L" },
+  es_primitiva:    { c: "#1d8f5a", t: "#fff",    i: "LP" },
+  es_euromillones: { c: "#2458c9", t: "#fff",    i: "EM" },
+  es_bonoloto:     { c: "#0f9aa6", t: "#fff",    i: "BO" },
+  es_elgordo:      { c: "#d2382c", t: "#fff",    i: "EG" },
+  es_eurodreams:   { c: "#8b4fd0", t: "#fff",    i: "ED" },
+  es_lototurf:     { c: "#e2761b", t: "#fff",    i: "LT" },
+  es_navidad:      { c: "#b8232f", t: "#fff",    i: "NAV" },
+  es_nino:         { c: "#f0b400", t: "#2a1f00", i: "EN" }
+};
+function lstyle(id) { var x = LSTY[id] || { c: "#177a43", t: "#fff", i: "L" }; return "--ec:" + x.c + ";--et:" + x.t + ";"; }
+function emblem(id, big) { var x = LSTY[id] || { i: "L" }; return '<span class="emb' + (big ? ' big' : '') + '" style="' + lstyle(id) + '" aria-hidden="true">' + esc(x.i) + '</span>'; }
 
 var CATALOG = {
   es: [
@@ -1025,17 +1051,17 @@ function profileBars(list, labelFn, lang) {
 
 function cardHtml(j, lang) {
   var t = T[lang], l = j.last_draws[0];
-  return '<button class="card" data-lot="' + esc(j.lottery) + '">' +
-    '<span class="tag">' + esc(j.country.toUpperCase()) + '</span>' +
-    '<h3>' + esc(j.name) + '</h3>' +
+  return '<button class="card" data-lot="' + esc(j.lottery) + '" style="' + lstyle(j.lottery) + 'border-top:5px solid var(--ec)">' +
+    '<div class="lhead">' + emblem(j.lottery) + '<div><span class="tag" style="margin:0 0 3px">' + esc(j.country.toUpperCase()) + '</span><h3>' + esc(j.name) + '</h3></div></div>' + jackpotLine(j.lottery, lang) +
+    
     '<div>' + balls(l.main, l.bonus) + '</div>' +
-    '<p>' + fmt(t.card_last, { d: fmtDate(l.date, lang) }) + '</p>' + jackpotLine(j.lottery, lang) +
+    '<p>' + fmt(t.card_last, { d: fmtDate(l.date, lang) }) + '</p>' +
     '<p class="soon">' + t.card_open + ' →</p></button>';
 }
 function soonCardHtml(c, country, lang) {
   var t = T[lang];
-  return '<div class="card"><span class="tag">' + country.toUpperCase() + '</span><h3>' + esc(c.name) +
-    '</h3><p class="soon">' + t.soon + '</p></div>';
+  return '<div class="card" style="' + lstyle(c.id) + 'border-top:5px solid var(--ec)"><div class="lhead">' + emblem(c.id) + '<div><span class="tag" style="margin:0 0 3px">' + country.toUpperCase() + '</span><h3>' + esc(c.name) +
+    '</h3></div></div><p class="soon">' + t.soon + '</p></div>';
 }
 function statsHtml(list, lang) {
   var t = T[lang], total = 0, last = "", i;
@@ -1136,7 +1162,7 @@ function splitSides(items, perSide) {
 
 function detailHtml(j, lang) {
   var t = T[lang], h = "", i;
-  h += '<h1>' + esc(j.name) + '</h1>';
+  h += '<div class="lbanner" style="' + lstyle(j.lottery) + '">' + emblem(j.lottery, true) + '<h1>' + esc(j.name) + '</h1></div>';
   h += '<p class="sub">' + fmt(t.src, {
     src: esc(j.source.name), n: fmtNum(j.total_draws_in_source, lang),
     a: fmtDate(j.first_draw, lang), b: fmtDate(j.last_draw, lang) }) + '</p>';
@@ -1342,7 +1368,7 @@ function renderSug() {
   for (c in CATALOG) for (j2 = 0; j2 < CATALOG[c].length; j2++) {
     var it = CATALOG[c][j2];
     if (!(SUG && SUG.lotteries && SUG.lotteries[it.id] && DATA[it.id])) {
-      h += '<div class="card"><span class="tag">' + c.toUpperCase() + '</span><h3>' + esc(it.name) + '</h3><p class="soon">' + t.sug_soon + '</p></div>';
+      h += '<div class="card" style="' + lstyle(it.id) + 'border-top:5px solid var(--ec)"><div class="lhead">' + emblem(it.id) + '<div><span class="tag" style="margin:0 0 3px">' + c.toUpperCase() + '</span><h3>' + esc(it.name) + '</h3></div></div><p class="soon">' + t.sug_soon + '</p></div>';
     }
   }
   h += '<div class="card"><span class="tag">ES</span><h3>' + T[lang].sx_nav + ' · ' + T[lang].sx_nino + '</h3><p class="note">' + T[lang].sug_xmas + '</p></div>';
