@@ -62,6 +62,18 @@
   .jp { margin:8px 0 2px; font-size:.9rem; color:var(--muted); }
   .jp b { display:block; color:var(--ec,var(--green)); font-size:1.75rem; line-height:1.15; font-weight:800; white-space:nowrap; }
   .xcard h3 { margin:2px 0 4px; }
+  .map3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:14px; margin:0 0 8px; }
+  .map3 button.card { text-align:left; display:flex; flex-direction:column; gap:8px; justify-content:flex-start; }
+  .map3 .emb { width:52px; height:52px; font-size:1.05rem; }
+  .map3 h3 { font-size:1.25rem; margin:0; }
+  .when { display:inline-block; font-size:.72rem; font-weight:800; letter-spacing:.04em; text-transform:uppercase; padding:3px 9px; border-radius:99px; background:var(--ec,var(--green)); color:var(--et,#fff); align-self:flex-start; }
+  .num5 { display:inline-block; font:700 1.2rem/1 ui-monospace,Consolas,monospace; padding:9px 12px; border-radius:10px; background:var(--ball-bg); color:var(--ball-fg); border:2px solid var(--ball-line); margin:3px; letter-spacing:.14em; }
+  .picks { margin:6px 0; }
+  .wsec { margin:0 0 26px; }
+  .wh { display:flex; align-items:center; gap:10px; margin:18px 0 10px; font-size:1.15rem; border-bottom:3px solid var(--ec,var(--green)); padding-bottom:8px; }
+  .wh .emb { width:34px; height:34px; font-size:.7rem; }
+  .winl { margin:6px 0; padding-left:18px; }
+  .wsec .card { margin-bottom:12px; }
   .xcard details { margin-top:10px; }
   .xcard summary { cursor:pointer; font-weight:600; color:var(--green); }
   .xcard .days { font-size:1.6rem; font-weight:800; color:var(--ec,var(--green)); margin:6px 0 0; }
@@ -210,6 +222,12 @@
     <section id="v-home" class="view">
       <h1 data-i18n="home_title"></h1>
       <p class="sub" data-i18n="home_sub"></p>
+      <h2 data-i18n="map_t"></h2>
+      <div class="map3">
+        <button class="card" data-view="es" style="--ec:#d2382c;--et:#fff;border-top:5px solid var(--ec)"><span class="emb">ES</span><h3 data-i18n="map_es_t"></h3><span class="when" data-i18n="map_es_tag"></span><p data-i18n="map_es_p"></p><p class="soon" data-i18n="map_go"></p></button>
+        <button class="card" data-view="us" style="--ec:#2458c9;--et:#fff;border-top:5px solid var(--ec)"><span class="emb">US</span><h3 data-i18n="map_us_t"></h3><span class="when" data-i18n="map_us_tag"></span><p data-i18n="map_us_p"></p><p class="soon" data-i18n="map_go"></p></button>
+        <button class="card" data-view="sug" style="--ec:#177a43;--et:#fff;border-top:5px solid var(--ec)"><span class="emb">★</span><h3 data-i18n="map_sug_t"></h3><span class="when" data-i18n="map_sug_tag"></span><p data-i18n="map_sug_p"></p><p class="soon" data-i18n="map_go"></p></button>
+      </div>
       <h2 data-i18n="clocks_title"></h2>
       <div id="home-clocks" class="clocks"></div>
       <h2 data-i18n="next_title"></h2>
@@ -236,6 +254,7 @@
       <div id="list-es" class="grid"></div>
       <h2 data-i18n="es_h_special"></h2>
       <div id="special-es" class="grid"></div>
+      <div id="special-cmp"></div>
       <h2 data-i18n="qn_h"></h2>
       <div class="card">
         <div class="banner">⚽</div>
@@ -268,7 +287,7 @@
     <section id="v-winners" class="view">
       <h1 data-i18n="winners_title"></h1>
       <p class="sub" data-i18n="winners_sub"></p>
-      <div id="winners-list" class="mix feat"></div>
+      <div id="winners-list"></div>
     </section>
 
         <section id="v-sug" class="view">
@@ -820,6 +839,125 @@ var TX3 = {
 };
 (function () { for (var l in TX3) for (var k in TX3[l]) T[l][k] = TX3[l][k]; })();
 
+var TX4 = {
+  es: {
+    map_t:"Qué hay en cada sección", map_go:"Entrar →",
+    map_es_t:"España", map_es_tag:"Sorteos ya celebrados", map_es_p:"Resultados, bote, premios y probabilidades de Primitiva, Euromillones, Bonoloto, El Gordo, EuroDreams, Lototurf, Navidad y El Niño.",
+    map_us_t:"EE. UU.", map_us_tag:"Sorteos ya celebrados", map_us_p:"Resultados, bote, premios y estadísticas de Powerball, Mega Millions y Millionaire for Life.",
+    map_sug_t:"Combinaciones", map_sug_tag:"Para el próximo sorteo", map_sug_p:"Nuestras 5 combinaciones sugeridas para cada lotería, los números de Navidad y El Niño, y cómo les va frente al azar.",
+    es_sub:"Resultados de sorteos ya celebrados, bote, premios y probabilidades de cada lotería. Lo que sugerimos jugar está en «Combinaciones».",
+    us_sub:"Resultados de sorteos ya celebrados, bote, premios y estadísticas. Lo que sugerimos jugar está en «Combinaciones».",
+    sug_sub:"Para el próximo sorteo: 5 combinaciones por lotería. Cada una se guarda antes del sorteo y después se compara con el resultado real y con combinaciones hechas al azar. Los resultados de sorteos pasados están en España y EE. UU.",
+    prizes_cols5:"Con 5 combinaciones (≈)",
+    prizes_col5_note:"Jugar 5 combinaciones distintas multiplica por cinco (aprox.) tu probabilidad de acertar cada premio, y también lo que gastas. Es el efecto de jugar más apuestas, no de que sean «mejores»: ninguna combinación tiene más probabilidad que otra. Lo comprobamos en el historial de aciertos: las sugeridas y las hechas al azar dan resultados parecidos.",
+    odds_title:"Probabilidad de cada premio", odds_c1:"Premio", odds_c2:"Con 1 combinación", odds_c3:"Con 5 combinaciones (≈)",
+    odds_src:"Calculado por LotoLab con la fórmula matemática de cada sorteo. Los de La Primitiva y Euromillones coinciden con los de Loterías y Apuestas del Estado, salvo una cifra que parece errata en su web (Euromillones 4 + 1★: ponen 1 entre 31.705, la cuenta exacta da 1 entre 31.075).",
+    es_nodata_t:"Resultados y bote",
+    es_nodata:"Todavía no podemos mostrar aquí los resultados, el bote ni el reparto de premios de esta lotería: la web oficial bloquea la lectura automática y nunca publicamos datos que no podamos comprobar. Lo que ves debajo (cómo se juega, probabilidades y sugerencia) sí es fiable.",
+    es_open:"Ver bote y resultados en la web oficial →",
+    es_how_t:"Cómo se juega", es_how:"Eliges {k} números del 1 al {n} {x}.",
+    es_days:"Días de sorteo: {d}.", es_days_note:"Confirma días y horarios en la web oficial.", es_days_unk:"Consulta los días de sorteo en la web oficial.",
+    es_sug_t:"Combinaciones de hoy", regen:"Dame otras 5",
+    es_sug_n:"Generadas con criterios matemáticos: pares/impares y bajos/altos repartidos, suma central, sin tres números seguidos y con algún número alto (mucha gente juega fechas del 1 al 31, así compartirías menos un premio si ganas). No usan histórico, porque aún no tenemos el histórico oficial de esta lotería, y no aumentan tu probabilidad de ganar.",
+    es_pick:"{k} números de {n}", es_card_nodata:"Resultados y bote: en la web oficial.", es_card_go:"Probabilidades y combinaciones",
+    sx_picks_t:"Números para probar",
+    sx_picks_p:"Elegidos al azar para hoy. En un sorteo de número completo no hay números mejores ni peores: todos tienen 1 probabilidad entre 100.000, salga lo que salga en otros años. Con 5 números distintos tu probabilidad es 5 veces mayor, y lo que gastas también.",
+    sx_odds_t:"Probabilidad de cada premio", sx_o_c2:"Con 1 número", sx_o_c3:"Con 5 números distintos",
+    sx_o1:"Primer premio", sx_o2:"Segundo premio", sx_o3:"Tercer premio", sx_o4:"Cuartos premios (2 números)", sx_o5:"Quintos premios (8 números)",
+    sx_nopred:"Pronóstico honesto: este sorteo no se puede predecir. Los números de abajo son una forma divertida de elegir, no una ventaja.",
+    sug_xmas:"Números del día para los sorteos de Navidad y El Niño. Son al azar: todos los números tienen la misma probabilidad."
+  },
+  en: {
+    map_t:"What's in each section", map_go:"Open →",
+    map_es_t:"Spain", map_es_tag:"Draws already held", map_es_p:"Results, jackpot, prizes and odds for La Primitiva, Euromillones, Bonoloto, El Gordo, EuroDreams, Lototurf, Christmas and El Niño.",
+    map_us_t:"USA", map_us_tag:"Draws already held", map_us_p:"Results, jackpot, prizes and statistics for Powerball, Mega Millions and Millionaire for Life.",
+    map_sug_t:"Combinations", map_sug_tag:"For the next draw", map_sug_p:"Our 5 suggested combinations for each lottery, the Christmas and El Niño numbers, and how they do against chance.",
+    es_sub:"Results of draws already held, jackpot, prizes and odds for each lottery. What we suggest playing is under “Combinations”.",
+    us_sub:"Results of draws already held, jackpot, prizes and statistics. What we suggest playing is under “Combinations”.",
+    sug_sub:"For the next draw: 5 combinations per lottery. Each one is saved before the draw and later compared with the real result and with randomly generated combinations. Past results are under Spain and USA.",
+    prizes_cols5:"With 5 combinations (≈)",
+    prizes_col5_note:"Playing 5 different combinations multiplies (approximately) your chance of hitting each prize by five, and so does your spending. That is the effect of playing more bets, not of them being “better”: no combination has a higher chance than another. We check this in the hit history: suggested and random combinations give similar results.",
+    odds_title:"Odds for each prize", odds_c1:"Prize", odds_c2:"With 1 combination", odds_c3:"With 5 combinations (≈)",
+    odds_src:"Calculated by LotoLab with each draw's mathematical formula. La Primitiva and Euromillones match those of Loterías y Apuestas del Estado, except one figure that looks like a typo on their site (Euromillones 4 + 1★: they print 1 in 31,705, the exact calculation gives 1 in 31,075).",
+    es_nodata_t:"Results and jackpot",
+    es_nodata:"We can't show results, jackpot or prize breakdown for this lottery here yet: the official site blocks automatic reading and we never publish data we can't verify. What you see below (how to play, odds and suggestion) is reliable.",
+    es_open:"See jackpot and results on the official site →",
+    es_how_t:"How to play", es_how:"You choose {k} numbers from 1 to {n} {x}.",
+    es_days:"Draw days: {d}.", es_days_note:"Confirm days and times on the official site.", es_days_unk:"Check the draw days on the official site.",
+    es_sug_t:"Today's combinations", regen:"Give me 5 more",
+    es_sug_n:"Generated with mathematical criteria: odd/even and low/high balanced, central sum, no three consecutive numbers and at least one high number (many people play dates from 1 to 31, so you would share a prize with fewer people if you win). They don't use history, because we don't have this lottery's official history yet, and they don't raise your chance of winning.",
+    es_pick:"{k} numbers out of {n}", es_card_nodata:"Results and jackpot: on the official site.", es_card_go:"Odds and combinations",
+    sx_picks_t:"Numbers to try",
+    sx_picks_p:"Picked at random for today. In a whole-number draw there are no better or worse numbers: every one has a 1 in 100,000 chance, whatever happened in other years. With 5 different numbers your chance is 5 times higher, and so is what you spend.",
+    sx_odds_t:"Odds for each prize", sx_o_c2:"With 1 number", sx_o_c3:"With 5 different numbers",
+    sx_o1:"First prize", sx_o2:"Second prize", sx_o3:"Third prize", sx_o4:"Fourth prizes (2 numbers)", sx_o5:"Fifth prizes (8 numbers)",
+    sx_nopred:"Honest forecast: this draw can't be predicted. The numbers below are a fun way to choose, not an advantage.",
+    sug_xmas:"Numbers of the day for the Christmas and El Niño draws. They are random: every number has the same chance."
+  }
+};
+(function () { for (var l in TX4) for (var k in TX4[l]) T[l][k] = TX4[l][k]; })();
+
+var TX5 = {
+  es: {
+    es_bote:"Bote del último sorteo:", es_src:"Fuente: {src}. {n} sorteos, del {a} al {b}.",
+    es_unofficial:"Esta lotería se alimenta de una fuente que copia los resultados oficiales, no de la oficial. Comprueba siempre tu boleto en la web de Loterías y Apuestas del Estado.",
+    es_esc_t:"Bote y premios del último sorteo", es_esc_c1:"Categoría", es_esc_c2:"Acertantes", es_esc_c3:"Premio por acertante", es_esc_none:"Ninguno (el premio se acumula)",
+    es_esc_src:"Datos publicados por Loterías y Apuestas del Estado.",
+    es_nobote:"Esta fuente solo trae los números. El bote y el reparto de premios están en la web oficial.",
+    es_strategy_used:"Estrategia que mejor ha funcionado hasta ahora: {s} (probada con {n} sorteos reales).",
+    es_learn_t:"Cómo aprende el motor",
+    es_learn_p:"Cada vez que se actualizan los datos, el motor prueba 5 estrategias con los últimos {n} sorteos reales ({c} combinaciones por sorteo, usando solo lo que se sabía antes de cada sorteo) y usa la que mejor resultado ha dado.",
+    es_learn_c1:"Estrategia", es_learn_c2:"Aciertos medios por combinación", es_learn_c3:"Sorteos con {m}+ aciertos",
+    es_learn_best:"★ = la que usamos ahora para generar las combinaciones.",
+    es_learn_note:"Honestidad: las diferencias entre estrategias son ruido estadístico. Ninguna mejora la probabilidad de ganar; lo comprobamos con datos y lo mostramos tal cual.",
+    es_live_t:"Resultados reales de nuestras combinaciones", es_live_none:"Todavía no hay sorteos evaluados: aparecerán cuando se celebre el próximo sorteo.",
+    es_live_c1:"Sorteo", es_live_c2:"Mejor de nuestras 5 (aciertos)", es_live_c3:"Combinación al azar (aciertos)",
+    cmp_t:"Navidad o El Niño: diferencias de un vistazo", cmp_date:"Fecha", cmp_nav_d:"22 de diciembre", cmp_nino_d:"6 de enero",
+    cmp_price:"Precio del décimo", cmp_p1:"Primer premio por décimo", cmp_p2:"Segundo premio", cmp_p3:"Tercer premio",
+    cmp_net:"Primer premio neto tras impuestos", cmp_refund:"Reintegros", cmp_nav_r:"1 (última cifra del Gordo)", cmp_nino_r:"3 (cifras distintas)",
+    cmp_share:"Números con algún premio", cmp_how:"Cómo se sortea",
+    cmp_nav_h:"Dos bombos: 100.000 números y 1.807 bolas de premios; se canta durante unas 4 horas", cmp_nino_h:"Por extracciones: 3 primeros premios, terminaciones de 4, 3 y 2 cifras y 3 reintegros; mucho más corto",
+    cmp_which_t:"¿A cuál jugar?", cmp_which:"Si buscas el premio grande, la Navidad paga más (el Gordo es el doble que el primer premio del Niño y hay 1.794 premios de pedrea de 100 €). Si prefieres más opciones de que te toque algo, el Niño reparte premios a más números. Ninguno puede predecirse y todos los números tienen la misma probabilidad.",
+    cmp_src:"Información de Lotería Ópera (administración n.º 157, Madrid). Importes netos calculados por LotoLab: exentos los primeros 40.000 € y 20 % de lo que exceda. Los datos oficiales los publica Loterías y Apuestas del Estado."
+  },
+  en: {
+    es_bote:"Jackpot of the last draw:", es_src:"Source: {src}. {n} draws, from {a} to {b}.",
+    es_unofficial:"This lottery is fed by a source that copies the official results, not by the official one. Always check your ticket on the Loterías y Apuestas del Estado site.",
+    es_esc_t:"Jackpot and prizes of the last draw", es_esc_c1:"Category", es_esc_c2:"Winners", es_esc_c3:"Prize per winner", es_esc_none:"None (the prize rolls over)",
+    es_esc_src:"Data published by Loterías y Apuestas del Estado.",
+    es_nobote:"This source only provides the numbers. The jackpot and prize breakdown are on the official site.",
+    es_strategy_used:"Strategy that has worked best so far: {s} (tested with {n} real draws).",
+    es_learn_t:"How the engine learns",
+    es_learn_p:"Every time the data updates, the engine tests 5 strategies on the last {n} real draws ({c} combinations per draw, using only what was known before each draw) and uses the one that did best.",
+    es_learn_c1:"Strategy", es_learn_c2:"Average matches per combination", es_learn_c3:"Draws with {m}+ matches",
+    es_learn_best:"★ = the one we currently use to generate combinations.",
+    es_learn_note:"Honesty: differences between strategies are statistical noise. None improves the chance of winning; we check it with data and show it as it is.",
+    es_live_t:"Real results of our combinations", es_live_none:"No draws evaluated yet: they will appear after the next draw.",
+    es_live_c1:"Draw", es_live_c2:"Best of our 5 (matches)", es_live_c3:"Random combination (matches)",
+    cmp_t:"Christmas or El Niño: differences at a glance", cmp_date:"Date", cmp_nav_d:"22 December", cmp_nino_d:"6 January",
+    cmp_price:"Price per tenth", cmp_p1:"First prize per tenth", cmp_p2:"Second prize", cmp_p3:"Third prize",
+    cmp_net:"First prize net of tax", cmp_refund:"Refunds", cmp_nav_r:"1 (last digit of the Gordo)", cmp_nino_r:"3 (different digits)",
+    cmp_share:"Numbers with some prize", cmp_how:"How it is drawn",
+    cmp_nav_h:"Two drums: 100,000 numbers and 1,807 prize balls; sung for about 4 hours", cmp_nino_h:"By extractions: 3 top prizes, endings of 4, 3 and 2 digits and 3 refunds; much shorter",
+    cmp_which_t:"Which one to play?", cmp_which:"If you want the big prize, Christmas pays more (the Gordo is double El Niño's first prize and there are 1,794 pedrea prizes of €100). If you prefer more chances of winning something, El Niño gives prizes to more numbers. Neither can be predicted and every number has the same chance.",
+    cmp_src:"Information from Lotería Ópera (administration no. 157, Madrid). Net amounts calculated by LotoLab: first €40,000 exempt and 20% of the excess. Official data is published by Loterías y Apuestas del Estado."
+  }
+};
+(function () { for (var l in TX5) for (var k in TX5[l]) T[l][k] = TX5[l][k]; })();
+
+var TX6 = {
+  es: { win_es:"España", win_us:"Estados Unidos", win_other:"Otras noticias de premios", win_none:"Sin noticias recientes de esta lotería. Se buscan automáticamente varias veces al día.",
+        win_last:"Último sorteo ({d}): ganadores", win_winners:"{n} acertantes", win_nobody:"Nadie acertó el premio gordo en el último sorteo", win_jp_won:"{n} acertantes del premio gordo en el último sorteo", win_unk:"Dato de ganadores no disponible",
+        winners_sub:"Qué ha pasado con los premios de cada lotería: ganadores del último sorteo (datos oficiales cuando la fuente los trae) y noticias reales de personas premiadas, con enlace a la noticia original." },
+  en: { win_es:"Spain", win_us:"United States", win_other:"Other prize news", win_none:"No recent news for this lottery. It is searched automatically several times a day.",
+        win_last:"Last draw ({d}): winners", win_winners:"{n} winners", win_nobody:"Nobody matched the jackpot in the last draw", win_jp_won:"{n} jackpot winners in the last draw", win_unk:"Winner data not available",
+        winners_sub:"What happened with each lottery's prizes: winners of the last draw (official data when the source provides it) and real news about prize winners, linking to the original article." }
+};
+(function () { for (var l in TX6) for (var k in TX6[l]) T[l][k] = TX6[l][k]; })();
+
+
+
+
 var REGIONS = [
   ["Andalucía",0],["Aragón",0],["Asturias",0],["Illes Balears",0],["Canarias",0],["Cantabria",0],["Castilla-La Mancha",0],
   ["Castilla y León",0],["Cataluña",0],["Comunitat Valenciana",0],["Extremadura",0],["Galicia",0],["La Rioja",0],
@@ -880,13 +1018,15 @@ function specialCardHtml(kind, lang) {
   h += '<details><summary>' + fmt(t.sx_prizes, { y: edY }) + '</summary><div style="overflow-x:auto"><table class="tbl">';
   for (i = 0; i < rows.length; i++) h += '<tr><td>' + rows[i][0] + '</td><td><b>' + rows[i][1] + '</b></td></tr>';
   h += '</table></div>' + (nav ? '' : '<p class="note">' + t.sx_nino_more + '</p>') + '<p class="note">' + fmt(t.sx_note, { src: src }) + '</p></details>';
-  h += '<p class="note" style="margin-top:10px">' + t.sx_nopred + '</p>';
+  h += '<p class="note" style="margin-top:10px">' + t.sx_nopred + '</p>' + specialExtraHtml(kind, lang, Date.now());
   h += '<p><a class="btn" href="https://www.loteriasyapuestas.es/" target="_blank" rel="noopener">' + t.sx_official + '</a> <button class="btn alt" data-view="calc">' + t.sx_calc + '</button></p></div>';
   return h;
 }
 function renderSpecial() {
   var el = document.getElementById("special-es");
   if (el) el.innerHTML = specialCardHtml("nav", lang) + specialCardHtml("nino", lang);
+  var cm = document.getElementById("special-cmp");
+  if (cm) cm.innerHTML = specialCompareHtml(lang);
 }
 function regionNoteHtml(lang) {
   var t = T[lang], r = null, i;
@@ -904,14 +1044,14 @@ function prizeTableHtml(j, lang) {
   h += '<div style="overflow-x:auto"><table class="tbl"><tr>';
   var cols = t.prizes_cols.split("|");
   for (i = 0; i < cols.length; i++) h += '<th>' + cols[i] + '</th>';
-  h += '</tr>';
+  h += '<th>' + t.prizes_cols5 + '</th></tr>';
   for (i = 0; i < tiers.length; i++) {
     var x = tiers[i], v = r.prizes[x.key];
     var lab = x.m + " / " + r.main_count + (x.b ? " + " + esc(r.bonus_name) : "");
     var pr = v !== undefined ? "$" + Number(v).toLocaleString(loc(lang)) : (x.m === r.main_count && x.b ? t.prizes_jackpot + " (" + t.prizes_var + ")" : "—");
-    h += '<tr><td>' + lab + '</td><td>' + fmt(t.calc_one_in, { n: fmtNum(Math.round(1 / x.p), lang) }) + '</td><td><b>' + pr + '</b></td></tr>';
+    h += '<tr><td>' + lab + '</td><td>' + fmt(t.calc_one_in, { n: fmtNum(Math.round(1 / x.p), lang) }) + '</td><td><b>' + pr + '</b></td><td>≈ ' + oneInText(5 * x.p, lang) + '</td></tr>';
   }
-  h += '</table></div><p class="note" style="margin-top:8px">' + fmt(t.prizes_src, { src: esc(r.prize_source || ""), note: lang === "es" ? esc(r.prize_note || "") : "" }) + '</p></div>';
+  h += '</table></div><p class="note" style="margin-top:8px">' + fmt(t.prizes_src, { src: esc(r.prize_source || ""), note: lang === "es" ? esc(r.prize_note || "") : "" }) + '</p><p class="note">' + t.prizes_col5_note + '</p></div>';
   return h;
 }
 
@@ -1269,6 +1409,320 @@ function checkHtml(j, picks, bonus, drawIdx, lang) {
     '</p><p class="note">' + t.ck_hist_note + '</p></div>';
   return h;
 }
+
+// ---- Probabilidades y combinaciones de Espana por formula matematica (sin historico) ----
+var REGEN = 0;
+function hyp(K, N, k, a) { return choose(k, a) * choose(N - k, K - a) / choose(N, K); }
+var DOW = { es: ["lunes","martes","miércoles","jueves","viernes","sábado","domingo"], en: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"] };
+var ESINFO = {
+  es_primitiva:    { k: 6, n: 49, days: [0,3,5], extra: { lo: 0, hi: 9,  cnt: 1, how: { es: "y el sistema te asigna un Reintegro (0–9)", en: "and the system gives you a Refund number (0–9)" } } },
+  es_bonoloto:     { k: 6, n: 49, days: [0,1,2,3,4,5], extra: { lo: 0, hi: 9, cnt: 1, how: { es: "y el sistema te asigna un Reintegro (0–9)", en: "and the system gives you a Refund number (0–9)" } } },
+  es_euromillones: { k: 5, n: 50, days: [1,4], extra: { lo: 1, hi: 12, cnt: 2, how: { es: "y 2 estrellas del 1 al 12", en: "and 2 stars from 1 to 12" } } },
+  es_elgordo:      { k: 5, n: 54, days: [6], extra: { lo: 0, hi: 9, cnt: 1, how: { es: "y un número clave del 0 al 9", en: "and a key number from 0 to 9" } } },
+  es_eurodreams:   { k: 6, n: 40, days: [0,3], extra: { lo: 1, hi: 5, cnt: 1, how: { es: "y un número Sueño del 1 al 5", en: "and a Dream number from 1 to 5" } } },
+  es_lototurf:     { k: 6, n: 31, days: null, extra: { lo: 1, hi: 12, cnt: 1, how: { es: "y un caballo del 1 al 12", en: "and a horse from 1 to 12" } } }
+};
+// Categorias de premio con su probabilidad exacta (formulas del sorteo). fix = no se multiplica por 5.
+function esTiers(id) {
+  var out = [], i, N, a, b, pr;
+  if (id === "es_primitiva" || id === "es_bonoloto") {
+    N = choose(49, 6);
+    if (id === "es_primitiva") out.push({ es: "Especial · 6 + Reintegro", en: "Special · 6 + Refund", p: 1 / (N * 10) });
+    out.push({ es: "1ª · 6 aciertos", en: "1st · 6 matches", p: 1 / N });
+    out.push({ es: "2ª · 5 + Complementario", en: "2nd · 5 + Bonus", p: 6 / N });
+    out.push({ es: "3ª · 5 aciertos", en: "3rd · 5 matches", p: 6 * 42 / N });
+    out.push({ es: "4ª · 4 aciertos", en: "4th · 4 matches", p: 15 * choose(43, 2) / N });
+    out.push({ es: "5ª · 3 aciertos", en: "5th · 3 matches", p: 20 * choose(43, 3) / N });
+    out.push({ es: "Reintegro", en: "Refund", p: 0.1, fix: true });
+  } else if (id === "es_euromillones") {
+    pr = [[5,2],[5,1],[5,0],[4,2],[4,1],[3,2],[4,0],[2,2],[3,1],[3,0],[1,2],[2,1],[2,0]];
+    for (i = 0; i < pr.length; i++) {
+      a = pr[i][0]; b = pr[i][1];
+      out.push({ es: (i + 1) + "ª · " + a + " + " + b + "★", en: "Cat. " + (i + 1) + " · " + a + " + " + b + "★", p: hyp(5, 50, 5, a) * hyp(2, 12, 2, b) });
+    }
+  } else if (id === "es_elgordo") {
+    pr = [[5,1],[5,0],[4,1],[4,0],[3,1],[3,0],[2,1],[2,0]];
+    for (i = 0; i < pr.length; i++) {
+      a = pr[i][0]; b = pr[i][1];
+      out.push({ es: (i + 1) + "ª · " + a + (b ? " + clave" : ""), en: "Cat. " + (i + 1) + " · " + a + (b ? " + key" : ""), p: hyp(5, 54, 5, a) * (b ? 0.1 : 0.9) });
+    }
+    out.push({ es: "Reintegro (clave)", en: "Refund (key)", p: 0.1, fix: true });
+  } else if (id === "es_eurodreams") {
+    out.push({ es: "1ª · 6 + Sueño", en: "1st · 6 + Dream", p: 1 / (choose(40, 6) * 5) });
+  } else if (id === "es_lototurf") {
+    out.push({ es: "1ª · 6 + Caballo", en: "1st · 6 + Horse", p: 1 / (choose(31, 6) * 12) });
+  }
+  return out;
+}
+function oneInText(p, lang) { return fmt(T[lang].calc_one_in, { n: fmtNum(Math.max(1, Math.round(1 / p)), lang) }); }
+function oddsTableHtml(tiers, lang) {
+  var t = T[lang], h = '<div style="overflow-x:auto"><table class="tbl"><tr><th>' + t.odds_c1 + '</th><th>' + t.odds_c2 + '</th><th>' + t.odds_c3 + '</th></tr>', i, x;
+  for (i = 0; i < tiers.length; i++) {
+    x = tiers[i];
+    h += '<tr><td>' + esc(x[lang]) + '</td><td>' + oneInText(x.p, lang) + '</td><td>' + (x.fix ? "—" : "≈ " + oneInText(5 * x.p, lang)) + '</td></tr>';
+  }
+  return h + '</table></div>';
+}
+function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function seedOf(s) { var x = 2166136261, i; for (i = 0; i < s.length; i++) { x ^= s.charCodeAt(i); x = Math.imul(x, 16777619); } return x >>> 0; }
+function madridDay(nowMs) {
+  try { return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Madrid" }).format(new Date(nowMs)); }
+  catch (e) { return new Date(nowMs).toISOString().slice(0, 10); }
+}
+function pickDistinct(cnt, lo, hi, rnd) {
+  var s = [], x;
+  while (s.length < cnt) { x = lo + Math.floor(rnd() * (hi - lo + 1)); if (s.indexOf(x) < 0) s.push(x); }
+  return s.sort(function (a, b) { return a - b; });
+}
+function okMain(m, n) {
+  var k = m.length, odd = 0, low = 0, high = 0, sum = 0, run = 1, mx = 1, i;
+  for (i = 0; i < k; i++) {
+    sum += m[i]; if (m[i] % 2) odd++; if (m[i] <= n / 2) low++; if (m[i] > 31) high++;
+    if (i && m[i] === m[i - 1] + 1) { run++; if (run > mx) mx = run; } else run = 1;
+  }
+  var mean = k * (n + 1) / 2, sd = Math.sqrt(k * (n - k) * (n + 1) / 12);
+  if (Math.abs(odd - k / 2) > 1.01 || Math.abs(low - k / 2) > 1.01) return false;
+  if (Math.abs(sum - mean) > 1.3 * sd || mx >= 3) return false;
+  if (n > 31 && high < Math.ceil(k / 3)) return false;
+  return true;
+}
+function genCombos(id, count, nowMs) {
+  var sp = ESINFO[id], rnd = mulberry32(seedOf(id + "|" + madridDay(nowMs) + "|" + REGEN)), out = [], c, tries, m;
+  for (c = 0; c < count; c++) {
+    m = null;
+    for (tries = 0; tries < 4000; tries++) { m = pickDistinct(sp.k, 1, sp.n, rnd); if (okMain(m, sp.n)) break; }
+    out.push({ main: m, extra: pickDistinct(sp.extra.cnt, sp.extra.lo, sp.extra.hi, rnd) });
+  }
+  return out;
+}
+function genNumbers(kind, count, nowMs) {
+  var rnd = mulberry32(seedOf(kind + "|" + madridDay(nowMs) + "|" + REGEN)), out = [], x, s;
+  while (out.length < count) { x = Math.floor(rnd() * 100000); s = ("00000" + x).slice(-5); if (out.indexOf(s) < 0) out.push(s); }
+  return out;
+}
+function ballsX(main, extra, small) {
+  var h = balls(main, null), i;
+  for (i = 0; i < extra.length; i++) h += '<span class="ball b">' + (small ? String(extra[i]) : pad(extra[i])) + '</span>';
+  return h;
+}
+function esCombosHtml(id, lang, nowMs) {
+  var sp = ESINFO[id], cs = genCombos(id, 5, nowMs), i, h = "";
+  for (i = 0; i < cs.length; i++) h += '<div class="combo">' + ballsX(cs[i].main, cs[i].extra, sp.extra.hi <= 9) + '</div>';
+  return h;
+}
+function esSugCardHtml(id, lang, nowMs, name) {
+  var t = T[lang];
+  return '<div class="card" style="' + lstyle(id) + 'border-top:5px solid var(--ec)"><div class="lhead">' + emblem(id) + '<div><span class="tag" style="margin:0 0 3px">' + esc(name) + '</span><h3>' + t.es_sug_t + '</h3></div></div>' +
+    esCombosHtml(id, lang, nowMs) + '<p class="note" style="margin-top:8px">' + t.es_sug_n + '</p>' +
+    '<p><button class="btn alt" data-regen="1">' + t.regen + '</button></p></div>';
+}
+function esInfoHtml(id, lang, nowMs) {
+  var t = T[lang], sp = ESINFO[id], name = "", i, h = "", d = [];
+  for (i = 0; i < CATALOG.es.length; i++) if (CATALOG.es[i].id === id) name = CATALOG.es[i].name;
+  h += '<div class="lbanner" style="' + lstyle(id) + '">' + emblem(id, true) + '<h1>' + esc(name) + '</h1></div>';
+  h += '<div class="warn"><b>' + t.es_nodata_t + ':</b> ' + t.es_nodata + '<br><a class="btn" style="margin-top:8px" href="https://www.loteriasyapuestas.es/" target="_blank" rel="noopener">' + t.es_open + '</a></div>';
+  h += '<div class="card"><h2>' + t.es_how_t + '</h2><p>' + fmt(t.es_how, { k: sp.k, n: sp.n, x: sp.extra.how[lang] }) + '</p>';
+  if (sp.days) { for (i = 0; i < sp.days.length; i++) d.push(DOW[lang][sp.days[i]]); h += '<p class="note">' + fmt(t.es_days, { d: d.join(", ") }) + ' ' + t.es_days_note + '</p>'; }
+  else h += '<p class="note">' + t.es_days_unk + '</p>';
+  h += '</div>';
+  var tiers = esTiers(id);
+  h += '<div class="card" style="margin-top:14px"><h2>' + t.odds_title + '</h2>' + oddsTableHtml(tiers, lang) +
+    '<p class="note" style="margin-top:8px">' + t.prizes_col5_note + '</p><p class="note">' + t.odds_src + '</p></div>';
+  h += '<div style="margin-top:14px">' + esSugCardHtml(id, lang, nowMs, "ES") + '</div>';
+  return h;
+}
+function esCardHtml(c, lang) {
+  var t = T[lang], sp = ESINFO[c.id], d = [], i;
+  if (sp && sp.days) for (i = 0; i < sp.days.length; i++) d.push(DOW[lang][sp.days[i]]);
+  return '<button class="card" data-lot="' + esc(c.id) + '" style="' + lstyle(c.id) + 'border-top:5px solid var(--ec)"><div class="lhead">' + emblem(c.id) + '<div><span class="tag" style="margin:0 0 3px">ES</span><h3>' + esc(c.name) + '</h3></div></div>' +
+    (sp ? '<p>' + fmt(t.es_pick, { k: sp.k, n: sp.n }) + '</p>' : '') + (d.length ? '<p class="note">' + d.join(" · ") + '</p>' : '') +
+    '<p class="note">' + t.es_card_nodata + '</p><p class="soon">' + t.es_card_go + ' →</p></button>';
+}
+function specialExtraHtml(kind, lang, nowMs) {
+  var t = T[lang], nav = kind === "nav", rows = nav ? [["sx_o1",1],["sx_o2",1],["sx_o3",1],["sx_o4",2],["sx_o5",8]] : [["sx_o1",1],["sx_o2",1],["sx_o3",1]], i, h = "", nums = genNumbers(kind, 5, nowMs);
+  h += '<h3>' + t.sx_picks_t + '</h3><div class="picks">';
+  for (i = 0; i < nums.length; i++) h += '<span class="num5">' + nums[i] + '</span>';
+  h += '</div><p class="note">' + t.sx_picks_p + '</p><p><button class="btn alt" data-regen="1">' + t.regen + '</button></p>';
+  h += '<h3>' + t.sx_odds_t + '</h3><div style="overflow-x:auto"><table class="tbl"><tr><th>' + t.odds_c1 + '</th><th>' + t.sx_o_c2 + '</th><th>' + t.sx_o_c3 + '</th></tr>';
+  for (i = 0; i < rows.length; i++) h += '<tr><td>' + t[rows[i][0]] + '</td><td>' + oneInText(rows[i][1] / 100000, lang) + '</td><td>≈ ' + oneInText(5 * rows[i][1] / 100000, lang) + '</td></tr>';
+  return h + '</table></div>';
+}
+
+
+// ---- Datos reales de Espana (los genera scripts/espana.py) ----
+var ESDATA = {};
+function eur(x, lang) { return Number(x).toLocaleString(loc(lang), { style: "currency", currency: "EUR", maximumFractionDigits: x < 100 ? 2 : 0 }); }
+function eurShort(x, lang) { return x >= 1e6 ? fmtNum(Math.round(x / 1e5) / 10, lang) + " M €" : eur(x, lang); }
+function ballsE(main, extras, groups) {
+  var h = balls(main, null), i, g, small = {};
+  for (g = 0; g < groups.length; g++) for (i = 0; i < groups[g].idx.length; i++) small[groups[g].idx[i]] = groups[g].hi <= 9;
+  for (i = 0; i < extras.length; i++) h += '<span class="ball b">' + (small[i] ? String(extras[i]) : pad(extras[i])) + '</span>';
+  return h;
+}
+function stratName(j, id, lang) {
+  var s = (j.learn && j.learn.strategies) || [], i;
+  for (i = 0; i < s.length; i++) if (s[i].id === id) return s[i][lang];
+  return id;
+}
+function esDataCardHtml(c, j, lang) {
+  var t = T[lang], l = j.last_draws[0], id = c.id;
+  return '<button class="card" data-lot="' + esc(id) + '" style="' + lstyle(id) + 'border-top:5px solid var(--ec)"><div class="lhead">' + emblem(id) + '<div><span class="tag" style="margin:0 0 3px">ES</span><h3>' + esc(c.name) + '</h3></div></div>' +
+    (l.bote ? '<div class="jp">' + t.es_bote + '<b>' + eurShort(l.bote, lang) + '</b></div>' : '') +
+    '<div>' + ballsE(l.main, l.extras, j.rules.groups) + '</div><p>' + fmt(t.card_last, { d: fmtDate(l.date, lang) }) + '</p><p class="soon">' + t.card_open + ' →</p></button>';
+}
+function esSugFromData(id, j, lang, name) {
+  var t = T[lang], s = j.suggest, i, h = "";
+  if (!s) return "";
+  for (i = 0; i < s.combos.length; i++) h += '<div class="combo">' + ballsE(s.combos[i].main, s.combos[i].extras, j.rules.groups) + '</div>';
+  return '<div class="card" style="' + lstyle(id) + 'border-top:5px solid var(--ec)"><div class="lhead">' + emblem(id) + '<div><span class="tag" style="margin:0 0 3px">' + esc(name) + '</span><h3>' + (s.for_draw ? fmt(t.sug_for, { d: fmtDate(s.for_draw, lang) }) : t.es_sug_t) + '</h3></div></div>' + h +
+    '<p class="note" style="margin-top:8px">' + fmt(t.es_strategy_used, { s: esc(stratName(j, s.strategy, lang)), n: fmtNum(j.learn ? j.learn.draws_tested : 0, lang) }) + '</p></div>';
+}
+function esLearnHtml(j, lang) {
+  var t = T[lang], L = j.learn, i, h = "", r;
+  if (!L) return "";
+  h += '<div class="card" style="margin-top:14px"><h2>' + t.es_learn_t + '</h2><p class="note">' + fmt(t.es_learn_p, { n: fmtNum(L.draws_tested, lang), c: L.combos_per_draw }) + '</p>';
+  h += '<div style="overflow-x:auto"><table class="tbl"><tr><th>' + t.es_learn_c1 + '</th><th>' + t.es_learn_c2 + '</th><th>' + fmt(t.es_learn_c3, { m: L.threshold }) + '</th></tr>';
+  for (i = 0; i < L.strategies.length; i++) {
+    r = L.strategies[i];
+    h += '<tr><td>' + (r.id === L.best ? '★ <b>' + r[lang] + '</b>' : r[lang]) + '</td><td>' + Number(r.avg_matches).toLocaleString(loc(lang), { minimumFractionDigits: 3 }) + '</td><td>' + fmtPct(r.prize_rate, lang) + '</td></tr>';
+  }
+  h += '</table></div><p class="note" style="margin-top:8px">' + t.es_learn_best + '</p><p class="note">' + t.es_learn_note + '</p>';
+  var live = (j.live || []).slice(-10).reverse();
+  h += '<h3>' + t.es_live_t + '</h3>';
+  if (!live.length) h += '<p class="note">' + t.es_live_none + '</p>';
+  else {
+    h += '<div style="overflow-x:auto"><table class="tbl"><tr><th>' + t.es_live_c1 + '</th><th>' + t.es_live_c2 + '</th><th>' + t.es_live_c3 + '</th></tr>';
+    for (i = 0; i < live.length; i++) h += '<tr><td>' + fmtDate(live[i].draw_date, lang) + '</td><td>' + live[i].best_main + '</td><td>' + live[i].random_main + '</td></tr>';
+    h += '</table></div>';
+  }
+  return h + '</div>';
+}
+function esDataHtml(id, j, lang, nowMs) {
+  var t = T[lang], h = "", i, g, name = j.name, l = j.last_draws[0], gr = j.rules.groups;
+  h += '<div class="lbanner" style="' + lstyle(id) + '">' + emblem(id, true) + '<h1>' + esc(name) + '</h1></div>';
+  h += '<p class="sub">' + fmt(t.es_src, { src: esc(j.source.name), n: fmtNum(j.total_draws, lang), a: fmtDate(j.first_draw, lang), b: fmtDate(j.last_draw, lang) }) + '</p>';
+  if (!j.source.official) h += '<div class="warn">' + t.es_unofficial + '</div>';
+  for (i = 0; i < (j.warnings || []).length; i++) if (lang === "es" && j.warnings[i].indexOf("Fuente no oficial") !== 0) h += '<div class="warn">' + esc(j.warnings[i]) + '</div>';
+  h += '<div class="card"><h2>' + t.last_draw + '</h2><p class="note">' + fmtDate(l.date, lang) + '</p><div>' + ballsE(l.main, l.extras, gr) + '</div><h3>' + t.last10 + '</h3><div>';
+  for (i = 0; i < j.last_draws.length; i++) {
+    var d = j.last_draws[i];
+    h += '<div class="drow"><span class="d">' + fmtDate(d.date, lang) + '</span><span>' + ballsE(d.main, d.extras, gr) + '</span></div>';
+  }
+  h += '</div></div>';
+  // bote y reparto de premios del ultimo sorteo, si la fuente los trae
+  if (l.bote || (l.escrutinio && l.escrutinio.length)) {
+    h += '<div class="card" style="margin-top:14px"><h2>' + t.es_esc_t + ' · ' + fmtDate(l.date, lang) + '</h2>';
+    if (l.bote) h += '<p class="jp">' + t.es_bote + '<b>' + eur(l.bote, lang) + '</b></p>';
+    if (l.escrutinio && l.escrutinio.length) {
+      h += '<div style="overflow-x:auto"><table class="tbl"><tr><th>' + t.es_esc_c1 + '</th><th>' + t.es_esc_c2 + '</th><th>' + t.es_esc_c3 + '</th></tr>';
+      for (i = 0; i < l.escrutinio.length; i++) {
+        var e = l.escrutinio[i];
+        h += '<tr><td>' + esc(e.tipo) + '</td><td>' + (e.winners === null || e.winners === undefined ? "—" : (e.winners === 0 ? t.es_esc_none : fmtNum(e.winners, lang))) + '</td><td>' + (e.prize ? '<b>' + eur(e.prize, lang) + '</b>' : "—") + '</td></tr>';
+      }
+      h += '</table></div>';
+    }
+    h += '<p class="note" style="margin-top:8px">' + t.es_esc_src + '</p></div>';
+  } else {
+    h += '<div class="warn"><b>' + t.es_nodata_t + ':</b> ' + t.es_nobote + '<br><a class="btn" style="margin-top:8px" href="https://www.loteriasyapuestas.es/" target="_blank" rel="noopener">' + t.es_open + '</a></div>';
+  }
+  h += '<div class="card" style="margin-top:14px"><h2>' + t.odds_title + '</h2>' + oddsTableHtml(esTiers(id), lang) + '<p class="note" style="margin-top:8px">' + t.prizes_col5_note + '</p><p class="note">' + t.odds_src + '</p></div>';
+  h += esSugFromData(id, j, lang, "ES").replace('<div class="card"', '<div class="card" style="margin-top:14px"').replace('style="margin-top:14px" style="', 'style="margin-top:14px;');
+  h += esLearnHtml(j, lang);
+  h += '<div class="card" style="margin-top:14px"><h2>' + t.freq_title + '</h2><p class="note">' + fmt(t.freq_note, { d: fmtDate(j.rules.era_from, lang), n: fmtNum(j.draws_used, lang), x: fmtPct(j.main.expected_pct_draws, lang) }) + '</p>' + freqBars(j.main, 10, lang);
+  for (g = 0; g < j.groups.length; g++) h += '<h3>' + fmt(t.bonus_freq, { b: esc(j.groups[g][lang]) }) + '</h3>' + freqBars(j.groups[g].stats, 5, lang);
+  h += '</div><div class="card" style="margin-top:14px"><h2>' + t.delay_title + '</h2><p class="note">' + t.delay_note + '</p>' + delayBars(j.main, 10, lang, t);
+  for (g = 0; g < j.groups.length; g++) h += '<h3>' + fmt(t.bonus_delay, { b: esc(j.groups[g][lang]) }) + '</h3>' + delayBars(j.groups[g].stats, 5, lang, t);
+  h += '</div>';
+  h += '<div class="card" style="margin-top:14px"><h2>' + t.profile_title + '</h2><p class="note">' + t.profile_note + '</p>' +
+    profileBars(j.odd_even, function (r) { return r.odd + " / " + r.even; }, lang) + '</div>';
+  return h;
+}
+function netPrize(x) { return x > 40000 ? 40000 + (x - 40000) * 0.8 : x; }
+function specialCompareHtml(lang) {
+  var t = T[lang], rows = [
+    [t.cmp_date, t.cmp_nav_d, t.cmp_nino_d],
+    [t.cmp_price, "20 €", "20 €"],
+    [t.cmp_p1, eur(400000, lang), eur(200000, lang)],
+    [t.cmp_p2, eur(125000, lang), eur(75000, lang)],
+    [t.cmp_p3, eur(50000, lang), eur(25000, lang)],
+    [t.cmp_net, eur(netPrize(400000), lang), eur(netPrize(200000), lang)],
+    [t.cmp_refund, t.cmp_nav_r, t.cmp_nino_r],
+    [t.cmp_share, "≈ 15 %", "≈ 38 %"],
+    [t.cmp_how, t.cmp_nav_h, t.cmp_nino_h]
+  ], i, h = '<div class="card" style="margin-top:14px"><h2>' + t.cmp_t + '</h2><div style="overflow-x:auto"><table class="tbl"><tr><th></th><th>' + t.sx_nav + '</th><th>' + t.sx_nino + '</th></tr>';
+  for (i = 0; i < rows.length; i++) h += '<tr><td><b>' + rows[i][0] + '</b></td><td>' + rows[i][1] + '</td><td>' + rows[i][2] + '</td></tr>';
+  return h + '</table></div><h3>' + t.cmp_which_t + '</h3><p>' + t.cmp_which + '</p><p class="note">' + t.cmp_src + '</p></div>';
+}
+
+
+// ---- Premiados: noticias reales ordenadas por loteria + datos oficiales de ganadores ----
+var WIN_SECTIONS = [
+  ["es_euromillones", /euromill/i], ["es_primitiva", /primitiva/i], ["es_bonoloto", /bonoloto/i], ["es_elgordo", /\bgordo\b/i],
+  ["es_eurodreams", /eurodreams/i], ["es_lototurf", /lototurf/i], ["es_navidad", /navidad/i], ["es_nino", /ni[ñn]o/i],
+  ["us_powerball", /powerball/i], ["us_megamillions", /mega\s*millions/i], ["us_millionaire", /millionaire for life|cash4life/i]
+];
+var WIN_REL = /lotter|loter[ií]a|premi|acert|jackpot|bote|boleto|d[eé]cimo|billete|ticket|winner|ganador|euromill|primitiva|bonoloto|gordo|powerball|mega millions|eurodreams|lototurf/i;
+function winSectionOf(title) {
+  var i;
+  if (/gordo de la primitiva/i.test(title)) return "es_elgordo";
+  for (i = 0; i < WIN_SECTIONS.length; i++) if (WIN_SECTIONS[i][1].test(title)) return WIN_SECTIONS[i][0];
+  if (/loter[ií]a nacional/i.test(title)) return "es_nacional";
+  return "other";
+}
+function winName(id, lang) {
+  var t = T[lang], i, c;
+  if (id === "es_navidad") return t.sx_nav;
+  if (id === "es_nino") return t.sx_nino;
+  if (id === "es_nacional") return "Lotería Nacional";
+  if (id === "other") return t.win_other;
+  for (c in CATALOG) for (i = 0; i < CATALOG[c].length; i++) if (CATALOG[c][i].id === id) return CATALOG[c][i].name;
+  return id;
+}
+function winFactHtml(id, lang) {
+  var t = T[lang], j = ESDATA[id], B = botesFor(id), l, e, i, out = "";
+  if (j && j.last_draws && j.last_draws[0]) {
+    l = j.last_draws[0];
+    if (l.escrutinio && l.escrutinio.length) {
+      for (i = 0; i < l.escrutinio.length && i < 3; i++) {
+        e = l.escrutinio[i];
+        out += '<li><b>' + esc(e.tipo) + ':</b> ' + (e.winners === 0 ? t.es_esc_none : (e.winners !== null && e.winners !== undefined ? fmt(t.win_winners, { n: fmtNum(e.winners, lang) }) : "")) + (e.prize ? ' · ' + eur(e.prize, lang) : '') + '</li>';
+      }
+      return '<div class="card"><h3 style="margin-top:0">' + fmt(t.win_last, { d: fmtDate(l.date, lang) }) + '</h3><ul class="winl">' + out + '</ul><p class="note">' + t.es_esc_src + '</p></div>';
+    }
+  }
+  if (B && B.last && B.last.date) {
+    var w = B.last.winners;
+    return '<div class="card"><h3 style="margin-top:0">' + fmt(t.win_last, { d: fmtDate(B.last.date, lang) }) + '</h3><p>' +
+      (w === 0 ? t.win_nobody : (w > 0 ? fmt(t.win_jp_won, { n: w }) : t.win_unk)) + (B.last.jackpot ? ' · ' + bigMoney(B.last.jackpot, lang) : '') + '</p><p class="note">' + fmt(t.jp_src, { src: esc(B.source || "") }) + '</p></div>';
+  }
+  return "";
+}
+function winnersHtml(lang, nowMs) {
+  var t = T[lang], all = newsList("winners"), groups = {}, i, k, h = "", order = [];
+  for (i = 0; i < all.length; i++) {
+    if (!WIN_REL.test(all[i].title)) continue;
+    k = winSectionOf(all[i].title);
+    (groups[k] = groups[k] || []).push(all[i]);
+  }
+  order = ["es_euromillones", "es_primitiva", "es_bonoloto", "es_elgordo", "es_eurodreams", "es_lototurf", "es_nacional", "es_navidad", "es_nino", "us_powerball", "us_megamillions", "us_millionaire", "other"];
+  function block(titleHtml, ids) {
+    var out = "", q, list, fact;
+    for (q = 0; q < ids.length; q++) {
+      list = groups[ids[q]] || [];
+      fact = winFactHtml(ids[q], lang);
+      out += '<div class="wsec" style="' + lstyle(ids[q]) + '"><h3 class="wh">' + (LSTY[ids[q]] ? emblem(ids[q]) : '') + '<span>' + esc(winName(ids[q], lang)) + '</span></h3>' + fact;
+      if (list.length) { out += '<div class="mix feat">'; for (var z = 0; z < list.length && z < 6; z++) out += newsCardHtml(list[z], lang, nowMs); out += '</div>'; }
+      else out += '<p class="note">' + t.win_none + '</p>';
+      out += '</div>';
+    }
+    return '<h2>' + titleHtml + '</h2>' + out;
+  }
+  h += block(t.win_es, order.slice(0, 9));
+  h += block(t.win_us, order.slice(9, 12));
+  if (groups.other && groups.other.length) h += block(t.win_other, ["other"]);
+  return h;
+}
+
 // ==PURE-END==
 
 var DATA = {};
@@ -1305,7 +1759,7 @@ function renderCountry(c) {
   var h = "";
   for (var i = 0; i < CATALOG[c].length; i++) {
     var item = CATALOG[c][i];
-    h += DATA[item.id] ? cardHtml(DATA[item.id], lang) : soonCardHtml(item, c, lang);
+    h += DATA[item.id] ? cardHtml(DATA[item.id], lang) : (c === "es" && ESDATA[item.id] ? esDataCardHtml(item, ESDATA[item.id], lang) : (c === "es" && ESINFO[item.id] ? esCardHtml(item, lang) : soonCardHtml(item, c, lang)));
   }
   el.innerHTML = h;
 }
@@ -1316,6 +1770,7 @@ function renderHome() {
   if (loadState === "error") { el.innerHTML = '<p class="loading">' + T[lang].load_error + '</p>'; st.innerHTML = ""; return; }
   var list = loadedList(), h = "";
   for (var i = 0; i < list.length; i++) h += cardHtml(list[i], lang);
+  for (var q = 0; q < CATALOG.es.length; q++) if (ESDATA[CATALOG.es[q].id]) h += esDataCardHtml(CATALOG.es[q], ESDATA[CATALOG.es[q].id], lang);
   el.innerHTML = h;
   st.innerHTML = statsHtml(list, lang);
 }
@@ -1323,7 +1778,10 @@ function renderHome() {
 function renderLot() {
   var el = document.getElementById("lot-body");
   if (currentLot && DATA[currentLot]) el.innerHTML = detailHtml(DATA[currentLot], lang);
+  else if (currentLot && ESDATA[currentLot]) el.innerHTML = esDataHtml(currentLot, ESDATA[currentLot], lang, Date.now());
+  else if (currentLot && ESINFO[currentLot]) el.innerHTML = esInfoHtml(currentLot, lang, Date.now());
 }
+function lotCountry(id) { return DATA[id] ? DATA[id].country : (ESINFO[id] ? "es" : "home"); }
 
 // Noticias + publicidad entremezcladas al azar (laterales, abajo, portada, noticias, premiados)
 function renderRails() {
@@ -1336,6 +1794,10 @@ function renderRails() {
   document.getElementById("rail-right").innerHTML = z.right.length ? feedHtml(z.right, lang, now) : empty;
   document.getElementById("bottom-mix").innerHTML = feedHtml(z.bottom, lang, now);
 }
+function renderWinners() {
+  var el = document.getElementById("winners-list");
+  if (el) el.innerHTML = winnersHtml(lang, Date.now());
+}
 function renderFeeds() {
   var now = Date.now(), nw = withPhoto(newsList("news")), wn = withPhoto(newsList("winners")), i, h;
   function cards(list, max) {
@@ -1345,7 +1807,7 @@ function renderFeeds() {
   }
   document.getElementById("home-news").innerHTML = cards(nw, 4);
   document.getElementById("home-news-wrap").style.display = nw.length ? "" : "none";
-  document.getElementById("winners-list").innerHTML = wn.length ? cards(wn, 9) : '<div class="card"><p>' + T[lang].winners_empty + '</p></div>';
+  renderWinners();
   renderRails();
 }
 
@@ -1367,11 +1829,19 @@ function renderSug() {
   var c, items, j2;
   for (c in CATALOG) for (j2 = 0; j2 < CATALOG[c].length; j2++) {
     var it = CATALOG[c][j2];
-    if (!(SUG && SUG.lotteries && SUG.lotteries[it.id] && DATA[it.id])) {
+    if (ESDATA[it.id] && ESDATA[it.id].suggest) {
+      h += esSugFromData(it.id, ESDATA[it.id], lang, c.toUpperCase() + " · " + it.name);
+    } else if (!(SUG && SUG.lotteries && SUG.lotteries[it.id] && DATA[it.id]) && ESINFO[it.id]) {
+      h += esSugCardHtml(it.id, lang, now, c.toUpperCase() + " · " + it.name);
+    } else if (!(SUG && SUG.lotteries && SUG.lotteries[it.id] && DATA[it.id])) {
       h += '<div class="card" style="' + lstyle(it.id) + 'border-top:5px solid var(--ec)"><div class="lhead">' + emblem(it.id) + '<div><span class="tag" style="margin:0 0 3px">' + c.toUpperCase() + '</span><h3>' + esc(it.name) + '</h3></div></div><p class="soon">' + t.sug_soon + '</p></div>';
     }
   }
-  h += '<div class="card"><span class="tag">ES</span><h3>' + T[lang].sx_nav + ' · ' + T[lang].sx_nino + '</h3><p class="note">' + T[lang].sug_xmas + '</p></div>';
+  var kinds = ["nav", "nino"], kk;
+  for (kk = 0; kk < 2; kk++) {
+    var sid = kinds[kk] === "nav" ? "es_navidad" : "es_nino";
+    h += '<div class="card" style="' + lstyle(sid) + 'border-top:5px solid var(--ec)"><div class="lhead">' + emblem(sid) + '<div><span class="tag" style="margin:0 0 3px">ES</span><h3>' + (kinds[kk] === "nav" ? T[lang].sx_nav : T[lang].sx_nino) + '</h3></div></div>' + specialExtraHtml(kinds[kk], lang, now).replace(/<h3>[^<]*<\/h3><div class="picks">/, '<div class="picks">').split('<h3>' + T[lang].sx_odds_t)[0] + '<p class="note">' + T[lang].sug_xmas + '</p></div>';
+  }
   el.innerHTML = h || '<div class="card"><p class="note">' + t.sug_none + '</p></div>';
   document.getElementById("hist-body").innerHTML = histHtml(HIST, lang);
 }
@@ -1534,7 +2004,7 @@ function show(v) {
   for (var i = 0; i < views.length; i++) views[i].className = "view";
   document.getElementById("v-" + v).className = "view on";
   var navView = v;
-  if (v === "lot" && currentLot && DATA[currentLot]) navView = DATA[currentLot].country;
+  if (v === "lot" && currentLot) navView = lotCountry(currentLot);
   var btns = document.querySelectorAll(".menu button");
   for (var j = 0; j < btns.length; j++) {
     btns[j].className = btns[j].getAttribute("data-view") === navView ? "on" : "";
@@ -1574,7 +2044,17 @@ function loadNews() {
   fetchJson("data/news.json").then(function (n) { NEWS = n; renderFeeds(); }).catch(function () {});
 }
 function loadBotes() {
-  fetchJson("data/botes.json").then(function (b) { BOTES = b; renderHome(); renderCountry("es"); renderCountry("us"); renderLot(); }).catch(function () {});
+  fetchJson("data/botes.json").then(function (b) { BOTES = b; renderHome(); renderCountry("es"); renderCountry("us"); renderLot(); renderWinners(); }).catch(function () {});
+}
+function loadEs() {
+  fetchJson("data/es_index.json").then(function (idx) {
+    var items = idx.lotteries || [], n = items.length, done = 0, i;
+    function fin() { if (++done < n) return; renderHome(); renderCountry("es"); renderLot(); renderSug(); renderWinners(); }
+    if (!n) return;
+    items.forEach(function (it) {
+      fetchJson("data/" + it.file).then(function (j) { ESDATA[it.id] = j; fin(); }).catch(function () { fin(); });
+    });
+  }).catch(function () {});
 }
 function loadSug() {
   fetchJson("data/sugerencias.json").then(function (r) { SUG = r; renderSug(); }).catch(function () {});
@@ -1599,6 +2079,8 @@ function loadRev() {
   } catch (e) {}
   document.addEventListener("click", function (ev) {
     var t = ev.target;
+    var rg = t.closest ? t.closest("[data-regen]") : null;
+    if (rg) { REGEN++; renderSpecial(); renderSug(); renderLot(); return; }
     var lot = t.closest ? t.closest("[data-lot]") : null;
     if (lot) { showLot(lot.getAttribute("data-lot")); return; }
     var vw = t.closest ? t.closest("[data-view]") : null;
@@ -1608,7 +2090,7 @@ function loadRev() {
     setTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
   };
   document.getElementById("lot-back").onclick = function () {
-    show(currentLot && DATA[currentLot] ? DATA[currentLot].country : "home");
+    show(currentLot ? lotCountry(currentLot) : "home");
   };
   document.getElementById("year").textContent = new Date().getFullYear();
   renderTheme();
@@ -1619,9 +2101,10 @@ function loadRev() {
   loadRev();
   loadSug();
   loadBotes();
+  loadEs();
   setInterval(function () { renderClocks(); renderSpecial(); renderNext(); renderSug(); }, 30 * 1000);
   setInterval(renderRails, 25 * 1000);   // los laterales y la franja de abajo cambian al azar cada 25 s
-  setInterval(function () { loadNews(); loadBotes(); }, 30 * 60 * 1000);   // si la pagina sigue abierta, refresca noticias y publicidad
+  setInterval(function () { loadNews(); loadBotes(); loadEs(); }, 30 * 60 * 1000);   // si la pagina sigue abierta, refresca noticias y publicidad
 })();
 </script>
 </body>
