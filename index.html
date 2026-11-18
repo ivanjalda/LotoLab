@@ -251,6 +251,8 @@
       <h1 data-i18n="news_title"></h1>
       <p class="sub" data-i18n="news_sub"></p>
       <div id="news-list" class="mix"></div>
+      <h2 data-i18n="general_title"></h2>
+      <div id="general-list" class="mix"></div>
     </section>
 
     <section id="v-sug" class="view">
@@ -371,7 +373,7 @@ var T = {
     winners_empty:"Todavía no hay titulares cargados. Se actualizan automáticamente cada pocas horas.",
     news_title:"Noticias", news_sub:"Premios y novedades del mundo de las loterías. Titulares con enlace al medio original, actualizados varias veces al día.",
     news_empty:"Todavía no hay noticias cargadas. Se actualizan automáticamente cada pocas horas.",
-    clocks_title:"Hora actual en el mundo", news_badge:"Noticia", ad_badge:"Publicidad", rail_empty:"Las noticias aparecerán aquí en cuanto se carguen.",
+    clocks_title:"Hora actual en el mundo", general_title:"Actualidad", news_badge:"Noticia", ad_badge:"Publicidad", rail_empty:"Las noticias aparecerán aquí en cuanto se carguen.",
     ago_now:"hace un momento", ago_h:"hace {h} h", ago_d:"hace {d} d",
     guide_title:"Guía de la lotería", guide_sub:"Historia, quién gestiona cada juego, qué hacer si te toca y cómo tributan los premios.",
     g1:"Historia de las loterías", g2:"Quién gestiona cada lotería", g3:"Qué hacer si te toca", g4:"Impuestos sobre los premios", g5:"Curiosidades",
@@ -437,7 +439,7 @@ var T = {
     winners_empty:"No headlines loaded yet. They update automatically every few hours.",
     news_title:"News", news_sub:"Prizes and updates from the lottery world. Headlines linking to the original outlet, updated several times a day.",
     news_empty:"No news loaded yet. They update automatically every few hours.",
-    clocks_title:"Current time around the world", news_badge:"News", ad_badge:"Advertising", rail_empty:"News will appear here as soon as they load.",
+    clocks_title:"Current time around the world", general_title:"Current affairs", news_badge:"News", ad_badge:"Advertising", rail_empty:"News will appear here as soon as they load.",
     ago_now:"just now", ago_h:"{h} h ago", ago_d:"{d} d ago",
     guide_title:"Lottery guide", guide_sub:"History, who runs each game, what to do if you win and how prizes are taxed.",
     g1:"History of lotteries", g2:"Who runs each lottery", g3:"What to do if you win", g4:"Taxes on prizes", g5:"Curiosities",
@@ -1070,7 +1072,7 @@ function renderLot() {
 
 // Noticias + publicidad entremezcladas al azar (laterales, abajo, portada, noticias, premiados)
 function renderRails() {
-  var now = Date.now(), nw = newsList("news").concat(newsList("winners"));
+  var now = Date.now(), nw = newsList("general").concat(newsList("news"), newsList("winners"));
   var z = planZones(nw, SITES, Math.random);
   var empty = '<div class="card"><p class="note">' + T[lang].rail_empty + '</p></div>';
   document.getElementById("rail-left").innerHTML = z.left.length ? feedHtml(z.left, lang, now) : empty;
@@ -1086,6 +1088,8 @@ function renderFeeds() {
   }
   document.getElementById("home-news").innerHTML = nw.length ? plain(nw, 8) : '<div class="card"><p>' + t.news_empty + '</p></div>';
   document.getElementById("news-list").innerHTML = nw.length ? plain(nw, 60) : '<div class="card"><p>' + t.news_empty + '</p></div>';
+  var gn = newsList("general");
+  document.getElementById("general-list").innerHTML = gn.length ? plain(gn, 60) : "";
   document.getElementById("winners-list").innerHTML = wn.length ? plain(wn, 60) : '<div class="card"><p>' + t.winners_empty + '</p></div>';
   renderRails();
 }
