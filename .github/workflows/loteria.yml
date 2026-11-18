@@ -23,6 +23,10 @@ jobs:
       - name: Descargar datos y calcular estadisticas
         run: python scripts/loteria_engine.py
 
+      - name: Calcular combinaciones sugeridas y historial
+        continue-on-error: true
+        run: python scripts/sugerencias.py
+
       - name: Guardar cambios
         run: |
           git config user.name "lotolab-bot"
@@ -32,5 +36,6 @@ jobs:
             echo "Sin cambios que guardar"
           else
             git commit -m "Actualizar datos de loterias"
+            git pull --rebase
             git push
           fi
