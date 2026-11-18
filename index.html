@@ -207,7 +207,6 @@
     <button data-view="home"    data-i18n="nav_home"></button>
     <button data-view="es"      data-i18n="nav_es"></button>
     <button data-view="us"      data-i18n="nav_us"></button>
-    <button data-view="sug"     data-i18n="nav_sug"></button>
     <button data-view="calc"    data-i18n="nav_calc"></button>
     <button data-view="check"   data-i18n="nav_check"></button>
     <button data-view="winners" data-i18n="nav_winners"></button>
@@ -226,7 +225,7 @@
       <div class="map3">
         <button class="card" data-view="es" style="--ec:#d2382c;--et:#fff;border-top:5px solid var(--ec)"><span class="emb">ES</span><h3 data-i18n="map_es_t"></h3><span class="when" data-i18n="map_es_tag"></span><p data-i18n="map_es_p"></p><p class="soon" data-i18n="map_go"></p></button>
         <button class="card" data-view="us" style="--ec:#2458c9;--et:#fff;border-top:5px solid var(--ec)"><span class="emb">US</span><h3 data-i18n="map_us_t"></h3><span class="when" data-i18n="map_us_tag"></span><p data-i18n="map_us_p"></p><p class="soon" data-i18n="map_go"></p></button>
-        <button class="card" data-view="sug" style="--ec:#177a43;--et:#fff;border-top:5px solid var(--ec)"><span class="emb">★</span><h3 data-i18n="map_sug_t"></h3><span class="when" data-i18n="map_sug_tag"></span><p data-i18n="map_sug_p"></p><p class="soon" data-i18n="map_go"></p></button>
+        <button class="card" data-view="winners" style="--ec:#177a43;--et:#fff;border-top:5px solid var(--ec)"><span class="emb">★</span><h3 data-i18n="map_win_t"></h3><span class="when" data-i18n="map_win_tag"></span><p data-i18n="map_win_p"></p><p class="soon" data-i18n="map_go"></p></button>
       </div>
       <h2 data-i18n="clocks_title"></h2>
       <div id="home-clocks" class="clocks"></div>
@@ -955,6 +954,47 @@ var TX6 = {
 };
 (function () { for (var l in TX6) for (var k in TX6[l]) T[l][k] = TX6[l][k]; })();
 
+var TX7 = {
+  es: {
+    map_win_t:"Premiados", map_win_tag:"Noticias y ganadores", map_win_p:"Ganadores del último sorteo y noticias reales de premios de cada lotería.",
+    map_es_p:"Todo de cada lotería en un solo sitio: resultados, bote, premios, probabilidades, estadísticas y las combinaciones del motor. Incluye Navidad y El Niño.",
+    map_us_p:"Todo de cada lotería en un solo sitio: resultados, bote, premios, estadísticas y las combinaciones del motor.",
+    es_sub:"Entra en cada lotería: resultados, bote, premios, probabilidades, estadísticas y las combinaciones que sugiere nuestro motor para el próximo sorteo.",
+    us_sub:"Entra en cada lotería: resultados, bote, premios, estadísticas y las combinaciones que sugiere nuestro motor para el próximo sorteo.",
+    combo_h:"Combinaciones del motor para el próximo sorteo",
+    eng_t:"Lo que dice la estadística", eng_hot:"Los más frecuentes del histórico real", eng_late:"Los que más tiempo llevan sin salir", eng_extra:"{b}: los más frecuentes",
+    eng_note:"Cálculo hecho con todos los sorteos reales de la era actual. Es una guía para elegir con criterio; cada sorteo es independiente.",
+    hist1_t:"Cómo les ha ido a nuestras combinaciones", hist1_p:"Simulación con {n} sorteos pasados: las combinaciones del motor lograron {a} premios y las hechas al azar {b}. Cada semana se suma el resultado real.",
+    seed_t:"Último resultado conocido", seed_note:"Copiado de la web oficial de Loterías y Apuestas del Estado. Se sustituirá solo cuando el motor consiga la fuente automática.",
+    es_sug_n:"Combinaciones equilibradas con la estadística del histórico: reparten pares/impares y bajos/altos, mantienen una suma habitual y evitan números seguidos y solo fechas. Una guía para elegir con criterio.",
+    es_nodata:"Bote y reparto de premios:", es_open:"ver en la web oficial →",
+    prizes_col5_note:"Jugar 5 combinaciones multiplica (aprox.) por cinco tus opciones de acertar cada premio.",
+    es_learn_note:"El motor se reevalúa solo con cada sorteo nuevo y se queda con la estrategia que mejor resultado da. Todo se muestra tal cual, sin retoques.",
+    sx_picks_p:"Números del día elegidos por el motor. Todos los números del sorteo tienen la misma probabilidad (1 entre 100.000); con 5 números distintos tienes 5 veces más opciones.",
+    sx_nopred:"Sorteo de número completo: elige tus cifras favoritas o prueba los números del día."
+  },
+  en: {
+    map_win_t:"Winners", map_win_tag:"News and winners", map_win_p:"Winners of the last draw and real news about prizes for each lottery.",
+    map_es_p:"Everything for each lottery in one place: results, jackpot, prizes, odds, statistics and the engine's combinations. Includes Christmas and El Niño.",
+    map_us_p:"Everything for each lottery in one place: results, jackpot, prizes, statistics and the engine's combinations.",
+    es_sub:"Open each lottery: results, jackpot, prizes, odds, statistics and the combinations our engine suggests for the next draw.",
+    us_sub:"Open each lottery: results, jackpot, prizes, statistics and the combinations our engine suggests for the next draw.",
+    combo_h:"Engine combinations for the next draw",
+    eng_t:"What the statistics say", eng_hot:"Most frequent in the real history", eng_late:"Longest without being drawn", eng_extra:"{b}: most frequent",
+    eng_note:"Calculated with all real draws of the current era. A guide for choosing with criteria; every draw is independent.",
+    hist1_t:"How our combinations have done", hist1_p:"Simulation with {n} past draws: the engine's combinations got {a} prizes and random ones {b}. Each week the real result is added.",
+    seed_t:"Latest known result", seed_note:"Copied from the official Loterías y Apuestas del Estado site. It will be replaced automatically once the engine reaches the automatic source.",
+    es_sug_n:"Balanced combinations built from the history's statistics: they spread odd/even and low/high, keep a usual sum and avoid consecutive numbers and all-dates picks. A guide for choosing with criteria.",
+    es_nodata:"Jackpot and prize breakdown:", es_open:"see on the official site →",
+    prizes_col5_note:"Playing 5 combinations multiplies (approximately) by five your chances of hitting each prize.",
+    es_learn_note:"The engine re-evaluates itself with every new draw and keeps the strategy that does best. Everything is shown as it is, untouched.",
+    sx_picks_p:"Numbers of the day chosen by the engine. Every number in the draw has the same chance (1 in 100,000); with 5 different numbers you have 5 times more chances.",
+    sx_nopred:"Whole-number draw: pick your favourite digits or try the numbers of the day."
+  }
+};
+(function () { for (var l in TX7) for (var k in TX7[l]) T[l][k] = TX7[l][k]; })();
+
+
 
 
 
@@ -1325,7 +1365,10 @@ function detailHtml(j, lang) {
   }
   h += '</div></div>';
   h += jackpotCardHtml(j.lottery, lang);
+  h += usSugHtml(j.lottery, lang, Date.now());
+  h += engineHtml(j.main, [{ name: j.rules.bonus_name, block: j.bonus }], lang);
   h += prizeTableHtml(j, lang);
+  h += histOneHtml(j.lottery, lang);
 
   h += '<div class="card" style="margin-top:14px"><h2>' + t.freq_title + '</h2>' +
     '<p class="note">' + fmt(t.freq_note, { d: fmtDate(j.rules.main_from, lang), n: fmtNum(j.draws_used_main, lang),
@@ -1520,23 +1563,24 @@ function esInfoHtml(id, lang, nowMs) {
   var t = T[lang], sp = ESINFO[id], name = "", i, h = "", d = [];
   for (i = 0; i < CATALOG.es.length; i++) if (CATALOG.es[i].id === id) name = CATALOG.es[i].name;
   h += '<div class="lbanner" style="' + lstyle(id) + '">' + emblem(id, true) + '<h1>' + esc(name) + '</h1></div>';
-  h += '<div class="warn"><b>' + t.es_nodata_t + ':</b> ' + t.es_nodata + '<br><a class="btn" style="margin-top:8px" href="https://www.loteriasyapuestas.es/" target="_blank" rel="noopener">' + t.es_open + '</a></div>';
-  h += '<div class="card"><h2>' + t.es_how_t + '</h2><p>' + fmt(t.es_how, { k: sp.k, n: sp.n, x: sp.extra.how[lang] }) + '</p>';
+  h += seedCardHtml(id, lang);
+  h += '<p class="note" style="margin:8px 0">' + t.es_nodata + ' <a href="https://www.loteriasyapuestas.es/" target="_blank" rel="noopener">' + t.es_open + '</a></p>';
+  h += '<div class="card" style="margin-top:14px"><h2>' + t.es_how_t + '</h2><p>' + fmt(t.es_how, { k: sp.k, n: sp.n, x: sp.extra.how[lang] }) + '</p>';
   if (sp.days) { for (i = 0; i < sp.days.length; i++) d.push(DOW[lang][sp.days[i]]); h += '<p class="note">' + fmt(t.es_days, { d: d.join(", ") }) + ' ' + t.es_days_note + '</p>'; }
   else h += '<p class="note">' + t.es_days_unk + '</p>';
   h += '</div>';
   var tiers = esTiers(id);
   h += '<div class="card" style="margin-top:14px"><h2>' + t.odds_title + '</h2>' + oddsTableHtml(tiers, lang) +
     '<p class="note" style="margin-top:8px">' + t.prizes_col5_note + '</p><p class="note">' + t.odds_src + '</p></div>';
-  h += '<div style="margin-top:14px">' + esSugCardHtml(id, lang, nowMs, "ES") + '</div>';
+  h += '<h2 style="margin-top:22px">' + t.combo_h + '</h2><div class="grid" style="grid-template-columns:minmax(260px,520px)">' + esSugCardHtml(id, lang, nowMs, "ES") + '</div>';
   return h;
 }
 function esCardHtml(c, lang) {
   var t = T[lang], sp = ESINFO[c.id], d = [], i;
   if (sp && sp.days) for (i = 0; i < sp.days.length; i++) d.push(DOW[lang][sp.days[i]]);
   return '<button class="card" data-lot="' + esc(c.id) + '" style="' + lstyle(c.id) + 'border-top:5px solid var(--ec)"><div class="lhead">' + emblem(c.id) + '<div><span class="tag" style="margin:0 0 3px">ES</span><h3>' + esc(c.name) + '</h3></div></div>' +
-    (sp ? '<p>' + fmt(t.es_pick, { k: sp.k, n: sp.n }) + '</p>' : '') + (d.length ? '<p class="note">' + d.join(" · ") + '</p>' : '') +
-    '<p class="note">' + t.es_card_nodata + '</p><p class="soon">' + t.es_card_go + ' →</p></button>';
+    (ESSEED[c.id] ? (ESSEED[c.id].bote ? '<div class="jp">' + t.es_bote + '<b>' + eurShort(ESSEED[c.id].bote, lang) + '</b></div>' : '') + '<div>' + ballsE(ESSEED[c.id].main, ESSEED[c.id].extras, ESSEED[c.id].groups) + '</div><p>' + fmt(t.card_last, { d: fmtDate(ESSEED[c.id].date, lang) }) + '</p>' : (sp ? '<p>' + fmt(t.es_pick, { k: sp.k, n: sp.n }) + '</p>' : '')) +
+    '<p class="soon">' + t.card_open + ' →</p></button>';
 }
 function specialExtraHtml(kind, lang, nowMs) {
   var t = T[lang], nav = kind === "nav", rows = nav ? [["sx_o1",1],["sx_o2",1],["sx_o3",1],["sx_o4",2],["sx_o5",8]] : [["sx_o1",1],["sx_o2",1],["sx_o3",1]], i, h = "", nums = genNumbers(kind, 5, nowMs);
@@ -1625,8 +1669,11 @@ function esDataHtml(id, j, lang, nowMs) {
   } else {
     h += '<div class="warn"><b>' + t.es_nodata_t + ':</b> ' + t.es_nobote + '<br><a class="btn" style="margin-top:8px" href="https://www.loteriasyapuestas.es/" target="_blank" rel="noopener">' + t.es_open + '</a></div>';
   }
+  h += '<h2 style="margin-top:22px">' + t.combo_h + '</h2><div class="grid" style="grid-template-columns:minmax(260px,520px)">' + esSugFromData(id, j, lang, "ES") + '</div>';
+  var exs = [], gi;
+  for (gi = 0; gi < j.groups.length; gi++) exs.push({ name: j.groups[gi][lang], block: j.groups[gi].stats });
+  h += engineHtml(j.main, exs, lang);
   h += '<div class="card" style="margin-top:14px"><h2>' + t.odds_title + '</h2>' + oddsTableHtml(esTiers(id), lang) + '<p class="note" style="margin-top:8px">' + t.prizes_col5_note + '</p><p class="note">' + t.odds_src + '</p></div>';
-  h += esSugFromData(id, j, lang, "ES").replace('<div class="card"', '<div class="card" style="margin-top:14px"').replace('style="margin-top:14px" style="', 'style="margin-top:14px;');
   h += esLearnHtml(j, lang);
   h += '<div class="card" style="margin-top:14px"><h2>' + t.freq_title + '</h2><p class="note">' + fmt(t.freq_note, { d: fmtDate(j.rules.era_from, lang), n: fmtNum(j.draws_used, lang), x: fmtPct(j.main.expected_pct_draws, lang) }) + '</p>' + freqBars(j.main, 10, lang);
   for (g = 0; g < j.groups.length; g++) h += '<h3>' + fmt(t.bonus_freq, { b: esc(j.groups[g][lang]) }) + '</h3>' + freqBars(j.groups[g].stats, 5, lang);
@@ -1721,6 +1768,54 @@ function winnersHtml(lang, nowMs) {
   h += block(t.win_us, order.slice(9, 12));
   if (groups.other && groups.other.length) h += block(t.win_other, ["other"]);
   return h;
+}
+
+
+// ---- Todo junto en cada loteria: resultados + combinaciones + estadistica del motor + historial ----
+var ESSEED = {
+  es_euromillones: { date: "2026-11-17", main: [35,37,38,46,48], extras: [1,2], bote: 26000000, groups: [{ idx: [0,1], hi: 12 }] },
+  es_primitiva:    { date: "2026-11-16", main: [8,9,17,34,43,48], extras: [29,0], bote: 11300000, groups: [{ idx: [0], hi: 49 }, { idx: [1], hi: 9 }] },
+  es_bonoloto:     { date: "2026-11-17", main: [16,18,22,28,29,34], extras: [11,0], bote: 1400000, groups: [{ idx: [0], hi: 49 }, { idx: [1], hi: 9 }] },
+  es_elgordo:      { date: "2026-11-15", main: [15,22,23,28,45], extras: [1], bote: 21800000, groups: [{ idx: [0], hi: 9 }] },
+  es_eurodreams:   { date: "2026-11-16", main: [2,4,11,14,17,18], extras: [2], groups: [{ idx: [0], hi: 5 }] },
+  es_lototurf:     { date: "2026-11-15", main: [9,18,22,24,30,31], extras: [6,8], bote: 1940000, groups: [{ idx: [0], hi: 12 }, { idx: [1], hi: 9 }] }
+};
+function seedCardHtml(id, lang) {
+  var s = ESSEED[id], t = T[lang];
+  if (!s) return "";
+  return '<div class="card"><h2>' + t.seed_t + '</h2><p class="note">' + fmtDate(s.date, lang) + '</p><div>' + ballsE(s.main, s.extras, s.groups) + '</div>' +
+    (s.bote ? '<p class="jp">' + t.es_bote + '<b>' + eurShort(s.bote, lang) + '</b></p>' : '') + '<p class="note">' + t.seed_note + '</p></div>';
+}
+function hotBalls(block, key, k, cls) {
+  var top = topBy(block.numbers, key, k), i, h = "";
+  for (i = 0; i < top.length; i++) h += '<span class="ball' + (cls ? ' ' + cls : '') + '">' + (block.numbers[0].n === 0 && top[i].n < 10 ? String(top[i].n) : pad(top[i].n)) + '</span>';
+  return h;
+}
+function engineHtml(main, extras, lang) {
+  var t = T[lang], i, h = '<div class="card" style="margin-top:14px"><h2>' + t.eng_t + '</h2>';
+  h += '<h3>' + t.eng_hot + '</h3><div>' + hotBalls(main, "count", 8) + '</div>';
+  h += '<h3>' + t.eng_late + '</h3><div>' + hotBalls(main, "delay", 8) + '</div>';
+  for (i = 0; i < extras.length; i++) h += '<h3>' + fmt(t.eng_extra, { b: esc(extras[i].name) }) + '</h3><div>' + hotBalls(extras[i].block, "count", 3, "b") + '</div>';
+  return h + '<p class="note" style="margin-top:8px">' + t.eng_note + '</p></div>';
+}
+function histOneHtml(id, lang) {
+  var t = T[lang], v = HIST && HIST.summary ? HIST.summary[id] : null, h = "", live = [], i, l;
+  if (!v || !v.backtest) return "";
+  var bt = v.backtest;
+  h += '<div class="card" style="margin-top:14px"><h2>' + t.hist1_t + '</h2><p>' + fmt(t.hist1_p, { n: fmtNum(bt.draws, lang), a: bt.suggested.prizes, b: bt.random.prizes }) + '</p>';
+  l = (HIST.live || []);
+  for (i = l.length - 1; i >= 0; i--) if (l[i].lottery === id && l[i].result) live.push(l[i]);
+  if (live.length) {
+    h += '<div style="overflow-x:auto"><table class="tbl"><tr><th>' + t.es_live_c1 + '</th><th>' + t.es_live_c2 + '</th><th>' + t.es_live_c3 + '</th></tr>';
+    for (i = 0; i < live.length && i < 8; i++) h += '<tr><td>' + fmtDate(live[i].for_draw, lang) + '</td><td>' + fmt(t.hist_matches, { n: live[i].result.suggested.best_main }) + '</td><td>' + fmt(t.hist_matches, { n: live[i].result.random.best_main }) + '</td></tr>';
+    h += '</table></div>';
+  }
+  return h + '</div>';
+}
+function usSugHtml(id, lang, nowMs) {
+  var t = T[lang];
+  if (!(SUG && SUG.lotteries && SUG.lotteries[id] && DATA[id])) return "";
+  return '<h2 style="margin-top:22px">' + t.combo_h + '</h2><div class="grid" style="grid-template-columns:minmax(260px,520px)">' + sugCardHtml(id, SUG.lotteries[id], DATA[id].rules, lang, nowMs) + '</div>';
 }
 
 // ==PURE-END==
