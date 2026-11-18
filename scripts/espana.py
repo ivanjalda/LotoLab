@@ -589,6 +589,8 @@ def main(today=None, sources=None):
             st.update({"ok": True, "last_draw": res["last_draw"], "source": src["name"]})
             ok_count += 1
             print("OK    %s: %d sorteos, ultimo %s, fuente: %s%s" % (cfg["id"], len(draws), res["last_draw"], src["name"], "" if cambio else " (sin cambios)"))
+            for it in intentos:
+                print("      intento: " + json.dumps(it, ensure_ascii=False))
         else:
             st.update({"ok": False, "kept_old": bool(old)})
             print("SIN DATOS %s: %s" % (cfg["id"], json.dumps(intentos, ensure_ascii=False)), file=sys.stderr)
