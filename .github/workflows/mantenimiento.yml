@@ -1,0 +1,45 @@
+name: Mantenimiento LotoLab
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "20 */3 * * *"
+    - cron: "5 6 * * *"
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  mantenimiento:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Actualizar noticias
+        run: python scripts/mantenimiento.py noticias
+
+      - name: Revision diaria de la web
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '5 6 * * *'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/mantenimiento.py revisar
+
+      - name: Guardar cambios
+        run: |
+          git config user.name "lotolab-bot"
+          git config user.email "lotolab-bot@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then
+            echo "Sin cambios que guardar"
+          else
+            git commit -m "Mantenimiento automatico: noticias y revision"
+            git pull --rebase
+            git push
+          fi
