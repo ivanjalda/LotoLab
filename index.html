@@ -1,157 +1,334 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LotoLab</title>
-<meta name="description" content="Estadística de loterías de España y EE. UU. / Lottery statistics for Spain and the USA.">
+<meta name="description" content="Estadística de loterías de España y EE. UU. con datos reales / Lottery statistics for Spain and the USA with real data.">
 <style>
   :root {
-    --bg:#0b1220; --panel:#131c30; --line:#22304d; --text:#e8eefc; --muted:#9fb0d0;
-    --accent:#4da3ff; --accent2:#7c5cff; --gold:#ffd166; --red:#ff5d6c;
+    --bg:#f5f7f5; --panel:#ffffff; --line:#e1e7e2; --text:#13201a; --muted:#5a6b61;
+    --green:#177a43; --green-soft:#e6f4ec; --on-green:#ffffff; --gold:#c99a1b; --red:#d9455a;
+    --ball-bg:#ffffff; --ball-fg:#13201a; --ball-line:#c9d3cc;
+    --warn-bg:#fff6df; --warn-line:#e0b233; --warn-fg:#6b5310; --shadow:0 1px 3px rgba(16,32,24,.08);
+  }
+  [data-theme="dark"] {
+    --bg:#0c1410; --panel:#14201a; --line:#243529; --text:#e7f0e9; --muted:#9bb0a3;
+    --green:#3fcf8e; --green-soft:#12301f; --on-green:#062014; --gold:#e8b94a; --red:#ff6b7d;
+    --ball-bg:#e7f0e9; --ball-fg:#0c1410; --ball-line:#e7f0e9;
+    --warn-bg:#2a2410; --warn-line:#a98a2a; --warn-fg:#f0dc9a; --shadow:none;
   }
   * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
   body { margin:0; background:var(--bg); color:var(--text); font-family:Arial,Helvetica,sans-serif; line-height:1.5; }
-  header { position:sticky; top:0; z-index:10; background:rgba(11,18,32,.95); border-bottom:1px solid var(--line); }
-  .bar { max-width:1000px; margin:0 auto; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
-  .logo { font-size:1.4rem; font-weight:bold; color:var(--text); text-decoration:none; }
-  .logo span { color:var(--accent); }
-  .lang button { background:var(--panel); color:var(--muted); border:1px solid var(--line); padding:6px 12px; cursor:pointer; font-size:.9rem; }
-  .lang button:first-child { border-radius:8px 0 0 8px; }
-  .lang button:last-child { border-radius:0 8px 8px 0; border-left:none; }
-  .lang button.on { background:var(--accent); color:#06101f; font-weight:bold; }
-  nav { max-width:1000px; margin:0 auto; padding:0 16px 10px; display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; }
-  nav::-webkit-scrollbar { display:none; }
-  nav button { background:transparent; color:var(--muted); border:1px solid var(--line); border-radius:20px; padding:7px 14px; cursor:pointer; white-space:nowrap; font-size:.9rem; }
-  nav button.on { background:var(--panel); color:var(--text); border-color:var(--accent); }
-  main { max-width:1000px; margin:0 auto; padding:24px 16px 60px; }
-  h1 { font-size:1.9rem; margin:0 0 6px; }
-  h2 { font-size:1.25rem; margin:30px 0 6px; }
-  h3 { font-size:1.02rem; margin:18px 0 6px; color:var(--text); }
-  .sub { color:var(--muted); margin:0 0 20px; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
-  .card { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px; color:var(--text); text-align:left; font:inherit; }
+  a { color:inherit; }
+
+  /* Cabecera */
+  header { position:sticky; top:0; z-index:20; background:var(--panel); border-bottom:1px solid var(--line); box-shadow:var(--shadow); }
+  .top { max-width:1700px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+  .logo { display:flex; align-items:center; gap:9px; font-size:1.45rem; font-weight:bold; text-decoration:none; color:var(--text); }
+  .logo i { width:34px; height:34px; border-radius:9px; background:var(--green); color:var(--on-green); display:inline-flex; align-items:center; justify-content:center; font-style:normal; font-size:1.05rem; }
+  .logo span { color:var(--green); }
+  .actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .btn { display:inline-flex; align-items:center; gap:6px; background:var(--green); color:var(--on-green); border:1px solid var(--green); border-radius:10px; padding:8px 14px; font-size:.9rem; font-weight:bold; cursor:pointer; text-decoration:none; font-family:inherit; }
+  .btn.alt { background:var(--panel); color:var(--text); border-color:var(--line); }
+  .btn.disabled { background:var(--panel); color:var(--muted); border-color:var(--line); cursor:default; }
+  .iconbtn { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:7px 11px; cursor:pointer; font-size:1rem; color:var(--text); }
+  .lang { display:flex; }
+  .lang button { background:var(--panel); color:var(--muted); border:1px solid var(--line); padding:8px 12px; cursor:pointer; font-size:.88rem; font-weight:bold; }
+  .lang button:first-child { border-radius:10px 0 0 10px; }
+  .lang button:last-child { border-radius:0 10px 10px 0; border-left:none; }
+  .lang button.on { background:var(--gold); color:#1d1500; border-color:var(--gold); }
+  .menu { max-width:1700px; margin:0 auto; padding:0 16px 10px; display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; }
+  .menu::-webkit-scrollbar { display:none; }
+  .menu button { background:transparent; color:var(--muted); border:none; border-bottom:3px solid transparent; padding:8px 12px; cursor:pointer; white-space:nowrap; font-size:.92rem; font-weight:bold; font-family:inherit; }
+  .menu button.on { color:var(--green); border-bottom-color:var(--green); }
+
+  /* Estructura a pantalla completa */
+  .page { display:grid; grid-template-columns:minmax(0,1fr); gap:20px; max-width:1700px; margin:0 auto; padding:20px 16px 10px; }
+  .rail { display:none; }
+  @media (min-width:1100px) {
+    .page { grid-template-columns:230px minmax(0,1fr) 230px; }
+    .rail { display:flex; flex-direction:column; gap:12px; position:sticky; top:128px; align-self:start; }
+    .bottom-ads .ads-grid { grid-template-columns:repeat(6,1fr); }
+  }
+  h1 { font-size:2.1rem; margin:0 0 8px; line-height:1.2; }
+  h1 .hl { color:var(--green); }
+  h2 { font-size:1.1rem; margin:30px 0 10px; text-transform:uppercase; letter-spacing:.04em; color:var(--gold); }
+  h3 { font-size:1.02rem; margin:18px 0 6px; }
+  .sub { color:var(--muted); margin:0 0 20px; max-width:820px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px; color:var(--text); text-align:left; font:inherit; box-shadow:var(--shadow); }
   button.card { cursor:pointer; width:100%; }
-  button.card:hover { border-color:var(--accent); }
+  button.card:hover { border-color:var(--green); }
   .card h3 { margin:0 0 6px; font-size:1.1rem; }
   .card p { margin:4px 0; color:var(--muted); font-size:.92rem; }
-  .tag { display:inline-block; font-size:.75rem; color:#06101f; background:var(--accent); border-radius:10px; padding:2px 9px; margin-bottom:8px; }
-  .soon { color:var(--accent2); font-weight:bold; font-size:.85rem; }
-  .notice { background:#101a2e; border-left:4px solid var(--accent2); padding:14px 16px; border-radius:8px; color:var(--muted); font-size:.9rem; margin-top:26px; }
-  .warn { background:#2a2113; border-left:4px solid var(--gold); padding:12px 16px; border-radius:8px; color:#f3dfb0; font-size:.9rem; margin:12px 0; }
+  .card h2 { margin-top:0; }
+  .tag { display:inline-block; font-size:.72rem; font-weight:bold; color:var(--on-green); background:var(--green); border-radius:10px; padding:2px 9px; margin-bottom:8px; }
+  .soon { color:var(--green); font-weight:bold; font-size:.85rem; }
+  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin:18px 0; }
+  .stat b { display:block; font-size:1.7rem; }
+  .stat span { color:var(--muted); font-size:.9rem; }
+  .notice { background:var(--green-soft); border-left:4px solid var(--green); padding:14px 16px; border-radius:8px; color:var(--text); font-size:.9rem; margin-top:26px; }
+  .warn { background:var(--warn-bg); border-left:4px solid var(--warn-line); padding:12px 16px; border-radius:8px; color:var(--warn-fg); font-size:.9rem; margin:12px 0; }
   .note { color:var(--muted); font-size:.85rem; margin:0 0 10px; }
   .view { display:none; }
   .view.on { display:block; }
-  .back { background:none; border:none; color:var(--accent); cursor:pointer; font-size:.95rem; padding:0; margin-bottom:14px; }
-  .ball { display:inline-flex; width:34px; height:34px; border-radius:50%; align-items:center; justify-content:center; font-weight:bold; font-size:.88rem; background:#e8eefc; color:#06101f; margin:2px; }
-  .ball.b { background:var(--red); color:#fff; }
-  .draws { margin-top:8px; }
+  .back { background:none; border:none; color:var(--green); cursor:pointer; font-size:.95rem; font-weight:bold; padding:0; margin-bottom:14px; font-family:inherit; }
+
+  /* Bolas y barras */
+  .ball { display:inline-flex; width:34px; height:34px; border-radius:50%; align-items:center; justify-content:center; font-weight:bold; font-size:.88rem; background:var(--ball-bg); color:var(--ball-fg); border:2px solid var(--ball-line); margin:2px; }
+  .ball.b { background:var(--red); border-color:var(--red); color:#fff; }
+  .ball.hit { box-shadow:0 0 0 3px var(--green); }
   .drow { display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; padding:8px 0; border-bottom:1px solid var(--line); }
   .drow:last-child { border-bottom:none; }
   .drow .d { color:var(--muted); font-size:.88rem; min-width:110px; }
   .row { display:flex; align-items:center; gap:10px; margin:7px 0; }
   .row .n { width:30px; text-align:right; font-weight:bold; flex:none; }
   .row .lab { width:150px; flex:none; font-size:.9rem; }
-  .track { position:relative; flex:1; height:14px; background:#0b1424; border-radius:7px; }
-  .fill { height:100%; background:var(--accent); border-radius:7px; }
+  .track { position:relative; flex:1; height:14px; background:var(--line); border-radius:7px; }
+  .fill { height:100%; background:var(--green); border-radius:7px; }
   .mark { position:absolute; top:-3px; bottom:-3px; width:2px; background:var(--gold); }
   .val { width:96px; text-align:right; font-size:.82rem; color:var(--muted); flex:none; }
   .loading { color:var(--muted); padding:20px 0; }
-  footer { border-top:1px solid var(--line); text-align:center; padding:20px 16px; color:var(--muted); font-size:.82rem; }
+
+  /* Comprobador */
+  .form label { display:block; font-weight:bold; font-size:.9rem; margin:14px 0 6px; }
+  .form select, .form input { background:var(--bg); color:var(--text); border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-size:1rem; font-family:inherit; }
+  .form select { width:100%; max-width:420px; }
+  .nums { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .nums input { width:64px; text-align:center; font-weight:bold; }
+  .nums input.bonus { border-color:var(--red); }
+  .result { margin-top:16px; }
+  .result.win { border-color:var(--green); }
+  .result h3 { font-size:1.25rem; margin-top:0; }
+
+  /* Webs propias y Telegram */
+  .adcard { display:block; text-decoration:none; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px; box-shadow:var(--shadow); }
+  .adcard:hover { border-color:var(--green); }
+  .adcard .ic { font-size:1.5rem; }
+  .adcard b { display:block; margin-top:4px; }
+  .adcard span { display:block; color:var(--muted); font-size:.82rem; margin:3px 0 6px; }
+  .adcard em { color:var(--green); font-style:normal; font-weight:bold; font-size:.82rem; }
+  .railtitle { font-size:.75rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:0 0 2px; font-weight:bold; }
+  .bottom-ads { max-width:1700px; margin:0 auto; padding:10px 16px; }
+  .bottom-ads .ads-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; }
+  .tgband { max-width:1700px; margin:10px auto 0; padding:0 16px; }
+  .tgbox { background:var(--green); color:var(--on-green); border-radius:16px; padding:22px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .tgbox h3 { margin:0 0 4px; font-size:1.25rem; }
+  .tgbox p { margin:0; max-width:640px; font-size:.95rem; }
+  .tgbox .btns { display:flex; gap:8px; flex-wrap:wrap; }
+  .tgbox .btn { background:var(--on-green); color:var(--green); border-color:var(--on-green); }
+  .tgbox .btn.disabled { background:transparent; color:var(--on-green); border-color:var(--on-green); opacity:.85; }
+  .banner { height:120px; border-radius:12px; background:linear-gradient(135deg,var(--green),#0e4d2a); display:flex; align-items:center; justify-content:center; font-size:3rem; margin-bottom:12px; }
+  footer { border-top:1px solid var(--line); text-align:center; padding:22px 16px; color:var(--muted); font-size:.82rem; margin-top:14px; }
+
   @media (max-width:520px) {
+    h1 { font-size:1.6rem; }
     .row .lab { width:110px; font-size:.82rem; }
     .val { width:78px; font-size:.78rem; }
-    h1 { font-size:1.6rem; }
+    .top { padding:8px 12px; }
+    .logo { font-size:1.25rem; }
   }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="bar">
-    <a class="logo" href="#" onclick="show('home');return false;">Loto<span>Lab</span></a>
-    <div class="lang">
-      <button id="btn-es" onclick="setLang('es')">ES</button><button id="btn-en" onclick="setLang('en')">EN</button>
+  <div class="top">
+    <a class="logo" href="#" onclick="show('home');return false;"><i>L</i><div>Loto<span>Lab</span></div></a>
+    <div class="actions">
+      <a class="btn" id="tg-top" data-tg="auto"></a>
+      <button class="btn alt" data-view="subs" data-i18n="subs_btn"></button>
+      <button class="iconbtn" id="theme-btn" title="Modo día / noche" aria-label="Modo día / noche"></button>
+      <div class="lang"><button id="btn-es" onclick="setLang('es')">ES</button><button id="btn-en" onclick="setLang('en')">EN</button></div>
     </div>
   </div>
-  <nav>
-    <button data-view="home"   data-i18n="nav_home"></button>
-    <button data-view="es"     data-i18n="nav_es"></button>
-    <button data-view="us"     data-i18n="nav_us"></button>
-    <button data-view="news"   data-i18n="nav_news"></button>
-    <button data-view="legal"  data-i18n="nav_legal"></button>
+  <nav class="menu">
+    <button data-view="home"    data-i18n="nav_home"></button>
+    <button data-view="es"      data-i18n="nav_es"></button>
+    <button data-view="us"      data-i18n="nav_us"></button>
+    <button data-view="check"   data-i18n="nav_check"></button>
+    <button data-view="winners" data-i18n="nav_winners"></button>
+    <button data-view="news"    data-i18n="nav_news"></button>
+    <button data-view="guide"   data-i18n="nav_guide"></button>
+    <button data-view="legal"   data-i18n="nav_legal"></button>
   </nav>
 </header>
 
-<main>
+<div class="page">
+  <aside class="rail" id="rail-left"></aside>
 
-  <section id="v-home" class="view">
-    <h1 data-i18n="home_title"></h1>
-    <p class="sub" data-i18n="home_sub"></p>
-    <h2 data-i18n="latest_title"></h2>
-    <div id="home-latest" class="grid"></div>
-    <h2 data-i18n="what_title"></h2>
-    <div class="grid">
-      <div class="card"><h3 data-i18n="home_c1_t"></h3><p data-i18n="home_c1_p"></p></div>
-      <div class="card"><h3 data-i18n="home_c2_t"></h3><p data-i18n="home_c2_p"></p></div>
-      <div class="card"><h3 data-i18n="home_c3_t"></h3><p data-i18n="home_c3_p"></p></div>
+  <main>
+    <section id="v-home" class="view">
+      <h1 data-i18n="home_title"></h1>
+      <p class="sub" data-i18n="home_sub"></p>
+      <div id="home-stats" class="stats"></div>
+      <h2 data-i18n="latest_title"></h2>
+      <div id="home-latest" class="grid"></div>
+      <h2 data-i18n="what_title"></h2>
+      <div class="grid">
+        <div class="card"><h3 data-i18n="home_c1_t"></h3><p data-i18n="home_c1_p"></p></div>
+        <div class="card"><h3 data-i18n="home_c2_t"></h3><p data-i18n="home_c2_p"></p></div>
+        <div class="card"><h3 data-i18n="home_c3_t"></h3><p data-i18n="home_c3_p"></p></div>
+        <button class="card" data-view="check"><h3 data-i18n="home_c4_t"></h3><p data-i18n="home_c4_p"></p><p class="soon" data-i18n="home_c4_go"></p></button>
+      </div>
+      <div class="notice" data-i18n="disclaimer"></div>
+    </section>
+
+    <section id="v-es" class="view">
+      <h1 data-i18n="es_title"></h1>
+      <p class="sub" data-i18n="es_sub"></p>
+      <div id="list-es" class="grid"></div>
+      <h2 data-i18n="qn_h"></h2>
+      <div class="card">
+        <div class="banner">⚽</div>
+        <h3 data-i18n="qn_title"></h3>
+        <p data-i18n="qn_text"></p>
+        <p><a class="btn" href="https://sportevlab.com/" target="_blank" rel="noopener" data-i18n="qn_btn"></a></p>
+      </div>
+    </section>
+
+    <section id="v-us" class="view">
+      <h1 data-i18n="us_title"></h1>
+      <p class="sub" data-i18n="us_sub"></p>
+      <div id="list-us" class="grid"></div>
+    </section>
+
+    <section id="v-lot" class="view">
+      <button class="back" id="lot-back" data-i18n="back"></button>
+      <div id="lot-body"></div>
+    </section>
+
+    <section id="v-check" class="view">
+      <h1 data-i18n="check_title"></h1>
+      <p class="sub" data-i18n="check_sub"></p>
+      <div class="card form" id="ck-form"></div>
+      <div id="ck-result"></div>
+    </section>
+
+    <section id="v-winners" class="view">
+      <h1 data-i18n="winners_title"></h1>
+      <p class="sub" data-i18n="winners_sub"></p>
+      <div class="card"><p class="soon" data-i18n="soon"></p><p data-i18n="winners_note"></p></div>
+    </section>
+
+    <section id="v-news" class="view">
+      <h1 data-i18n="news_title"></h1>
+      <p class="sub" data-i18n="news_sub"></p>
+      <div class="card"><p class="soon" data-i18n="soon"></p><p data-i18n="news_note"></p></div>
+    </section>
+
+    <section id="v-guide" class="view">
+      <h1 data-i18n="guide_title"></h1>
+      <p class="sub" data-i18n="guide_sub"></p>
+      <div class="grid">
+        <div class="card"><h3 data-i18n="g1"></h3><p class="soon" data-i18n="soon"></p></div>
+        <div class="card"><h3 data-i18n="g2"></h3><p class="soon" data-i18n="soon"></p></div>
+        <div class="card"><h3 data-i18n="g3"></h3><p class="soon" data-i18n="soon"></p></div>
+        <div class="card"><h3 data-i18n="g4"></h3><p class="soon" data-i18n="soon"></p></div>
+        <div class="card"><h3 data-i18n="g5"></h3><p class="soon" data-i18n="soon"></p></div>
+      </div>
+    </section>
+
+    <section id="v-subs" class="view">
+      <h1 data-i18n="subs_title"></h1>
+      <p class="sub" data-i18n="subs_text"></p>
+      <div class="card"><p class="soon" data-i18n="soon"></p></div>
+    </section>
+
+    <section id="v-legal" class="view">
+      <h1 data-i18n="legal_title"></h1>
+      <p class="sub" data-i18n="legal_sub"></p>
+      <div class="card"><p class="soon" data-i18n="soon"></p></div>
+    </section>
+  </main>
+
+  <aside class="rail" id="rail-right"></aside>
+</div>
+
+<section class="tgband">
+  <div class="tgbox">
+    <div>
+      <h3 data-i18n="tg_title"></h3>
+      <p data-i18n="tg_text"></p>
     </div>
-    <div class="notice" data-i18n="disclaimer"></div>
-  </section>
+    <div class="btns">
+      <a class="btn" data-tg="es" id="tg-es"></a>
+      <a class="btn" data-tg="en" id="tg-en"></a>
+    </div>
+  </div>
+</section>
 
-  <section id="v-es" class="view">
-    <h1 data-i18n="es_title"></h1>
-    <p class="sub" data-i18n="es_sub"></p>
-    <div id="list-es" class="grid"></div>
-  </section>
-
-  <section id="v-us" class="view">
-    <h1 data-i18n="us_title"></h1>
-    <p class="sub" data-i18n="us_sub"></p>
-    <div id="list-us" class="grid"></div>
-  </section>
-
-  <section id="v-lot" class="view">
-    <button class="back" id="lot-back" data-i18n="back"></button>
-    <div id="lot-body"></div>
-  </section>
-
-  <section id="v-news" class="view">
-    <h1 data-i18n="news_title"></h1>
-    <p class="sub" data-i18n="news_sub"></p>
-    <div class="card"><p class="soon" data-i18n="soon"></p></div>
-  </section>
-
-  <section id="v-legal" class="view">
-    <h1 data-i18n="legal_title"></h1>
-    <p class="sub" data-i18n="legal_sub"></p>
-    <div class="card"><p class="soon" data-i18n="soon"></p></div>
-  </section>
-
-</main>
+<section class="bottom-ads">
+  <p class="railtitle" data-i18n="ads_title"></p>
+  <div class="ads-grid" id="bottom-ads"></div>
+</section>
 
 <footer>
-  <span>© <span id="year"></span> Community16 LLC · LotoLab</span>
+  <div>© <span id="year"></span> Community16 LLC · LotoLab</div>
+  <div data-i18n="foot_play"></div>
 </footer>
 
 <script>
 // ==PURE-START==
+var TELEGRAM = { es: "", en: "" };   // Aquí irán los enlaces de los canales cuando existan
+
+var SITES = [
+  { n:"SportEVLab",      u:"https://sportevlab.com/",          ic:"⚽", es:"Predicciones deportivas con datos reales", en:"Sports predictions with real data" },
+  { n:"Nexus Terminal",  u:"https://nexusterminalalerts.com/", ic:"📈", es:"Escáner de mercado y alertas",              en:"Market scanner and alerts" },
+  { n:"Equity Intrinsic",u:"https://equityintrinsic.com/",     ic:"💼", es:"Valor intrínseco y análisis fundamental",   en:"Intrinsic value and fundamental analysis" },
+  { n:"DAZMOND",         u:"https://dazmond.com/",             ic:"🛍️", es:"Tiendas online",                            en:"Online stores" },
+  { n:"DAZ Premium Fit", u:"https://dazpremiumfit.com/",       ic:"💪", es:"Culturismo, nutrición y entrenamiento",      en:"Bodybuilding, nutrition and training" },
+  { n:"Valmont & Co.",   u:"https://www.valmontco.com/",       ic:"📚", es:"Libros y cursos de inversión",              en:"Investment books and courses" }
+];
+
 var T = {
   es: {
-    nav_home:"Inicio", nav_es:"España", nav_us:"EE. UU.", nav_news:"Noticias", nav_legal:"Aviso legal",
-    home_title:"Estadística de loterías, sin humo",
-    home_sub:"Análisis de frecuencias y combinaciones sugeridas a partir de datos oficiales de España y EE. UU.",
+    nav_home:"Inicio", nav_es:"España", nav_us:"EE. UU.", nav_check:"Comprobar número", nav_winners:"Premiados",
+    nav_news:"Noticias", nav_guide:"Guía", nav_legal:"Aviso legal", subs_btn:"Suscripción",
+    tg_join:"Telegram", tg_soon:"Telegram · muy pronto", tg_es:"Canal en español", tg_en:"English channel", tg_es_soon:"Canal en español · muy pronto", tg_en_soon:"English channel · muy pronto",
+    home_title:'Estadística de loterías con <span class="hl">datos reales</span>',
+    home_sub:"Analizamos el histórico oficial de las loterías de España y EE. UU., publicamos los resultados con transparencia y no prometemos premios que nadie puede prometer.",
+    st_lot:"loterías analizadas", st_draws:"sorteos oficiales analizados", st_last:"último sorteo cargado",
     latest_title:"Últimos resultados", what_title:"Qué encontrarás en LotoLab",
     home_c1_t:"Números más frecuentes", home_c1_p:"Qué números han salido más veces en el histórico oficial de cada lotería.",
     home_c2_t:"Retrasos históricos", home_c2_p:"Cuánto tiempo lleva cada número sin salir.",
     home_c3_t:"Combinaciones sugeridas", home_c3_p:"Combinaciones equilibradas según criterios estadísticos. Son una ayuda, no una predicción.",
+    home_c4_t:"Comprueba tu número", home_c4_p:"Escribe tus números y te decimos si hay premio.", home_c4_go:"Probar ahora →",
     disclaimer:"Importante: cada sorteo es independiente y ningún método puede predecir el resultado. LotoLab ofrece estadística informativa y no garantiza premios. Juega con responsabilidad y solo si eres mayor de edad.",
     es_title:"Loterías de España", es_sub:"Loterías y Apuestas del Estado",
     us_title:"Loterías de EE. UU.", us_sub:"Las grandes loterías de Estados Unidos",
+    qn_h:"Apuestas de fútbol", qn_title:"Quiniela y Quinigol", qn_text:"Las apuestas de fútbol tienen su propio análisis en SportEVLab, con probabilidades calculadas con datos reales.", qn_btn:"Ir a SportEVLab →",
     soon:"Muy pronto", card_last:"Último sorteo: {d}", card_open:"Ver estadísticas",
     back:"← Volver",
+    check_title:"Comprueba tu número",
+    check_sub:"Elige la lotería y el sorteo, escribe tus números y te decimos si hay premio. Todo se calcula en tu navegador: no guardamos nada.",
+    ck_lot:"Lotería", ck_draw:"Sorteo", ck_nums:"Tus números", ck_go:"Comprobar",
+    ck_err_empty:"Rellena todos los números.", ck_err_range:"Cada número debe estar entre 1 y {max}.",
+    ck_err_bonus:"{b} debe estar entre 1 y {max}.", ck_err_dup:"No repitas números.",
+    ck_hit:"¡Hay premio!", ck_miss:"Esta vez no hay premio",
+    ck_result:"Aciertos: {tier}.", ck_tier:"{m} de {k} números", ck_tier_b:"{m} de {k} números + {b}",
+    ck_prize_note:"El importe depende del sorteo y de cuántos ganadores haya. Consúltalo en la web oficial de la lotería.",
+    ck_draw_nums:"Combinación ganadora de ese sorteo",
+    ck_hist_title:"En todo el histórico",
+    ck_hist_text:"En {n} sorteos, tu combinación habría tenido premio en {p}. Su mejor resultado fue {best}, el {date}.",
+    ck_hist_none:"En {n} sorteos, tu combinación nunca habría tenido premio. Lo máximo fue {best}, el {date}.",
+    ck_hist_note:"Los rangos de números han cambiado con los años; los sorteos antiguos se comparan tal como fueron.",
+    ck_none:"Todavía no hay loterías cargadas para comprobar.",
+    winners_title:"Premiados", winners_sub:"Historias de personas premiadas, siempre con enlace a la noticia original.",
+    winners_note:"Solo publicaremos información que ya sea pública y citaremos siempre la fuente. No inventamos historias.",
     news_title:"Noticias", news_sub:"Premios y novedades del mundo de las loterías.",
+    news_note:"Mostraremos titulares de fuentes fiables con enlace al medio original.",
+    guide_title:"Guía de la lotería", guide_sub:"Historia, quién gestiona cada juego, qué hacer si te toca y cómo tributan los premios.",
+    g1:"Historia de las loterías", g2:"Quién gestiona cada lotería", g3:"Qué hacer si te toca", g4:"Impuestos sobre los premios", g5:"Curiosidades",
+    subs_title:"Suscripción",
+    subs_text:"Estamos preparando una suscripción para acceder al canal premium de Telegram, en español y en inglés. Se activará cuando la web tenga usuarios. Mientras tanto, todo el contenido es gratuito.",
     legal_title:"Aviso legal y políticas", legal_sub:"Privacidad, cookies y condiciones de uso.",
+    tg_title:"Combinaciones y resultados en tu móvil",
+    tg_text:"Canal de Telegram con las combinaciones sugeridas de la semana y los resultados de cada sorteo. Disponible en español y en inglés.",
+    ads_title:"Nuestras webs", ads_visit:"Visitar →",
+    foot_play:"Juega con responsabilidad. Solo mayores de edad.",
     src:"Fuente oficial: {src}. {n} sorteos en total, del {a} al {b}.",
     last_draw:"Último sorteo", last10:"Últimos 10 sorteos",
     freq_title:"Los números que más han salido",
@@ -165,26 +342,56 @@ var T = {
     low_title:"Bajos y altos", low_row:"{l} bajos · {h} altos", low_note:"Bajos: del 1 al {m}.",
     sum_title:"Suma de los cinco números", sum_text:"8 de cada 10 sorteos suman entre {p10} y {p90}. La media es {mean}.",
     digit_title:"Terminaciones (última cifra)", digit_row:"Acaba en {d}",
-    draws_unit:"sorteos", draws_one:"sorteo",
+    draws_unit:"sorteos",
     warn_small_main:"Muestra pequeña para los números principales ({n} sorteos): interpretar con cautela.",
     warn_small_bonus:"Muestra pequeña para {b} ({n} sorteos desde el último cambio de reglas): interpretar con cautela.",
     loading:"Cargando datos…", load_error:"No se pudieron cargar los datos. Inténtalo más tarde."
   },
   en: {
-    nav_home:"Home", nav_es:"Spain", nav_us:"USA", nav_news:"News", nav_legal:"Legal notice",
-    home_title:"Lottery statistics, no hype",
-    home_sub:"Frequency analysis and suggested combinations based on official data from Spain and the USA.",
+    nav_home:"Home", nav_es:"Spain", nav_us:"USA", nav_check:"Check your numbers", nav_winners:"Winners",
+    nav_news:"News", nav_guide:"Guide", nav_legal:"Legal notice", subs_btn:"Subscription",
+    tg_join:"Telegram", tg_soon:"Telegram · coming soon", tg_es:"Spanish channel", tg_en:"English channel", tg_es_soon:"Spanish channel · coming soon", tg_en_soon:"English channel · coming soon",
+    home_title:'Lottery statistics with <span class="hl">real data</span>',
+    home_sub:"We analyze the official history of Spanish and US lotteries, publish results transparently and never promise prizes nobody can promise.",
+    st_lot:"lotteries analyzed", st_draws:"official draws analyzed", st_last:"latest draw loaded",
     latest_title:"Latest results", what_title:"What you will find on LotoLab",
     home_c1_t:"Most frequent numbers", home_c1_p:"Which numbers have appeared most often in each lottery's official history.",
     home_c2_t:"Historical delays", home_c2_p:"How long each number has gone without being drawn.",
     home_c3_t:"Suggested combinations", home_c3_p:"Balanced combinations based on statistical criteria. They are an aid, not a prediction.",
+    home_c4_t:"Check your numbers", home_c4_p:"Enter your numbers and we tell you if there is a prize.", home_c4_go:"Try it now →",
     disclaimer:"Important: every draw is independent and no method can predict the result. LotoLab provides informational statistics and does not guarantee prizes. Play responsibly and only if you are of legal age.",
     es_title:"Spanish lotteries", es_sub:"Loterías y Apuestas del Estado",
     us_title:"US lotteries", us_sub:"The major lotteries of the United States",
+    qn_h:"Football betting", qn_title:"Quiniela and Quinigol", qn_text:"Football betting has its own analysis on SportEVLab, with probabilities calculated from real data.", qn_btn:"Go to SportEVLab →",
     soon:"Coming soon", card_last:"Latest draw: {d}", card_open:"View statistics",
     back:"← Back",
+    check_title:"Check your numbers",
+    check_sub:"Pick the lottery and the draw, enter your numbers and we tell you if there is a prize. Everything is calculated in your browser: we store nothing.",
+    ck_lot:"Lottery", ck_draw:"Draw", ck_nums:"Your numbers", ck_go:"Check",
+    ck_err_empty:"Fill in all the numbers.", ck_err_range:"Each number must be between 1 and {max}.",
+    ck_err_bonus:"{b} must be between 1 and {max}.", ck_err_dup:"Do not repeat numbers.",
+    ck_hit:"You have a prize!", ck_miss:"No prize this time",
+    ck_result:"Matches: {tier}.", ck_tier:"{m} of {k} numbers", ck_tier_b:"{m} of {k} numbers + {b}",
+    ck_prize_note:"The amount depends on the draw and on how many winners there are. Check it on the lottery's official website.",
+    ck_draw_nums:"Winning combination of that draw",
+    ck_hist_title:"Across the whole history",
+    ck_hist_text:"In {n} draws, your combination would have won a prize in {p}. Its best result was {best}, on {date}.",
+    ck_hist_none:"In {n} draws, your combination would never have won a prize. The best was {best}, on {date}.",
+    ck_hist_note:"Number ranges have changed over the years; old draws are compared as they were.",
+    ck_none:"There are no lotteries loaded to check yet.",
+    winners_title:"Winners", winners_sub:"Stories of prize winners, always linking to the original news.",
+    winners_note:"We will only publish information that is already public and always cite the source. We do not invent stories.",
     news_title:"News", news_sub:"Prizes and updates from the lottery world.",
+    news_note:"We will show headlines from reliable sources with a link to the original outlet.",
+    guide_title:"Lottery guide", guide_sub:"History, who runs each game, what to do if you win and how prizes are taxed.",
+    g1:"History of lotteries", g2:"Who runs each lottery", g3:"What to do if you win", g4:"Taxes on prizes", g5:"Curiosities",
+    subs_title:"Subscription",
+    subs_text:"We are preparing a subscription to access the premium Telegram channel, in Spanish and English. It will open once the site has users. Until then, all content is free.",
     legal_title:"Legal notice and policies", legal_sub:"Privacy, cookies and terms of use.",
+    tg_title:"Combinations and results on your phone",
+    tg_text:"Telegram channel with the week's suggested combinations and the results of every draw. Available in Spanish and English.",
+    ads_title:"Our websites", ads_visit:"Visit →",
+    foot_play:"Play responsibly. Adults only.",
     src:"Official source: {src}. {n} draws in total, from {a} to {b}.",
     last_draw:"Latest draw", last10:"Last 10 draws",
     freq_title:"Most frequently drawn numbers",
@@ -198,7 +405,7 @@ var T = {
     low_title:"Low and high", low_row:"{l} low · {h} high", low_note:"Low: 1 to {m}.",
     sum_title:"Sum of the five numbers", sum_text:"8 out of 10 draws add up to between {p10} and {p90}. The average is {mean}.",
     digit_title:"Last digit", digit_row:"Ends in {d}",
-    draws_unit:"draws", draws_one:"draw",
+    draws_unit:"draws",
     warn_small_main:"Small sample for the main numbers ({n} draws): read with caution.",
     warn_small_bonus:"Small sample for {b} ({n} draws since the last rule change): read with caution.",
     loading:"Loading data…", load_error:"Data could not be loaded. Please try again later."
@@ -236,10 +443,15 @@ function fmtDate(iso, lang) {
   var d = new Date(+p[0], +p[1] - 1, +p[2]);
   return d.toLocaleDateString(loc(lang), { day: "numeric", month: "short", year: "numeric" });
 }
-function balls(main, bonus) {
-  var h = "";
-  for (var i = 0; i < main.length; i++) h += '<span class="ball">' + pad(main[i]) + '</span>';
-  if (bonus !== null && bonus !== undefined) h += '<span class="ball b">' + pad(bonus) + '</span>';
+function balls(main, bonus, hits, bonusHit) {
+  var h = "", i;
+  for (i = 0; i < main.length; i++) {
+    var isHit = hits && hits.indexOf(main[i]) >= 0;
+    h += '<span class="ball' + (isHit ? ' hit' : '') + '">' + pad(main[i]) + '</span>';
+  }
+  if (bonus !== null && bonus !== undefined) {
+    h += '<span class="ball b' + (bonusHit ? ' hit' : '') + '">' + pad(bonus) + '</span>';
+  }
   return h;
 }
 function rowHtml(label, widthPct, valText, markPct) {
@@ -304,6 +516,35 @@ function soonCardHtml(c, country, lang) {
   return '<div class="card"><span class="tag">' + country.toUpperCase() + '</span><h3>' + esc(c.name) +
     '</h3><p class="soon">' + t.soon + '</p></div>';
 }
+function adsHtml(lang, withTitle) {
+  var t = T[lang], h = withTitle ? '<p class="railtitle">' + t.ads_title + '</p>' : "";
+  for (var i = 0; i < SITES.length; i++) {
+    var s = SITES[i];
+    h += '<a class="adcard" href="' + esc(s.u) + '" target="_blank" rel="noopener">' +
+      '<div class="ic">' + s.ic + '</div><b>' + esc(s.n) + '</b><span>' + esc(s[lang]) + '</span><em>' + t.ads_visit + '</em></a>';
+  }
+  return h;
+}
+function railHtml(lang, side) {
+  var t = T[lang], h = '<p class="railtitle">' + t.ads_title + '</p>';
+  var from = side === "left" ? 0 : 3, to = side === "left" ? 3 : 6;
+  for (var i = from; i < to; i++) {
+    var s = SITES[i];
+    h += '<a class="adcard" href="' + esc(s.u) + '" target="_blank" rel="noopener">' +
+      '<div class="ic">' + s.ic + '</div><b>' + esc(s.n) + '</b><span>' + esc(s[lang]) + '</span><em>' + t.ads_visit + '</em></a>';
+  }
+  return h;
+}
+
+function statsHtml(list, lang) {
+  var t = T[lang], total = 0, last = "", i;
+  for (i = 0; i < list.length; i++) {
+    total += list[i].total_draws_in_source;
+    if (list[i].last_draw > last) last = list[i].last_draw;
+  }
+  function box(v, l) { return '<div class="card stat"><b>' + v + '</b><span>' + l + '</span></div>'; }
+  return box(list.length, t.st_lot) + box(fmtNum(total, lang), t.st_draws) + box(last ? fmtDate(last, lang) : "—", t.st_last);
+}
 
 function detailHtml(j, lang) {
   var t = T[lang], h = "", i;
@@ -316,31 +557,30 @@ function detailHtml(j, lang) {
   if (j.draws_used_main < 300) h += '<div class="warn">' + fmt(t.warn_small_main, { n: j.draws_used_main }) + '</div>';
   if (j.draws_used_bonus < 300) h += '<div class="warn">' + fmt(t.warn_small_bonus, { b: bn, n: j.draws_used_bonus }) + '</div>';
   for (i = 0; i < j.warnings.length; i++) {
-    if (j.warnings[i].indexOf("Muestra pequena") === 0) continue;
-    if (j.warnings[i].indexOf("Muestra pequeña") === 0) continue;
+    if (j.warnings[i].indexOf("Muestra peque") === 0) continue;
     if (lang === "es") h += '<div class="warn">' + esc(j.warnings[i]) + '</div>';
   }
 
   var l = j.last_draws[0];
-  h += '<div class="card"><h2 style="margin-top:0">' + t.last_draw + '</h2>' +
+  h += '<div class="card"><h2>' + t.last_draw + '</h2>' +
     '<p class="note">' + fmtDate(l.date, lang) + '</p><div>' + balls(l.main, l.bonus) + '</div>' +
-    '<h3>' + t.last10 + '</h3><div class="draws">';
+    '<h3>' + t.last10 + '</h3><div>';
   for (i = 0; i < j.last_draws.length; i++) {
     var d = j.last_draws[i];
     h += '<div class="drow"><span class="d">' + fmtDate(d.date, lang) + '</span><span>' + balls(d.main, d.bonus) + '</span></div>';
   }
   h += '</div></div>';
 
-  h += '<div class="card" style="margin-top:14px"><h2 style="margin-top:0">' + t.freq_title + '</h2>' +
+  h += '<div class="card" style="margin-top:14px"><h2>' + t.freq_title + '</h2>' +
     '<p class="note">' + fmt(t.freq_note, { d: fmtDate(j.rules.main_from, lang), n: fmtNum(j.draws_used_main, lang),
       x: fmtPct(j.main.expected_pct_draws, lang) }) + '</p>' + freqBars(j.main, 10, lang) +
     '<h3>' + fmt(t.bonus_freq, { b: bn }) + '</h3>' + freqBars(j.bonus, 5, lang) + '</div>';
 
-  h += '<div class="card" style="margin-top:14px"><h2 style="margin-top:0">' + t.delay_title + '</h2>' +
+  h += '<div class="card" style="margin-top:14px"><h2>' + t.delay_title + '</h2>' +
     '<p class="note">' + t.delay_note + '</p>' + delayBars(j.main, 10, lang, t) +
     '<h3>' + fmt(t.bonus_delay, { b: bn }) + '</h3>' + delayBars(j.bonus, 5, lang, t) + '</div>';
 
-  h += '<div class="card" style="margin-top:14px"><h2 style="margin-top:0">' + t.profile_title + '</h2>' +
+  h += '<div class="card" style="margin-top:14px"><h2>' + t.profile_title + '</h2>' +
     '<p class="note">' + t.profile_note + '</p>' +
     '<h3>' + t.odd_title + '</h3>' +
     profileBars(j.odd_even, function (r) { return fmt(t.odd_row, { o: r.odd, e: r.even }); }, lang) +
@@ -352,6 +592,68 @@ function detailHtml(j, lang) {
     profileBars(j.last_digit, function (r) { return fmt(t.digit_row, { d: r.digit }); }, lang) + '</div>';
 
   h += '<div class="notice">' + t.disclaimer + '</div>';
+  return h;
+}
+
+/* ---------- Comprobador de números ---------- */
+// Orden de los premios, de menor a mayor (comun a Powerball y Mega Millions):
+// gana con 3 o mas numeros, o con la bola extra aunque no se acierte ningun numero.
+function tierRank(m, b) {
+  if (m === 5) return b ? 9 : 8;
+  if (m === 4) return b ? 7 : 6;
+  if (m === 3) return b ? 5 : 4;
+  if (m === 2 && b) return 3;
+  if (m === 1 && b) return 2;
+  if (m === 0 && b) return 1;
+  return 0;
+}
+function compareDraw(picks, bonus, draw) {
+  var hits = [], i;
+  for (i = 0; i < draw[1].length; i++) if (picks.indexOf(draw[1][i]) >= 0) hits.push(draw[1][i]);
+  var bHit = draw[2] === bonus;
+  return { hits: hits, m: hits.length, b: bHit, rank: tierRank(hits.length, bHit) };
+}
+function validatePicks(j, vals, bonusVal, lang) {
+  var t = T[lang], i, seen = {};
+  if (vals.length !== j.rules.main_count) return t.ck_err_empty;
+  for (i = 0; i < vals.length; i++) {
+    if (vals[i] === null || bonusVal === null) return t.ck_err_empty;
+  }
+  for (i = 0; i < vals.length; i++) {
+    if (vals[i] < 1 || vals[i] > j.rules.main_max) return fmt(t.ck_err_range, { max: j.rules.main_max });
+    if (seen[vals[i]]) return t.ck_err_dup;
+    seen[vals[i]] = true;
+  }
+  if (bonusVal < 1 || bonusVal > j.rules.bonus_max) return fmt(t.ck_err_bonus, { b: j.rules.bonus_name, max: j.rules.bonus_max });
+  return null;
+}
+function tierText(j, m, b, lang) {
+  var t = T[lang];
+  return fmt(b ? t.ck_tier_b : t.ck_tier, { m: m, k: j.rules.main_count, b: esc(j.rules.bonus_name) });
+}
+function checkHtml(j, picks, bonus, drawIdx, lang) {
+  var t = T[lang], h = "";
+  var draw = j.draws[drawIdx];
+  var r = compareDraw(picks, bonus, draw);
+  var win = r.rank > 0;
+  h += '<div class="card result' + (win ? ' win' : '') + '"><h3>' + (win ? t.ck_hit : t.ck_miss) + '</h3>';
+  h += '<p>' + fmt(t.ck_result, { tier: tierText(j, r.m, r.b, lang) }) + '</p>';
+  if (win) h += '<p class="note">' + t.ck_prize_note + '</p>';
+  h += '<h3 style="font-size:1rem">' + t.ck_draw_nums + ' · ' + fmtDate(draw[0], lang) + '</h3>' +
+    '<div>' + balls(draw[1], draw[2], r.hits, r.b) + '</div></div>';
+
+  var n = j.draws.length, prized = 0, best = { rank: -1, m: 0, b: false, date: "" }, i;
+  for (i = 0; i < n; i++) {
+    var c = compareDraw(picks, bonus, j.draws[i]);
+    if (c.rank > 0) prized++;
+    if (c.rank > best.rank || (c.rank === best.rank && j.draws[i][0] > best.date)) {
+      best = { rank: c.rank, m: c.m, b: c.b, date: j.draws[i][0] };
+    }
+  }
+  h += '<div class="card" style="margin-top:14px"><h3 style="margin-top:0">' + t.ck_hist_title + '</h3><p>' +
+    fmt(prized > 0 ? t.ck_hist_text : t.ck_hist_none, {
+      n: fmtNum(n, lang), p: fmtNum(prized, lang), best: tierText(j, best.m, best.b, lang), date: fmtDate(best.date, lang) }) +
+    '</p><p class="note">' + t.ck_hist_note + '</p></div>';
   return h;
 }
 // ==PURE-END==
@@ -369,10 +671,16 @@ function ids() {
   for (i = 0; i < INDEX.lotteries.length; i++) out.push(INDEX.lotteries[i].id);
   return out;
 }
+function loadedList() {
+  var l = ids(), out = [];
+  for (var i = 0; i < l.length; i++) if (DATA[l[i]]) out.push(DATA[l[i]]);
+  return out;
+}
 
 function renderCountry(c) {
   var el = document.getElementById("list-" + c);
   if (loadState === "loading") { el.innerHTML = '<p class="loading">' + T[lang].loading + '</p>'; return; }
+  if (loadState === "error") { el.innerHTML = '<p class="loading">' + T[lang].load_error + '</p>'; return; }
   var h = "";
   for (var i = 0; i < CATALOG[c].length; i++) {
     var item = CATALOG[c][i];
@@ -382,12 +690,13 @@ function renderCountry(c) {
 }
 
 function renderHome() {
-  var el = document.getElementById("home-latest");
-  if (loadState === "loading") { el.innerHTML = '<p class="loading">' + T[lang].loading + '</p>'; return; }
-  if (loadState === "error") { el.innerHTML = '<p class="loading">' + T[lang].load_error + '</p>'; return; }
-  var h = "", list = ids();
-  for (var i = 0; i < list.length; i++) if (DATA[list[i]]) h += cardHtml(DATA[list[i]], lang);
+  var el = document.getElementById("home-latest"), st = document.getElementById("home-stats");
+  if (loadState === "loading") { el.innerHTML = '<p class="loading">' + T[lang].loading + '</p>'; st.innerHTML = ""; return; }
+  if (loadState === "error") { el.innerHTML = '<p class="loading">' + T[lang].load_error + '</p>'; st.innerHTML = ""; return; }
+  var list = loadedList(), h = "";
+  for (var i = 0; i < list.length; i++) h += cardHtml(list[i], lang);
   el.innerHTML = h;
+  st.innerHTML = statsHtml(list, lang);
 }
 
 function renderLot() {
@@ -395,15 +704,94 @@ function renderLot() {
   if (currentLot && DATA[currentLot]) el.innerHTML = detailHtml(DATA[currentLot], lang);
 }
 
+function renderAds() {
+  document.getElementById("rail-left").innerHTML = railHtml(lang, "left");
+  document.getElementById("rail-right").innerHTML = railHtml(lang, "right");
+  document.getElementById("bottom-ads").innerHTML = adsHtml(lang, false);
+}
+
+function renderTelegram() {
+  var els = document.querySelectorAll("[data-tg]");
+  for (var i = 0; i < els.length; i++) {
+    var a = els[i], key = a.getAttribute("data-tg"), t = T[lang];
+    var k = key === "auto" ? lang : key;
+    var url = TELEGRAM[k];
+    var okLabel = key === "auto" ? t.tg_join : (k === "es" ? t.tg_es : t.tg_en);
+    var soonLabel = key === "auto" ? t.tg_soon : (k === "es" ? t.tg_es_soon : t.tg_en_soon);
+    if (url) {
+      a.setAttribute("href", url); a.setAttribute("target", "_blank"); a.setAttribute("rel", "noopener");
+      a.className = a.className.replace(/\s*disabled/g, "");
+      a.textContent = "✈ " + okLabel;
+    } else {
+      a.removeAttribute("href");
+      if (a.className.indexOf("disabled") < 0) a.className += " disabled";
+      a.textContent = "✈ " + soonLabel;
+    }
+  }
+}
+
+/* Comprobador: formulario */
+var ckLot = null;
+function renderCheckForm() {
+  var el = document.getElementById("ck-form"), t = T[lang], list = loadedList();
+  if (loadState !== "ok" || !list.length) { el.innerHTML = '<p class="loading">' + (loadState === "loading" ? t.loading : t.ck_none) + '</p>'; return; }
+  if (!ckLot || !DATA[ckLot]) ckLot = list[0].lottery;
+  var j = DATA[ckLot], i, h = "";
+  h += '<label for="ck-lot">' + t.ck_lot + '</label><select id="ck-lot">';
+  for (i = 0; i < list.length; i++) h += '<option value="' + esc(list[i].lottery) + '"' + (list[i].lottery === ckLot ? " selected" : "") + '>' + esc(list[i].name) + '</option>';
+  h += '</select><label for="ck-draw">' + t.ck_draw + '</label><select id="ck-draw">';
+  var shown = 0;
+  for (i = j.draws.length - 1; i >= 0 && shown < 40; i--, shown++) {
+    h += '<option value="' + i + '">' + fmtDate(j.draws[i][0], lang) + '</option>';
+  }
+  h += '</select><label>' + t.ck_nums + ' (' + esc(j.name) + ')</label><div class="nums" id="ck-nums">';
+  for (i = 0; i < j.rules.main_count; i++) h += '<input type="number" inputmode="numeric" min="1" max="' + j.rules.main_max + '" class="ck-n" aria-label="' + (i + 1) + '">';
+  h += '<input type="number" inputmode="numeric" min="1" max="' + j.rules.bonus_max + '" class="bonus" id="ck-b" placeholder="' + esc(j.rules.bonus_name) + '" aria-label="' + esc(j.rules.bonus_name) + '">';
+  h += '</div><p style="margin-top:16px"><button class="btn" id="ck-go">' + t.ck_go + '</button></p><div id="ck-err" class="warn" style="display:none"></div>';
+  el.innerHTML = h;
+  document.getElementById("ck-lot").onchange = function () { ckLot = this.value; document.getElementById("ck-result").innerHTML = ""; renderCheckForm(); };
+  document.getElementById("ck-go").onclick = runCheck;
+}
+function readNum(el) {
+  var v = el.value.trim();
+  if (v === "") return null;
+  var n = Number(v);
+  return (isFinite(n) && Math.floor(n) === n) ? n : NaN;
+}
+function runCheck() {
+  var j = DATA[ckLot], inputs = document.querySelectorAll(".ck-n"), vals = [], i;
+  for (i = 0; i < inputs.length; i++) vals.push(readNum(inputs[i]));
+  var bonus = readNum(document.getElementById("ck-b"));
+  for (i = 0; i < vals.length; i++) if (vals[i] !== null && isNaN(vals[i])) vals[i] = 0;
+  if (bonus !== null && isNaN(bonus)) bonus = 0;
+  var err = validatePicks(j, vals, bonus, lang), box = document.getElementById("ck-err"), out = document.getElementById("ck-result");
+  if (err) { box.style.display = "block"; box.textContent = err; out.innerHTML = ""; return; }
+  box.style.display = "none";
+  out.innerHTML = checkHtml(j, vals, bonus, Number(document.getElementById("ck-draw").value), lang);
+}
+
+function renderTheme() {
+  var th = document.documentElement.getAttribute("data-theme");
+  document.getElementById("theme-btn").textContent = th === "dark" ? "☀️" : "🌙";
+}
+function setTheme(th) {
+  document.documentElement.setAttribute("data-theme", th);
+  try { localStorage.setItem("lotolab_theme", th); } catch (e) {}
+  renderTheme();
+}
+
 function applyText() {
   var els = document.querySelectorAll("[data-i18n]");
   for (var i = 0; i < els.length; i++) {
-    els[i].textContent = T[lang][els[i].getAttribute("data-i18n")];
+    els[i].innerHTML = T[lang][els[i].getAttribute("data-i18n")];
   }
   document.documentElement.lang = lang;
   document.getElementById("btn-es").className = lang === "es" ? "on" : "";
   document.getElementById("btn-en").className = lang === "en" ? "on" : "";
   renderHome(); renderCountry("es"); renderCountry("us"); renderLot();
+  renderAds(); renderTelegram(); renderCheckForm();
+  var res = document.getElementById("ck-result");
+  if (res) res.innerHTML = "";
 }
 
 function setLang(l) {
@@ -419,7 +807,7 @@ function show(v) {
   document.getElementById("v-" + v).className = "view on";
   var navView = v;
   if (v === "lot" && currentLot && DATA[currentLot]) navView = DATA[currentLot].country;
-  var btns = document.querySelectorAll("nav button");
+  var btns = document.querySelectorAll(".menu button");
   for (var j = 0; j < btns.length; j++) {
     btns[j].className = btns[j].getAttribute("data-view") === navView ? "on" : "";
   }
@@ -451,29 +839,37 @@ function loadData() {
   }).catch(function () {
     loadState = "error";
     applyText();
-    var a = document.getElementById("list-es"), b = document.getElementById("list-us");
-    a.innerHTML = b.innerHTML = '<p class="loading">' + T[lang].load_error + '</p>';
   });
 }
 
 (function init() {
+  var th = "light";
+  try {
+    var savedTheme = localStorage.getItem("lotolab_theme");
+    if (savedTheme === "light" || savedTheme === "dark") th = savedTheme;
+    else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) th = "dark";
+  } catch (e) {}
+  document.documentElement.setAttribute("data-theme", th);
   try {
     var saved = localStorage.getItem("lotolab_lang");
     if (saved === "es" || saved === "en") lang = saved;
     else if ((navigator.language || "").slice(0, 2) === "en") lang = "en";
   } catch (e) {}
-  var btns = document.querySelectorAll("nav button");
-  for (var i = 0; i < btns.length; i++) {
-    btns[i].onclick = function () { show(this.getAttribute("data-view")); };
-  }
   document.addEventListener("click", function (ev) {
-    var el = ev.target.closest ? ev.target.closest("[data-lot]") : null;
-    if (el) showLot(el.getAttribute("data-lot"));
+    var t = ev.target;
+    var lot = t.closest ? t.closest("[data-lot]") : null;
+    if (lot) { showLot(lot.getAttribute("data-lot")); return; }
+    var vw = t.closest ? t.closest("[data-view]") : null;
+    if (vw) show(vw.getAttribute("data-view"));
   });
+  document.getElementById("theme-btn").onclick = function () {
+    setTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  };
   document.getElementById("lot-back").onclick = function () {
     show(currentLot && DATA[currentLot] ? DATA[currentLot].country : "home");
   };
   document.getElementById("year").textContent = new Date().getFullYear();
+  renderTheme();
   applyText();
   show("home");
   loadData();
