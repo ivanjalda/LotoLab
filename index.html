@@ -965,6 +965,7 @@ var TX7 = {
     eng_t:"Lo que dice la estadística", eng_hot:"Los más frecuentes del histórico real", eng_late:"Los que más tiempo llevan sin salir", eng_extra:"{b}: los más frecuentes",
     eng_note:"Cálculo hecho con todos los sorteos reales de la era actual. Es una guía para elegir con criterio; cada sorteo es independiente.",
     hist1_t:"Cómo les ha ido a nuestras combinaciones", hist1_p:"Simulación con {n} sorteos pasados: las combinaciones del motor lograron {a} premios y las hechas al azar {b}. Cada semana se suma el resultado real.",
+    es_stale:"La fuente automática de esta lotería va con retraso (su último sorteo es del {d}). Las estadísticas se calculan con ese histórico; el último resultado de arriba está copiado de la web oficial.",
     seed_t:"Último resultado conocido", seed_note:"Copiado de la web oficial de Loterías y Apuestas del Estado. Se sustituirá solo cuando el motor consiga la fuente automática.",
     es_sug_n:"Combinaciones equilibradas con la estadística del histórico: reparten pares/impares y bajos/altos, mantienen una suma habitual y evitan números seguidos y solo fechas. Una guía para elegir con criterio.",
     es_nodata:"Bote y reparto de premios:", es_open:"ver en la web oficial →",
@@ -983,6 +984,7 @@ var TX7 = {
     eng_t:"What the statistics say", eng_hot:"Most frequent in the real history", eng_late:"Longest without being drawn", eng_extra:"{b}: most frequent",
     eng_note:"Calculated with all real draws of the current era. A guide for choosing with criteria; every draw is independent.",
     hist1_t:"How our combinations have done", hist1_p:"Simulation with {n} past draws: the engine's combinations got {a} prizes and random ones {b}. Each week the real result is added.",
+    es_stale:"The automatic source for this lottery is behind (its last draw is {d}). Statistics use that history; the latest result above is copied from the official site.",
     seed_t:"Latest known result", seed_note:"Copied from the official Loterías y Apuestas del Estado site. It will be replaced automatically once the engine reaches the automatic source.",
     es_sug_n:"Balanced combinations built from the history's statistics: they spread odd/even and low/high, keep a usual sum and avoid consecutive numbers and all-dates picks. A guide for choosing with criteria.",
     es_nodata:"Jackpot and prize breakdown:", es_open:"see on the official site →",
@@ -1669,6 +1671,7 @@ function esDataHtml(id, j, lang, nowMs) {
   var t = T[lang], h = "", i, g, name = j.name, l = j.last_draws[0], gr = j.rules.groups;
   h += '<div class="lbanner" style="' + lstyle(id) + '">' + emblem(id, true) + '<h1>' + esc(name) + '</h1></div>';
   h += '<p class="sub">' + fmt(t.es_src, { src: esc(j.source.name), n: fmtNum(j.total_draws, lang), a: fmtDate(j.first_draw, lang), b: fmtDate(j.last_draw, lang) }) + '</p>';
+  if (ESSEED[id] && ESSEED[id].date > j.last_draw) h += seedCardHtml(id, lang) + '<div class="warn">' + fmt(t.es_stale, { d: fmtDate(j.last_draw, lang) }) + '</div>';
   if (!j.source.official) h += '<div class="warn">' + t.es_unofficial + '</div>';
   for (i = 0; i < (j.warnings || []).length; i++) if (lang === "es" && j.warnings[i].indexOf("Fuente no oficial") !== 0) h += '<div class="warn">' + esc(j.warnings[i]) + '</div>';
   h += '<div class="card"><h2>' + t.last_draw + '</h2><p class="note">' + fmtDate(l.date, lang) + '</p><div>' + ballsE(l.main, l.extras, gr) + '</div><h3>' + t.last10 + '</h3><div>';
@@ -1806,6 +1809,7 @@ var ESSEED = {
   es_eurodreams:   { date: "2026-11-16", main: [2,4,11,14,17,18], extras: [2], groups: [{ idx: [0], hi: 5 }] },
   es_lototurf:     { date: "2026-11-15", main: [9,18,22,24,30,31], extras: [6,8], bote: 1940000, groups: [{ idx: [0], hi: 12 }, { idx: [1], hi: 9 }] }
 };
+function esUse(id) { return !!ESDATA[id] && (!ESSEED[id] || ESDATA[id].last_draw >= ESSEED[id].date); }
 function seedCardHtml(id, lang) {
   var s = ESSEED[id], t = T[lang];
   if (!s) return "";
@@ -1921,7 +1925,7 @@ function renderCountry(c) {
   var h = "";
   for (var i = 0; i < CATALOG[c].length; i++) {
     var item = CATALOG[c][i];
-    h += DATA[item.id] ? cardHtml(DATA[item.id], lang) : (c === "es" && ESDATA[item.id] ? esDataCardHtml(item, ESDATA[item.id], lang) : (c === "es" && ESINFO[item.id] ? esCardHtml(item, lang) : soonCardHtml(item, c, lang)));
+    h += DATA[item.id] ? cardHtml(DATA[item.id], lang) : (c === "es" && esUse(item.id) ? esDataCardHtml(item, ESDATA[item.id], lang) : (c === "es" && ESINFO[item.id] ? esCardHtml(item, lang) : soonCardHtml(item, c, lang)));
   }
   el.innerHTML = h;
 }
@@ -1932,7 +1936,7 @@ function renderHome() {
   if (loadState === "error") { el.innerHTML = '<p class="loading">' + T[lang].load_error + '</p>'; st.innerHTML = ""; return; }
   var list = loadedList(), h = "";
   for (var i = 0; i < list.length; i++) h += cardHtml(list[i], lang);
-  for (var q = 0; q < CATALOG.es.length; q++) if (ESDATA[CATALOG.es[q].id]) h += esDataCardHtml(CATALOG.es[q], ESDATA[CATALOG.es[q].id], lang);
+  for (var q = 0; q < CATALOG.es.length; q++) h += esUse(CATALOG.es[q].id) ? esDataCardHtml(CATALOG.es[q], ESDATA[CATALOG.es[q].id], lang) : esCardHtml(CATALOG.es[q], lang);
   el.innerHTML = h;
   st.innerHTML = statsHtml(list, lang);
 }
