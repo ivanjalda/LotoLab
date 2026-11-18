@@ -112,6 +112,8 @@
   .fb { padding:10px 12px 12px; }
   .fcard.ad .fimg { height:130px; font-size:2rem; }
   .imgwrap { display:block; position:relative; }
+  .fimg.contain { object-fit:contain; padding:10px; }
+  .fimg.contain.dark { background:#0b1119; }
   .imgwrap .over { position:absolute; left:0; top:0; }
   .clocks { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px; margin-bottom:6px; }
   .clock { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:10px 14px; box-shadow:var(--shadow); }
@@ -317,11 +319,11 @@ var TELEGRAM = { es: "", en: "" };   // Aquí irán los enlaces de los canales c
 
 // Publicidad propia. "img" es opcional: cuando haya foto, se pone aquí su dirección.
 var SITES = [
-  { n:"SportEVLab",       u:"https://sportevlab.com/",          ic:"⚽", c:"#177a43", img:"img/sportevlab.png",
+  { n:"SportEVLab",       u:"https://sportevlab.com/",          ic:"⚽", c:"#177a43", img:"img/sportevlab.png", fit:"dark",
     es:"Predicciones deportivas con datos reales", en:"Sports predictions with real data" },
   { n:"Nexus Terminal",   u:"https://nexusterminalalerts.com/", ic:"📈", c:"#1f5fa8", img:"https://nexusterminalalerts.com/og-image.jpg",
     es:"Lectura técnica del mercado, con la verdad por delante", en:"Technical market reading, with the truth first" },
-  { n:"Equity Intrinsic", u:"https://equityintrinsic.com/",     ic:"💼", c:"#7a4a17", img:"img/equityintrinsic.png",
+  { n:"Equity Intrinsic", u:"https://equityintrinsic.com/",     ic:"💼", c:"#7a4a17", img:"img/equityintrinsic.jpg",
     es:"Valor intrínseco y plazos de inversión", en:"Intrinsic value and investment horizons" },
   { n:"DAZMOND",          u:"https://dazmond.com/",             ic:"💎", c:"#6b3fa0", img:"https://dazmond.com/cdn/shop/files/Copilot_20250925_115716_11fbd060-87ac-4563-9c05-5d23591927f2.png?v=1775568425",
     es:"Ropa de lujo, bolsos y accesorios", en:"Luxury clothing, handbags and accessories" },
@@ -934,7 +936,7 @@ function newsCardHtml(it, lang, nowMs) {
 function adCardHtml(s, lang) {
   var t = T[lang], img = safeUrl(s.img);
   var band = '<div class="fimg" style="background:linear-gradient(135deg,' + esc(s.c) + ',#0b1a12)">' + s.ic + '</div>';
-  var top = img ? '<span class="imgwrap">' + band + '<img class="fimg over" src="' + img + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="dropCard(this)"></span>' : band;
+  var top = img ? '<span class="imgwrap">' + band + '<img class="fimg over' + (s.fit ? ' contain ' + s.fit : '') + '" src="' + img + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="dropCard(this)"></span>' : band;
   return '<a class="fcard ad" href="' + safeUrl(s.u) + '" target="_blank" rel="noopener sponsored">' + top +
     '<div class="fb"><span class="badge ad">' + t.ad_badge + '</span><b>' + esc(s.n) + '</b><small>' +
     esc(s[lang]) + '</small><em>' + t.ads_visit + '</em></div></a>';
