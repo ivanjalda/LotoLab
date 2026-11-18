@@ -16,6 +16,7 @@ IMPORTANTE (honestidad): cada sorteo es independiente. Ninguna estrategia puede 
 probabilidad de ganar; las diferencias entre estrategias son ruido estadistico y asi se avisa.
 """
 import csv
+import html as htmllib
 import io
 import json
 import os
@@ -31,6 +32,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from loteria_engine import DATA_DIR, save_json_if_changed, percentile  # noqa: E402
 
 UA = "LotoLab/1.0 (+https://github.com/ivanjalda/LotoLab)"
+UA_BROWSER = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 API = "https://www.loteriasyapuestas.es/servicios/buscadorSorteos"
 N_COMBOS = 5
 BACKTEST_DRAWS = 300
@@ -62,11 +64,14 @@ ES = [
 # ---------------------------------------------------------------------------
 # Descarga
 # ---------------------------------------------------------------------------
-def fetch(url, timeout=60):
+def fetch(url, timeout=60, ua=None, referer=None):
     ultimo = None
     for intento in range(2):
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*", "Accept-Language": "es,en;q=0.8"})
+            hdr = {"User-Agent": ua or UA, "Accept": "*/*", "Accept-Language": "es,en;q=0.8"}
+            if referer:
+                hdr["Referer"] = referer
+            req = urllib.request.Request(url, headers=hdr)
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 return r.read().decode("utf-8-sig", errors="replace")
         except Exception as e:  # noqa: BLE001
@@ -132,7 +137,16 @@ def src_api(cfg, today):
     for y in range(int(cfg["era"][:4]), today.year + 1):
         fin = today.strftime("%Y%m%d") if y == today.year else "%d1231" % y
         url = "%s?game_id=%s&celebrados=true&fechaInicioInclusiva=%d0101&fechaFinInclusiva=%s" % (API, cfg["api"], y, fin)
-        data = json.loads(fetch(url))
+        try:
+            body = fetch(url)
+        except RuntimeError:
+            if y != int(cfg["era"][:4]):
+                raise
+            body = fetch(url, ua=UA_BROWSER, referer="https://www.loteriasyapuestas.es/es/resultados")
+        try:
+            data = json.loads(body)
+        except ValueError:
+            raise RuntimeError("respuesta no es JSON: %r" % body[:120])
         if isinstance(data, dict):
             data = next((v for v in data.values() if isinstance(v, list)), [])
         for item in data:
@@ -158,9 +172,9 @@ def src_azar_primitiva(cfg, today):
         except ValueError:
             continue
     try:  # ultimos 50 sorteos de la pagina (mas al dia que el CSV)
-        html = fetch("https://www.azarysuerte.es/HistoricoPR.php")
-        text = re.sub(r"<[^>]+>", " ", html)
-        for m in re.finditer(r"d[ií]a\s+(\d\d)/(\d\d)/(\d{4})\s+((?:\d+\s+){6})C\s+(\d+)\s+R\s+(\d+)", text):
+        page = fetch("https://www.azarysuerte.es/HistoricoPR.php")
+        text = htmllib.unescape(re.sub(r"<[^>]+>", " ", page))
+        for m in re.finditer(r"(\d\d)/(\d\d)/(\d{4})\s+((?:\d{1,2}\s+){6})C\s*(\d{1,2})\s*R\s*(\d)", text):
             d = "%s-%s-%s" % (m.group(3), m.group(2), m.group(1))
             draws[d] = {"date": d, "main": sorted(int(x) for x in m.group(4).split()), "extras": [int(m.group(5)), int(m.group(6))]}
     except Exception:  # noqa: BLE001
@@ -192,15 +206,86 @@ def src_uk_euromillions(cfg, today):
         if d:
             out.append({"date": d, "main": main, "extras": stars})
     if not out:
-        raise RuntimeError("sin datos legibles")
+        out = parse_generic_csv(cfg, txt)
+    if not out:
+        raise RuntimeError("sin datos legibles; empieza por: %r" % txt[:140])
     return out, {"name": "UK National Lottery (resultados oficiales de EuroMillions)", "page": "https://www.national-lottery.co.uk/results/euromillions/draw-history", "official": True}
 
 
+DATE_FORMATS = ("%d/%m/%Y", "%Y-%m-%d", "%d-%m-%Y", "%d-%b-%Y", "%d/%m/%y", "%Y/%m/%d", "%a %d %b %Y")
+
+
+def parse_any_date(s):
+    s = (s or "").strip()
+    for fm in DATE_FORMATS:
+        try:
+            return datetime.strptime(s, fm).date().isoformat()
+        except ValueError:
+            pass
+    return None
+
+
+def parse_generic_csv(cfg, txt):
+    """CSV de cualquier forma: busca la fecha y los numeros (por nombre de columna o por orden)."""
+    k = cfg["k"]
+    ne = sum(len(g["idx"]) for g in cfg["groups"])
+    sample = txt[:2000]
+    delim = ";" if sample.count(";") > sample.count(",") else ","
+    rows = list(csv.reader(io.StringIO(txt), delimiter=delim))
+    head = [c.strip().lower() for c in rows[0]] if rows else []
+    main_cols = [i for i, c in enumerate(head) if re.match(r"^(n|b|bola|num|numero|número|ball)[ _]?\d{1,2}$", c)]
+    ext_cols = [i for i, c in enumerate(head) if re.search(r"comp|reint|clave|estrella|star|sue[ñn]o|caballo|^e\d$|^s\d$", c)]
+    by_name = len(main_cols) == k and len(ext_cols) == ne
+    out = []
+    for row in rows[1:]:
+        d = None
+        di = None
+        for i, c in enumerate(row):
+            d = parse_any_date(c)
+            if d:
+                di = i
+                break
+        if not d:
+            continue
+        try:
+            if by_name:
+                main = [int(row[i]) for i in main_cols]
+                ex = [int(row[i]) for i in ext_cols]
+            else:
+                nums = [int(c) for c in row[di + 1:] if re.fullmatch(r"\s*\d{1,2}\s*", c or "")]
+                if len(nums) < k + ne:
+                    continue
+                main, ex = nums[:k], nums[k:k + ne]
+        except (ValueError, IndexError):
+            continue
+        out.append({"date": d, "main": sorted(main), "extras": sorted(ex) if cfg["id"] == "es_euromillones" else ex})
+    return out
+
+
+def _gh_source(path, label):
+    def fn(cfg, today):
+        url = "https://raw.githubusercontent.com/Ana-2006-1967/loteria-estadisticas/main/" + path
+        txt = fetch(url)
+        draws = parse_generic_csv(cfg, txt)
+        if not draws:
+            raise RuntimeError("CSV sin sorteos legibles; cabecera: %r" % txt[:120])
+        if cfg["id"] == "es_primitiva":
+            try:
+                extra, _ = src_azar_primitiva(cfg, today)
+                have = {d["date"] for d in draws}
+                draws += [d for d in extra if d["date"] not in have]
+            except Exception:  # noqa: BLE001
+                pass
+        return draws, {"name": label, "page": "https://github.com/Ana-2006-1967/loteria-estadisticas", "official": False}
+    fn.__name__ = "src_github_" + path
+    return fn
+
+
 SOURCES = {
-    "es_primitiva": [src_api, src_azar_primitiva],
+    "es_primitiva": [src_api, _gh_source("primitiva_historico.csv", "Archivo público en GitHub (copia de los resultados oficiales)")],
     "es_bonoloto": [src_api],
-    "es_euromillones": [src_api, src_uk_euromillions],
-    "es_elgordo": [src_api],
+    "es_euromillones": [src_api, src_uk_euromillions, _gh_source("euro_historico.csv", "Archivo público en GitHub (copia de los resultados oficiales)")],
+    "es_elgordo": [src_api, _gh_source("gordo_historico.csv", "Archivo público en GitHub (copia de los resultados oficiales)")],
     "es_eurodreams": [src_api],
     "es_lototurf": [src_api],
 }
