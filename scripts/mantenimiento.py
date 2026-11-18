@@ -83,6 +83,22 @@ FEEDS = [
      "url": gnews('"lottery winner" OR "claimed" Powerball OR "Mega Millions" winner', "en")},
 ]
 
+# Periodicos y medios de actualidad (con foto en el propio RSS). Si alguno falla, se ignora y se avisa en el registro.
+GENERAL = [
+    ("es", "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada"),
+    ("es", "https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml"),
+    ("es", "https://www.20minutos.es/rss/"),
+    ("es", "https://www.lavanguardia.com/rss/home.xml"),
+    ("es", "https://www.abc.es/rss/2.0/portada/"),
+    ("es", "https://www.europapress.es/rss/rss.aspx"),
+    ("en", "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml"),
+    ("en", "https://feeds.bbci.co.uk/news/rss.xml"),
+    ("en", "https://feeds.npr.org/1001/rss.xml"),
+    ("en", "https://www.theguardian.com/world/rss"),
+]
+for _l, _u in GENERAL:
+    FEEDS.append({"lang": _l, "kind": "general", "url": _u})
+
 
 def clean_title(title, source):
     t = (title or "").strip()
@@ -126,7 +142,7 @@ def parse_feed(xml_bytes):
 
 
 def build_news(fetch=http_get):
-    out = {"es": {"news": [], "winners": []}, "en": {"news": [], "winners": []}}
+    out = {"es": {"news": [], "winners": [], "general": []}, "en": {"news": [], "winners": [], "general": []}}
     errors = []
     limit = iso(now_utc() - timedelta(days=MAX_AGE_DAYS))
     for f in FEEDS:
@@ -140,12 +156,21 @@ def build_news(fetch=http_get):
             errors.append("%s/%s: no se pudo leer (%s)" % (f["lang"], f["kind"], e))
             continue
         seen = {i["title"].lower() for i in out[f["lang"]][f["kind"]]}
+        general = f["kind"] == "general"
+        taken = 0
         for i in sorted(items, key=lambda x: x["date"], reverse=True):
             if i["date"] < limit or i["title"].lower() in seen:
                 continue
+            if general:
+                if taken >= 12:
+                    break
+                if not i["source"]:
+                    i["source"] = urllib.parse.urlparse(f["url"]).netloc.replace("www.", "")
+                taken += 1
             seen.add(i["title"].lower())
             out[f["lang"]][f["kind"]].append(i)
-        out[f["lang"]][f["kind"]] = out[f["lang"]][f["kind"]][:MAX_ITEMS]
+        lst = sorted(out[f["lang"]][f["kind"]], key=lambda x: x["date"], reverse=True)
+        out[f["lang"]][f["kind"]] = lst[:(60 if general else MAX_ITEMS)]
     return out, errors
 
 
