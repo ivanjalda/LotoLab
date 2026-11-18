@@ -110,7 +110,14 @@
   .fcard:hover { border-color:var(--green); }
   .fimg { display:flex; align-items:center; justify-content:center; width:100%; height:110px; object-fit:cover; font-size:2.4rem; background:linear-gradient(135deg,var(--green),#0e4d2a); color:#fff; }
   .fb { padding:10px 12px 12px; }
-  .fcard.ad .fimg { height:56px; font-size:1.4rem; }
+  .fcard.ad .fimg { height:100px; font-size:2rem; }
+  .imgwrap { display:block; position:relative; }
+  .imgwrap .over { position:absolute; left:0; top:0; }
+  .clocks { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:6px; }
+  .clock { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 14px; box-shadow:var(--shadow); }
+  .clock b { display:block; font-size:1.55rem; font-variant-numeric:tabular-nums; }
+  .clock span { display:block; font-weight:bold; font-size:.92rem; }
+  .clock small { color:var(--muted); font-size:.78rem; }
   .badge { display:inline-block; font-size:.68rem; font-weight:bold; text-transform:uppercase; letter-spacing:.05em; border-radius:6px; padding:1px 7px; margin-bottom:5px; background:var(--green-soft); color:var(--green); }
   .badge.ad { background:var(--warn-bg); color:var(--warn-fg); }
   .fb b { display:block; font-size:.92rem; line-height:1.3; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
@@ -170,6 +177,8 @@
     <section id="v-home" class="view">
       <h1 data-i18n="home_title"></h1>
       <p class="sub" data-i18n="home_sub"></p>
+      <h2 data-i18n="clocks_title"></h2>
+      <div id="home-clocks" class="clocks"></div>
       <div id="home-stats" class="stats"></div>
       <h2 data-i18n="latest_title"></h2>
       <div id="home-latest" class="grid"></div>
@@ -285,12 +294,18 @@ var TELEGRAM = { es: "", en: "" };   // Aquí irán los enlaces de los canales c
 
 // Publicidad propia. "img" es opcional: cuando haya foto, se pone aquí su dirección.
 var SITES = [
-  { n:"sportevlab.com",          u:"https://sportevlab.com/",          ic:"↗", c:"#177a43", img:"", es:"Visita sportevlab.com", en:"Visit sportevlab.com" },
-  { n:"nexusterminalalerts.com", u:"https://nexusterminalalerts.com/", ic:"↗", c:"#1f5fa8", img:"", es:"Visita nexusterminalalerts.com", en:"Visit nexusterminalalerts.com" },
-  { n:"equityintrinsic.com",     u:"https://equityintrinsic.com/",     ic:"↗", c:"#7a4a17", img:"", es:"Visita equityintrinsic.com", en:"Visit equityintrinsic.com" },
-  { n:"dazmond.com",             u:"https://dazmond.com/",             ic:"↗", c:"#6b3fa0", img:"", es:"Visita dazmond.com", en:"Visit dazmond.com" },
-  { n:"dazpremiumfit.com",       u:"https://dazpremiumfit.com/",       ic:"↗", c:"#a02d3f", img:"", es:"Visita dazpremiumfit.com", en:"Visit dazpremiumfit.com" },
-  { n:"www.valmontco.com",       u:"https://www.valmontco.com/",       ic:"↗", c:"#14697a", img:"", es:"Visita www.valmontco.com", en:"Visit www.valmontco.com" }
+  { n:"SportEVLab",       u:"https://sportevlab.com/",          ic:"⚽", c:"#177a43", img:"",
+    es:"Predicciones deportivas con datos reales", en:"Sports predictions with real data" },
+  { n:"Nexus Terminal",   u:"https://nexusterminalalerts.com/", ic:"📈", c:"#1f5fa8", img:"https://nexusterminalalerts.com/og-image.jpg",
+    es:"Lectura técnica del mercado, con la verdad por delante", en:"Technical market reading, with the truth first" },
+  { n:"Equity Intrinsic", u:"https://equityintrinsic.com/",     ic:"💼", c:"#7a4a17", img:"",
+    es:"Valor intrínseco y plazos de inversión", en:"Intrinsic value and investment horizons" },
+  { n:"DAZMOND",          u:"https://dazmond.com/",             ic:"💎", c:"#6b3fa0", img:"https://dazmond.com/cdn/shop/files/Copilot_20250925_115716_11fbd060-87ac-4563-9c05-5d23591927f2.png?v=1775568425",
+    es:"Ropa de lujo, bolsos y accesorios", en:"Luxury clothing, handbags and accessories" },
+  { n:"DAZ Premium Fit",  u:"https://dazpremiumfit.com/",       ic:"💪", c:"#a02d3f", img:"https://dazpremiumfit.com/cdn/shop/files/f8bc49e2-f715-4a8d-aab8-6fbea8d7f3d4_91f710a0-5d71-463a-b4b0-843f4b06fbf4.jpg?v=1740522264",
+    es:"Ropa deportiva y de culturismo exclusiva", en:"Exclusive sportswear and bodybuilding clothing" },
+  { n:"Valmont & Co.",    u:"https://www.valmontco.com/",       ic:"📚", c:"#14697a", img:"https://www.valmontco.com/cdn/shop/files/Gemini_Generated_Image_rn5qnprn5qnprn5q_332c8c1b-d38f-49f7-b964-fe5d442752d6.png",
+    es:"Gestión de patrimonio y Academia de Inversión", en:"Wealth management and Investment Academy" }
 ];
 
 var T = {
@@ -330,7 +345,7 @@ var T = {
     winners_empty:"Todavía no hay titulares cargados. Se actualizan automáticamente cada pocas horas.",
     news_title:"Noticias", news_sub:"Premios y novedades del mundo de las loterías. Titulares con enlace al medio original, actualizados varias veces al día.",
     news_empty:"Todavía no hay noticias cargadas. Se actualizan automáticamente cada pocas horas.",
-    news_badge:"Noticia", ad_badge:"Publicidad", rail_empty:"Las noticias aparecerán aquí en cuanto se carguen.",
+    clocks_title:"Hora actual en el mundo", news_badge:"Noticia", ad_badge:"Publicidad", rail_empty:"Las noticias aparecerán aquí en cuanto se carguen.",
     ago_now:"hace un momento", ago_h:"hace {h} h", ago_d:"hace {d} d",
     guide_title:"Guía de la lotería", guide_sub:"Historia, quién gestiona cada juego, qué hacer si te toca y cómo tributan los premios.",
     g1:"Historia de las loterías", g2:"Quién gestiona cada lotería", g3:"Qué hacer si te toca", g4:"Impuestos sobre los premios", g5:"Curiosidades",
@@ -396,7 +411,7 @@ var T = {
     winners_empty:"No headlines loaded yet. They update automatically every few hours.",
     news_title:"News", news_sub:"Prizes and updates from the lottery world. Headlines linking to the original outlet, updated several times a day.",
     news_empty:"No news loaded yet. They update automatically every few hours.",
-    news_badge:"News", ad_badge:"Advertising", rail_empty:"News will appear here as soon as they load.",
+    clocks_title:"Current time around the world", news_badge:"News", ad_badge:"Advertising", rail_empty:"News will appear here as soon as they load.",
     ago_now:"just now", ago_h:"{h} h ago", ago_d:"{d} d ago",
     guide_title:"Lottery guide", guide_sub:"History, who runs each game, what to do if you win and how prizes are taxed.",
     g1:"History of lotteries", g2:"Who runs each lottery", g3:"What to do if you win", g4:"Taxes on prizes", g5:"Curiosities",
@@ -440,6 +455,34 @@ var CATALOG = {
   ]
 };
 
+var ZONES = [
+  { tz:"Europe/Madrid",                es:"Madrid",          en:"Madrid" },
+  { tz:"Europe/London",                es:"Londres",         en:"London" },
+  { tz:"America/New_York",             es:"Nueva York",      en:"New York" },
+  { tz:"America/Chicago",              es:"Chicago",         en:"Chicago" },
+  { tz:"America/Los_Angeles",          es:"Los Ángeles",     en:"Los Angeles" },
+  { tz:"America/Mexico_City",          es:"Ciudad de México",en:"Mexico City" },
+  { tz:"America/Bogota",               es:"Bogotá",          en:"Bogotá" },
+  { tz:"America/Argentina/Buenos_Aires",es:"Buenos Aires",   en:"Buenos Aires" }
+];
+// Hora y dia reales de cada zona, calculados por el navegador (sin inventar nada).
+function clockParts(tz, lang, nowMs) {
+  var d = new Date(nowMs);
+  try {
+    return {
+      time: new Intl.DateTimeFormat(loc(lang), { timeZone: tz, hour: "2-digit", minute: "2-digit", hour12: false }).format(d),
+      day: new Intl.DateTimeFormat(loc(lang), { timeZone: tz, weekday: "short", day: "numeric", month: "short" }).format(d)
+    };
+  } catch (e) { return { time: "--:--", day: "" }; }
+}
+function clocksHtml(lang, nowMs) {
+  var h = "";
+  for (var i = 0; i < ZONES.length; i++) {
+    var p = clockParts(ZONES[i].tz, lang, nowMs);
+    h += '<div class="clock"><span>' + esc(ZONES[i][lang]) + '</span><b>' + p.time + '</b><small>' + esc(p.day) + '</small></div>';
+  }
+  return h;
+}
 function fmt(s, vars) {
   return s.replace(/\{(\w+)\}/g, function (m, k) { return vars[k] !== undefined ? vars[k] : m; });
 }
@@ -562,8 +605,8 @@ function newsCardHtml(it, lang, nowMs) {
 }
 function adCardHtml(s, lang) {
   var t = T[lang], img = safeUrl(s.img);
-  var top = img ? '<img class="fimg" src="' + img + '" alt="" loading="lazy">' :
-    '<div class="fimg" style="background:linear-gradient(135deg,' + esc(s.c) + ',#0b1a12)">' + s.ic + '</div>';
+  var band = '<div class="fimg" style="background:linear-gradient(135deg,' + esc(s.c) + ',#0b1a12)">' + s.ic + '</div>';
+  var top = img ? '<span class="imgwrap">' + band + '<img class="fimg over" src="' + img + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span>' : band;
   return '<a class="fcard ad" href="' + safeUrl(s.u) + '" target="_blank" rel="noopener sponsored">' + top +
     '<div class="fb"><span class="badge ad">' + t.ad_badge + '</span><b>' + esc(s.n) + '</b><small>' +
     esc(s[lang]) + '</small><em>' + t.ads_visit + '</em></div></a>';
@@ -588,7 +631,7 @@ function mixFeed(news, ads, rnd) {
   return out;
 }
 // Reparte noticias y anuncios entre izquierda, derecha y abajo, sin repetir.
-// Pocos anuncios (1 por zona) y siempre mezclados entre las noticias, en sitio al azar.
+// Salen todos los anuncios (2 por zona) y siempre mezclados entre las noticias, en sitio al azar.
 function planZones(news, ads, rnd) {
   var n = shuffled(news, rnd), a = shuffled(ads, rnd);
   var sizes = { left: 6, right: 6, bottom: 4 }, names = ["left", "right", "bottom"], out = {}, ni = 0, z;
@@ -597,9 +640,10 @@ function planZones(news, ads, rnd) {
   for (z = 0; z < 3; z++) {
     var cnt = per === null ? sizes[names[z]] : per, items = [], k;
     for (k = 0; k < cnt && ni < n.length; k++) items.push({ k: "n", v: n[ni++] });
-    if (a[z]) {
+    var mine = a.slice(z * 2, z * 2 + 2), q;
+    for (q = 0; q < mine.length; q++) {
       var pos = Math.floor(rnd() * (items.length + 1));
-      items.splice(pos, 0, { k: "a", v: a[z] });
+      items.splice(pos, 0, { k: "a", v: mine[q] });
     }
     out[names[z]] = items;
   }
@@ -808,6 +852,11 @@ function renderFeeds() {
   renderRails();
 }
 
+function renderClocks() {
+  var el = document.getElementById("home-clocks");
+  if (el) el.innerHTML = clocksHtml(lang, Date.now());
+}
+
 function renderRev() {
   var el = document.getElementById("rev");
   if (!REV || !REV.checked_utc) { el.textContent = ""; return; }
@@ -895,7 +944,7 @@ function applyText() {
   document.getElementById("btn-es").className = lang === "es" ? "on" : "";
   document.getElementById("btn-en").className = lang === "en" ? "on" : "";
   renderHome(); renderCountry("es"); renderCountry("us"); renderLot();
-  renderFeeds(); renderTelegram(); renderCheckForm(); renderRev();
+  renderFeeds(); renderClocks(); renderTelegram(); renderCheckForm(); renderRev();
   var res = document.getElementById("ck-result");
   if (res) res.innerHTML = "";
 }
@@ -988,6 +1037,7 @@ function loadRev() {
   loadData();
   loadNews();
   loadRev();
+  setInterval(renderClocks, 15 * 1000);
   setInterval(renderRails, 25 * 1000);   // los laterales y la franja de abajo cambian al azar cada 25 s
   setInterval(loadNews, 30 * 60 * 1000);   // si la pagina sigue abierta, refresca noticias y publicidad
 })();
