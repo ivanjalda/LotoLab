@@ -1,0 +1,101 @@
+{
+ "generado_utc": "2026-11-18T04:24:37Z",
+ "pruebas": [
+  {
+   "nombre": "ES La Primitiva (buscador)",
+   "url": "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=LAPR&celebrados=true&fechaInicioInclusiva=20261028&fechaFinInclusiva=20261118",
+   "estado": 403,
+   "error": "HTTP Error 403: Forbidden"
+  },
+  {
+   "nombre": "ES Euromillones (buscador)",
+   "url": "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=EMIL&celebrados=true&fechaInicioInclusiva=20261028&fechaFinInclusiva=20261118",
+   "estado": 403,
+   "error": "HTTP Error 403: Forbidden"
+  },
+  {
+   "nombre": "ES Bonoloto (buscador)",
+   "url": "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=BONO&celebrados=true&fechaInicioInclusiva=20261028&fechaFinInclusiva=20261118",
+   "estado": 403,
+   "error": "HTTP Error 403: Forbidden"
+  },
+  {
+   "nombre": "ES El Gordo (buscador)",
+   "url": "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=ELGR&celebrados=true&fechaInicioInclusiva=20261028&fechaFinInclusiva=20261118",
+   "estado": 403,
+   "error": "HTTP Error 403: Forbidden"
+  },
+  {
+   "nombre": "ES EuroDreams (buscador)",
+   "url": "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=EDMS&celebrados=true&fechaInicioInclusiva=20261028&fechaFinInclusiva=20261118",
+   "estado": 403,
+   "error": "HTTP Error 403: Forbidden"
+  },
+  {
+   "nombre": "ES Lototurf (buscador)",
+   "url": "https://www.loteriasyapuestas.es/servicios/buscadorSorteos?game_id=LOTU&celebrados=true&fechaInicioInclusiva=20261028&fechaFinInclusiva=20261118",
+   "estado": 403,
+   "error": "HTTP Error 403: Forbidden"
+  },
+  {
+   "nombre": "ES Euromillones (resultados por fecha)",
+   "url": "https://www.loteriasyapuestas.es/servicios/resultados?game_id=EMIL&fecha_sorteo=20261118",
+   "estado": 403,
+   "error": "HTTP Error 403: Forbidden"
+  },
+  {
+   "nombre": "ES ultimos sorteos (pagina)",
+   "url": "https://www.loteriasyapuestas.es/es/resultados-ultimos-sorteos",
+   "estado": 403,
+   "error": "HTTP Error 403: Forbidden"
+  },
+  {
+   "nombre": "US Powerball bote (powerball.com)",
+   "url": "https://www.powerball.com/api/v1/estimates/powerball?_format=json",
+   "estado": 200,
+   "tipo": "text/html; charset=utf-8",
+   "bytes": 10231,
+   "muestra": "\u001f�\b\u0000\u0000\u0000\u0000\u0000\u0004\u0003��Qt�w\u000e�\fpU�(�ͱ�\u0001Q\n9�y�J�yJ\n\u0015�9y�V��J\u0019%%\u0005V���\u0005�y�E�\u0005\u0019\u0005E�%���9z�E����\u0019���J ���)v\\\n\n\\6��%�\n�\u0019�Eũ%�J�!n�\u0016 \u0005`���T[�������\u0012%�����Լ\u0012[��̔�\f۔Բ��T]0G'3/�$31G�891'��P�\u0000dJIfIN��G~n�B�B@~yjQRbN��>D\u001cj9Ė����̂���<%�����Ԣ�J[��t+\u0014\u0019�\u0013�)�d&g��\u0014+$\u0016�*�\u0018)\u0014�\u0016)\u0014�$V�)�\u0014%�g�Cd2RsR\u0014R�R�*\u0015|��R\u0012+u\u0014�SS�R�S\u0012+\u0015\u0012�R\u0014�\u0013KJ���\u0012\u0005C\u0003+SK�\u0002�\\=\u0005�\u0010=%};.\u0014�\u0016�'�\u0014#�Gf^Jj�NZ~NN~9X���MNf^�BQj��Rrb^~^frb��BFQj\u001a$���������\n`������\u000fҬ\u0000\u0006H�\u0013sJR��\u0012KR��\u000f�\u0001�0tC�)50�\u0018b)��b]�\b�����B7%5-�4�\u0004b$$-B�C^jIqAbQvjQj^IjQAQfq�nqfI�nYjQfZfr\"$��Ӄ���q�q��n�a�����E�n��i�n�Q������i���\u0012(�#ے[�XP�\u00035L7$3'�9?'�\b)f�S\u0012M���1\u001dX��������<\r\f����ep�G2\u001e�5p*.-�AR\n���\u0012\r�_��U\u0016�\"�P��\u0004\nA��\r������# gǃ\u0012\u0006�o�\u0005\u0000N�d�&�#�\u001f\u0016��)yhٮ��P\u001f��\u0018Qr��s�nN~z������^yjR���>(\u001d�r)\u0016���\n@$w��ţdCpɊ\u0012M\u0010-VH�\u001c��S��!\u0019�\u000b)�\u0015�T�\u0016g���()䦦d&�*%��\u000b\u0017}�����b�������Ă�bpɒ\\\\l�����Si�_���\u001d��W�휟���W��bel`�cl`��cn`P\u0003W�\u0010610�1\u0001ɛ\u0019\u0018蘁\u0018�\u0006\u0006 ř:\u0016\u0006\u0006 �\t*�\u0011�\u001e!G�\u0016��T\u0016�fg��奖���V�$�%\u0017\u0017�6\b���\u001e�����`�u�,�R3,r��f�\"\r%\u00103�J�KK\u00142�A5\u000e�)�J�4�_�\u000b\u0011#�6�\u000eP�I��,04�OK,\u0003i��L�\u0007�\u0013�h\u0003\u00155��%���\u0019P\u000b�3�R�m�\f-\f*\f-\f \u0005-�v��=����噥��e���\u0015䥣�\fr��\u0002�\u0017����\u001b\u001bU\u0018\u001b�d�a^�EE~�\u0011̷�`#H��Ь�Ќ$��ˋR��*r�6���fsnb^fZjq\t�x}P\u0019\u0002ʿ\b\t};�\u0004��X�\r�\u0017p�n���lah`�Q�⍗ʂ��\u0012��\u001c��ĴĢL݂̼��\u0014ݒ�$��2H�p�@Z:�\b��O)�IURHIMK-R(.J&�\u0002���s\u00133�t\u000b�\u000bsJs�������l�!��Z*\u0010\u0016�Q���ٙ�9���� ��U��[��X�Z��_\u0012��\u001d\\R�\u00042O!%�$Q7%?�475�D\u0017T��&���*�\u0014��RIjE�~VbY\"�B%�f$�\u0010�k!jl�,�M,�\rL�u\u0013��,uM��Rt\u0013�-�t͍�L\r�\u0012S�\f-��\u0014���\u001aZ�v�q���%��\u0002\n�\u0005%��VxQbAAj���B�B-\u0017R�p�4�\n�R����R��)\u0004V=$�\u0015�&�ʤ���l}%����������<p����q\u001b�D\rC��aH\n5\fI�K�M����ML)�,.I�\u0005�)d\u0006M1\u0015�J*��OLI-\u00029�ܨJ,�ԣ�9�r!9?/-31�D73�$5�\b�H-\u0006�%��BM���\nZ���:��\u0011�$I���O�)\u0006Wm��\b,���mrZbqe^��RZbN"
+  },
+  {
+   "nombre": "US Powerball sorteos (powerball.com)",
+   "url": "https://www.powerball.com/api/v1/numbers/powerball/recent?_format=json",
+   "estado": 200,
+   "tipo": "text/html; charset=utf-8",
+   "bytes": 77073,
+   "muestra": "\n\n<!DOCTYPE html>\n<html lang=\"en\" xmlns:og=\"http://opengraphprotocol.org/schema\">\n<head>\n  \n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\">\n<title>Previous Results | Powerball</title>\n<meta name=\"description\" property=\"og:description\" content=\"The official Powerball website. View draw results for Powerball, Double Play, Lotto America and 2by2. Search previous draw results by date and find the number of winners by prize tier. \"/>\n\n<meta name=\"robots\" content=\"index,follow\"/>\n\n  <link rel=\"canonical\" href=\"https://www.powerball.com/previous-results?gc=powerball\"/>\n      <link rel=\"alternate\" href=\"https://www.powerball.com/previous-results?gc=powerball\" hreflang=\"en-US\"/>\n      <link rel=\"alternate\" href=\"https://www.powerball.com/es/sorteos-anteriores?gc=powerball\" hreflang=\"es-MX\"/>\n    <link rel=\"alternate\" href=\"https://www.powerball.com/previous-results?gc=powerball\" hreflang=\"x-default\"/>\n  <meta name=\"netsparkerenterprise-site-verification\" content=\"5383c3c0-c1b8-458c-d75b-b2c203935f65\">\n  <meta name=\"msapplication-TileColor\" content=\"#da532c\"/>\n  <meta name=\"theme-color\" content=\"#ffffff\"/>\n  <meta property=\"og:title\" content=\"Previous Results\"/>\n  <meta property=\"og:url\" content=\"https://www.powerball.com/previous-results?gc=powerball\"/>\n  <meta property=\"og:type\" content=\"website\"/>\n  <meta property=\"og:description\" content=\"The official Powerball website. View draw results for Powerball, Double Play, Lotto America and 2by2"
+  },
+  {
+   "nombre": "US Mega Millions (megamillions.com)",
+   "url": "https://www.megamillions.com/cmspages/utilservice.asmx/GetLatestDrawData",
+   "estado": 200,
+   "tipo": "text/xml; charset=utf-8",
+   "bytes": 3348,
+   "muestra": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<string xmlns=\"http://tempuri.org/\">{\"Drawing\":{\"PlayDate\":\"2026-11-17T00:00:00\",\"N1\":3,\"N2\":10,\"N3\":19,\"N4\":28,\"N5\":33,\"MBall\":21,\"Megaplier\":-1,\"UpdatedBy\":\"SERVICE\",\"UpdatedTime\":\"2026-11-17T23:07:01\",\"PlayDateTicks\":639304704000000000,\"IgnoreServiceUntil\":null},\"Jackpot\":{\"PlayDate\":\"2026-11-17T00:00:00\",\"CurrentPrizePool\":600000000.0,\"NextPrizePool\":629000000.0,\"CurrentCashValue\":246900000.0,\"NextCashValue\":258800000.0,\"Winners\":0,\"Verified\":false,\"UpdatedBy\":\"SERVICE\",\"UpdatedTime\":\"2026-11-17T21:31:02\"},\"PrizeTiers\":[],\"MatchWinners\":{\"PlayDate\":\"2026-11-17T00:00:00\",\"WinnerText\":\"Match 5 + 0:\",\"RawText\":\"NOT SET\",\"ManualEntry\":false},\"MatchWinnersLocation\":[],\"PrizeMatrix\":{\"MatrixID\":4,\"MatrixStart\":\"2025-04-04T00:00:00\",\"MatrixEnd\":\"0001-01-01T00:00:00\",\"WhiteBallMax\":70,\"MegaBallMax\":24,\"MatrixCurrent\":true,\"TicketPrice\":5,\"FooterText\":\"Mega Millions drawings are held Tuesday and Friday at 11:00 pm ET. Five white balls are drawn from a set of balls numbered 1 through 70; one gold Mega Ball is drawn from a set of balls numbered 1 through 24. You win if the numbers on one row of your ticket match the numbers of the balls drawn on that date. There are nine ways to win a prize, from $10 to the jackpot. If no one wins the jackpot, the money is added to the jackpot for the next drawing. Overall chances of winning a prize are 1 in 23.\",\"PrizeTiers\":[{\"MatrixRowId\":30,\"MatrixID\":4,\"PrizeTier\":0,\"TierWhiteBall\":5,\"TierMegaBall\":true,\""
+  },
+  {
+   "nombre": "US Texas Mega Millions CSV",
+   "url": "https://www.texaslottery.com/export/sites/lottery/Games/Mega_Millions/Winning_Numbers/megamillions.csv",
+   "estado": 200,
+   "tipo": "text/csv",
+   "bytes": 102679,
+   "muestra": "Mega Millions,12,5,2003,12,44,15,18,1,42,4\nMega Millions,12,9,2003,14,15,48,4,24,41,4\nMega Millions,12,12,2003,16,32,46,9,45,26,4\nMega Millions,12,16,2003,47,16,31,24,46,47,3\nMega Millions,12,19,2003,5,10,39,17,35,38,3\nMega Millions,12,23,2003,2,49,13,21,22,52,4\nMega Millions,12,26,2003,29,20,10,17,1,36,2\nMega Millions,12,30,2003,46,21,12,32,18,49,4\nMega Millions,1,2,2004,8,7,36,48,44,9,4\nMega Millions,1,6,2004,32,7,15,25,13,9,4\nMega Millions,1,9,2004,49,24,47,32,38,12,4\nMega Millions,1,13,2004,18,21,17,45,3,21,4\nMega Millions,1,16,2004,49,12,26,41,44,44,3\nMega Millions,1,20,2004,45,5,14,7,21,36,4\nMega Millions,1,23,2004,18,10,33,46,51,13,4\nMega Millions,1,27,2004,38,20,10,50,6,27,3\nMega Millions,1,30,2004,40,28,17,51,30,44,4\nMega Millions,2,3,2004,41,26,21,35,9,17,4\nMega Millions,2,6,2004,6,16,49,30,1,13,4\nMega Millions,2,10,2004,32,22,10,3,7,23,2\nMega Millions,2,13,2004,30,45,14,43,42,30,4\nMega Millions,2,17,2004,36,34,2,52,8,21,4\nMega Millions,2,20,2004,1,30,21,20,13,24,4\nMega Millions,2,24,2004,6,52,49,43,11,21,3\nMega Millions,2,27,2004,9,36,52,24,2,44,4\nMega Millions,3,2,2004,25,50,30,35,40,4,4\nMega Millions,3,5,2004,49,30,40,52,47,3,3\nMega Millions,3,9,2004,29,36,23,51,16,49,4\nMega Millions,3,12,2004,32,4,36,29,35,11,4\nMega Millions,3,16,2004,51,49,45,28,3,52,4\nMega Millions,3,19,2004,9,32,14,6,50,4,4\nMega Millions,3,23,2004,46,22,12,39,35,32,4\nMega Millions,3,26,2004,37,8,17,10,49,20,3\nMega Millions,3,30,2004,3,45,31,27,41,33,3\nMega Millions,4,2,2004,17,46,25,8,47,13,4"
+  },
+  {
+   "nombre": "US Texas Powerball CSV",
+   "url": "https://www.texaslottery.com/export/sites/lottery/Games/Powerball/Winning_Numbers/powerball.csv",
+   "estado": 200,
+   "tipo": "text/csv",
+   "bytes": 78756,
+   "muestra": "Powerball,2,3,2010,37,52,22,36,17,24,2\nPowerball,2,6,2010,22,54,52,14,59,4,3\nPowerball,2,10,2010,29,8,37,38,5,34,5\nPowerball,2,13,2010,14,10,40,51,30,1,4\nPowerball,2,17,2010,36,7,26,8,19,15,3\nPowerball,2,20,2010,13,54,41,37,27,32,2\nPowerball,2,24,2010,50,17,57,35,4,12,2\nPowerball,2,27,2010,47,18,58,53,51,30,2\nPowerball,3,3,2010,14,49,9,7,45,23,4\nPowerball,3,6,2010,41,33,10,59,29,15,2\nPowerball,3,10,2010,41,37,17,50,21,1,2\nPowerball,3,13,2010,16,36,20,6,31,8,5\nPowerball,3,17,2010,55,26,48,45,24,8,2\nPowerball,3,20,2010,9,36,44,45,39,9,2\nPowerball,3,24,2010,14,49,39,24,20,7,3\nPowerball,3,27,2010,21,7,32,52,44,10,4\nPowerball,3,31,2010,13,45,54,5,17,12,5\nPowerball,4,3,2010,15,59,52,10,31,4,4\nPowerball,4,7,2010,36,52,44,4,40,33,2\nPowerball,4,10,2010,21,22,52,49,58,34,2\nPowerball,4,14,2010,14,6,32,52,38,20,3\nPowerball,4,17,2010,22,41,49,21,5,15,5\nPowerball,4,21,2010,11,34,55,41,49,20,2\nPowerball,4,24,2010,57,56,1,53,12,5,2\nPowerball,4,28,2010,28,44,12,22,25,24,4\nPowerball,5,1,2010,23,25,16,49,58,20,4\nPowerball,5,5,2010,47,13,34,40,57,11,4\nPowerball,5,8,2010,41,5,57,34,22,31,5\nPowerball,5,12,2010,52,58,53,37,51,38,2\nPowerball,5,15,2010,28,15,36,23,21,20,2\nPowerball,5,19,2010,7,58,55,29,2,27,3\nPowerball,5,22,2010,20,19,47,57,40,29,2\nPowerball,5,26,2010,6,20,10,1,13,32,4\nPowerball,5,29,2010,24,3,28,1,41,10,4\nPowerball,6,2,2010,39,14,43,9,4,38,4\nPowerball,6,5,2010,18,34,40,59,48,25,4\nPowerball,6,9,2010,22,49,27,14,32,5,4\nPowerball,6,12,2010,38,13,12,9,35,30,10\nPowerball,6,16,2010,29,18,"
+  },
+  {
+   "nombre": "US Texas Mega Millions (pagina)",
+   "url": "https://www.texaslottery.com/export/sites/lottery/Games/Mega_Millions/Winning_Numbers/index.html_98045118.html",
+   "estado": 200,
+   "tipo": "text/html",
+   "bytes": 69528,
+   "muestra": "\n\n\n\n\n\n<!doctype html>\n<html class=\"no-js\" lang=\"en\">\n<head>\n<title>Texas Lottery | Mega Millions Past Winning Numbers</title>\n<meta name=\"description\" content=\"Mega Millions Past Winning Numbers\" >\n<meta name=\"keywords\" content=\"Mega Millions, Past, Winning Numbers\" >\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" >\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0\" />\n<meta name=\"author\" content=\"Texas Lottery\">\n<link type=\"text/css\" rel=\"stylesheet\" href=\"/export/txlottery.org/resources/foundation-2.css\" media=\"screen\">\n<!-- Texas Lottery Styles -->\n<link type=\"text/css\" rel=\"stylesheet\" href=\"/export/txlottery.org/resources/custom-2.css\" media=\"screen\">\n<link type=\"text/css\" rel=\"stylesheet\" href=\"/export/txlottery.org/resources/fonts.css\" media=\"screen\" />\n<!-- Print Styles -->\n<link type=\"text/css\" rel=\"stylesheet\" href=\"/export/txlottery.org/resources/print.css\" media=\"print\" />\n<!-- additional toolkits -->\n<link type=\"text/css\" rel=\"stylesheet\" href=\"/export/txlottery.org/resources/browser_detect.css\" media=\"screen\" />\n<link type=\"text/css\" rel=\"stylesheet\" href=\"/export/txlottery.org/resources/jquery.rtResponsiveTables.css\" media=\"screen\" />\n<link rel=\"shortcut icon\" href=\"/export/sites/lottery/favicon.ico\" type=\"image/x-icon\" />\n<link href=\"/export/sites/lottery/Images/icons/apple-touch-icon.png\" rel=\"apple-touch-icon\" />\n<link href=\"/export/sites/lottery/Images/icons/apple-touch-icon-76x76.pn"
+  }
+ ]
+}
