@@ -332,7 +332,7 @@ def check_site(add, fetch=http_get):
     if code != 200:
         add("web", "error", "La web no responde (codigo %s)" % code)
         return
-    for sec in ("v-sug", "v-calc", "v-guide", "rail-left", "rail-right", "bottom-mix"):
+    for sec in ("v-sug", "v-calc", "v-guide", "special-es", "rail-left", "rail-right", "bottom-mix"):
         if 'id="%s"' % sec not in html:
             add("web", "error", "A la web publicada le falta la seccion %s" % sec)
     if "LotoLab" not in html or 'id="v-home"' not in html:
@@ -396,6 +396,34 @@ def check_content(add):
             add("contenido", "error", "%s: faltan datos nuevos en el JSON (%s). Hay que ejecutar 'Actualizar datos LotoLab'." % (it["id"], ", ".join(miss)))
         else:
             add("contenido", "ok", "%s: calendario y premios presentes" % it["id"])
+
+
+def check_botes(add):
+    """El bote de Mega Millions debe existir, ser coherente y estar al dia."""
+    try:
+        b = read_json(os.path.join(DATA_DIR, "botes.json"))
+    except Exception:  # noqa: BLE001
+        add("botes", "error", "No existe data/botes.json (botes de EE. UU.)")
+        return
+    mm = b.get("lotteries", {}).get("us_megamillions")
+    if not mm:
+        add("botes", "error", "Mega Millions: no hay bote guardado")
+        return
+    today = now_utc().date()
+    try:
+        nxt = datetime.strptime(mm["next"]["date"], "%Y-%m-%d").date()
+        last = datetime.strptime(mm["last"]["date"], "%Y-%m-%d").date()
+    except Exception:  # noqa: BLE001
+        add("botes", "error", "Mega Millions: fechas del bote ilegibles")
+        return
+    if mm["next"]["jackpot"] <= 0 or mm["next"]["cash"] <= 0 or mm["next"]["cash"] > mm["next"]["jackpot"]:
+        add("botes", "error", "Mega Millions: el bote tiene cifras incoherentes")
+    elif nxt < today - timedelta(days=1):
+        add("botes", "error", "Mega Millions: el bote guardado es de un sorteo ya pasado (%s)" % mm["next"]["date"])
+    elif (today - last).days > 8:
+        add("botes", "warn", "Mega Millions: el ultimo sorteo guardado es del %s" % mm["last"]["date"])
+    else:
+        add("botes", "ok", "Mega Millions: bote del proximo sorteo (%s) guardado" % mm["next"]["date"])
 
 
 def check_predictions(add):
@@ -511,6 +539,7 @@ def run_checks(fetch=http_get):
     check_links(add, fetch)
     check_content(add)
     check_predictions(add)
+    check_botes(add)
     check_photos(add, fetch)
     check_script(add)
     return checks, data_ok
@@ -584,6 +613,14 @@ def revisar():
         if not any(c["area"] == "predicciones" and c["level"] == "error" for c in checks):
             checks.append({"area": "predicciones", "level": "ok",
                            "detail": "Corregido automaticamente: se recalcularon las combinaciones"})
+    if any(c["area"] == "botes" and c["level"] == "error" for c in checks):
+        print("Problema con los botes: se vuelven a descargar.")
+        bot = os.path.join(os.path.dirname(os.path.abspath(__file__)), "botes.py")
+        subprocess.run([sys.executable, bot], check=False)
+        checks, data_ok = run_checks()
+        fixed = True
+        if not any(c["area"] == "botes" and c["level"] == "error" for c in checks):
+            checks.append({"area": "botes", "level": "ok", "detail": "Corregido automaticamente: se volvieron a descargar los botes"})
     errors = ["[%s] %s" % (c["area"], c["detail"]) for c in checks if c["level"] == "error"]
     warnings = ["[%s] %s" % (c["area"], c["detail"]) for c in checks if c["level"] == "warn"]
     informe = {"checked_utc": iso(now_utc()), "ok": not errors, "errors": errors,

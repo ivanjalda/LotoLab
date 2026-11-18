@@ -72,9 +72,9 @@ LOTTERIES = [
         "prize_min_main": 3, "prize_min_main_with_bonus": 0,
         "draw_days": [1, 4], "draw_time_et": "23:00",        # martes y viernes, 11 p.m. ET (NBC New York)
         "price_usd": 5,
-        "prize_source": "North Dakota Lottery (lottery.nd.gov)",
+        "prize_source": "megamillions.com and North Dakota Lottery",
         "prize_note": "Premio base: cada jugada de 5 $ lleva un multiplicador de x2 a x10 en los premios menores. El premio gordo cambia en cada sorteo.",
-        "prizes": {"5-0": 1000000, "4-1": 10000, "4-0": 500, "3-1": 200, "3-0": 10, "2-1": 10, "1-1": 7, "0-1": 5},
+        "prizes": {"5-0": 1000000, "4-1": 10000, "4-0": 500, "3-1": 200, "3-0": 10, "2-1": 10, "1-1": 4, "0-1": 2},
     },
     {
         # Sustituye a Cash4Life (retirado en 2026). Primer sorteo: 22/02/2026. Sorteo todas las noches.
