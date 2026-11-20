@@ -189,7 +189,30 @@ def parse_uk_xml(txt):
     import xml.etree.ElementTree as ET
     root = ET.fromstring(txt)
     out = []
+    def leaf_digits(el):
+        r = []
+        for x in el.iter():
+            if len(x) == 0 and (x.text or "").strip().isdigit():
+                r.append(int((x.text or "").strip()))
+        return r
     for dr in root.iter("draw"):
+        dd = None
+        for el in dr.iter():
+            if "date" in el.tag.lower() and (el.text or "").strip():
+                dd = parse_any_date(el.text.strip()) or (el.text.strip()[:10] if re.match(r"\d{4}-\d{2}-\d{2}", el.text.strip()) else None)
+                break
+        gb = [e for e in dr.iter() if e.tag.lower() == "balls"]
+        bb = [e for e in dr.iter() if e.tag.lower() == "bonus-ball"]
+        if dd and gb:
+            mains = leaf_digits(gb[0])
+            sts = []
+            for e in bb:
+                sts += leaf_digits(e)
+            if len(mains) == 7 and not sts:
+                mains, sts = mains[:5], mains[5:]
+            if len(mains) == 5 and len(sts) == 2:
+                out.append({"date": dd, "main": sorted(mains), "extras": sorted(sts)})
+                continue
         d, balls, stars = None, [], []
         for el in dr.iter():
             tag = el.tag.lower()
@@ -216,7 +239,8 @@ def src_uk_euromillions(cfg, today):
     if txt.lstrip().startswith("<?xml") or "<draw-results" in txt[:300]:
         out = parse_uk_xml(txt)
         if not out:
-            raise RuntimeError("XML sin sorteos legibles; etiquetas: %r" % sorted(set(re.findall(r"<([a-zA-Z0-9_-]+)", txt[:3000])))[:30])
+            i = txt.find("<draw>")
+            raise RuntimeError("XML sin sorteos legibles; ejemplo: %r" % txt[i:i + 700])
         return out, {"name": "UK National Lottery (resultados oficiales de EuroMillions)", "page": "https://www.national-lottery.co.uk/results/euromillions/draw-history", "official": True}
     rd = csv.DictReader(io.StringIO(txt))
     out = []
