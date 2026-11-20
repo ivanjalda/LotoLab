@@ -261,6 +261,7 @@ def src_uk_euromillions(cfg, today):
     if txt.lstrip().startswith("<?xml") or "<draw-results" in txt[:300]:
         out = parse_uk_xml(txt)
         if not out:
+            print("DIAGNOSTICO archivo Euromillones UK (%d caracteres): %s" % (len(txt), re.sub(r"\s+", " ", txt)[:3600]))
             i = txt.find("<draw-number>")
             raise RuntimeError("XML sin sorteos legibles; largo=%d; ejemplo: %r" % (len(txt), re.sub(r"\s+", " ", txt[i:i + 1200])))
         return out, {"name": "UK National Lottery (resultados oficiales de EuroMillions)", "page": "https://www.national-lottery.co.uk/results/euromillions/draw-history", "official": True}
