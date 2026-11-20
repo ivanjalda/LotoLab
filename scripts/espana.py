@@ -184,8 +184,40 @@ def src_azar_primitiva(cfg, today):
     return list(draws.values()), {"name": "Azar y Suerte (copia de los resultados oficiales)", "page": "https://www.azarysuerte.es/", "official": False}
 
 
+def parse_uk_xml(txt):
+    """El archivo de la loteria britanica viene en XML: <draw> con fecha, bolas y estrellas (lectura tolerante)."""
+    import xml.etree.ElementTree as ET
+    root = ET.fromstring(txt)
+    out = []
+    for dr in root.iter("draw"):
+        d, balls, stars = None, [], []
+        for el in dr.iter():
+            tag = el.tag.lower()
+            val = (el.text or "").strip()
+            if not val:
+                continue
+            if d is None and "date" in tag:
+                d = parse_any_date(val) or (val[:10] if re.match(r"\d{4}-\d{2}-\d{2}", val) else None)
+            elif "number" in tag and "draw" in tag:
+                continue
+            elif re.search(r"star|lucky", tag) and val.isdigit():
+                stars.append(int(val))
+            elif re.search(r"ball|main", tag) and val.isdigit():
+                balls.append(int(val))
+            elif tag in ("numbers", "results", "balls") and re.fullmatch(r"[\d,\s-]+", val):
+                balls += [int(x) for x in re.findall(r"\d+", val)]
+        if d and len(balls) == 5 and len(stars) == 2:
+            out.append({"date": d, "main": sorted(balls), "extras": sorted(stars)})
+    return out
+
+
 def src_uk_euromillions(cfg, today):
     txt = fetch("https://www.national-lottery.co.uk/results/euromillions/draw-history/csv")
+    if txt.lstrip().startswith("<?xml") or "<draw-results" in txt[:300]:
+        out = parse_uk_xml(txt)
+        if not out:
+            raise RuntimeError("XML sin sorteos legibles; etiquetas: %r" % sorted(set(re.findall(r"<([a-zA-Z0-9_-]+)", txt[:3000])))[:30])
+        return out, {"name": "UK National Lottery (resultados oficiales de EuroMillions)", "page": "https://www.national-lottery.co.uk/results/euromillions/draw-history", "official": True}
     rd = csv.DictReader(io.StringIO(txt))
     out = []
     for row in rd:
