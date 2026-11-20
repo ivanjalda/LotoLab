@@ -187,8 +187,30 @@ def src_azar_primitiva(cfg, today):
 def parse_uk_xml(txt):
     """El archivo de la loteria britanica viene en XML: <draw> con fecha, bolas y estrellas (lectura tolerante)."""
     import xml.etree.ElementTree as ET
-    root = ET.fromstring(txt)
     out = []
+    # Lectura por texto (no depende de como esten anidadas las etiquetas): cada sorteo empieza en <draw-number>
+    parts = re.split(r"(?=<draw-number>)", txt)
+    for p in parts[1:]:
+        md = re.search(r"<draw-date>\s*([^<]+?)\s*</draw-date>", p)
+        mb = re.search(r"<balls>(.*?)</balls>", p, re.S)
+        if not (md and mb):
+            continue
+        dd = parse_any_date(md.group(1)) or (md.group(1)[:10] if re.match(r"\d{4}-\d{2}-\d{2}", md.group(1)) else None)
+        nums = [int(x) for t, x in re.findall(r"<([a-zA-Z-]+)[^>]*>\s*(\d+)\s*</", mb.group(1)) if t.lower() != "set"]
+        sts = []
+        mbb = re.search(r"<bonus-ball[^>]*>(.*?)</bonus-ball>", p, re.S)
+        if mbb:
+            sts = [int(x) for x in re.findall(r">\s*(\d+)\s*<", ">" + mbb.group(1) + "<")] or [int(x) for x in re.findall(r"\d+", mbb.group(1))]
+        if len(nums) == 7 and not sts:
+            nums, sts = nums[:5], nums[5:]
+        if dd and len(nums) == 5 and len(sts) == 2:
+            out.append({"date": dd, "main": sorted(nums), "extras": sorted(sts)})
+    if out:
+        return out
+    try:
+        root = ET.fromstring(txt)
+    except ET.ParseError:
+        return out
     def leaf_digits(el):
         r = []
         for x in el.iter():
@@ -239,8 +261,8 @@ def src_uk_euromillions(cfg, today):
     if txt.lstrip().startswith("<?xml") or "<draw-results" in txt[:300]:
         out = parse_uk_xml(txt)
         if not out:
-            i = txt.find("<draw>")
-            raise RuntimeError("XML sin sorteos legibles; ejemplo: %r" % txt[i:i + 700])
+            i = txt.find("<draw-number>")
+            raise RuntimeError("XML sin sorteos legibles; largo=%d; ejemplo: %r" % (len(txt), re.sub(r"\s+", " ", txt[i:i + 1200])))
         return out, {"name": "UK National Lottery (resultados oficiales de EuroMillions)", "page": "https://www.national-lottery.co.uk/results/euromillions/draw-history", "official": True}
     rd = csv.DictReader(io.StringIO(txt))
     out = []
