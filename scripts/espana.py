@@ -364,13 +364,89 @@ def _gh_source(path, label):
     return fn
 
 
+# ---------------------------------------------------------------------------
+# La Web de la Primitiva (copia de los resultados oficiales, se actualiza cada dia)
+# ---------------------------------------------------------------------------
+LWP = "https://lawebdelaprimitiva.com"
+LWP_DATE = re.compile(r"(?:(?:Lun|Mar|Mie|Mi\u00e9|Jue|Vie|Sab|S\u00e1b|Dom)[a-z\u00e9\u00e1]*-)?(\d{1,2})-(\d{1,2})-(\d{4})")
+
+
+def parse_lwp_text(cfg, txt):
+    """Lee tablas HTML o CSV: fecha + numeros (en orden) hasta la primera columna con '/' (pares/impares)."""
+    t = re.sub(r"(?i)<br\s*/?>|</t[dh]>|</tr>", " ; ", txt)
+    t = htmllib.unescape(re.sub(r"<[^>]+>", " ", t))
+    need = cfg["k"] + sum(len(g["idx"]) for g in cfg["groups"])
+    ms = list(LWP_DATE.finditer(t))
+    out, seen = [], set()
+    for i, m in enumerate(ms):
+        seg = t[m.end(): ms[i + 1].start() if i + 1 < len(ms) else m.end() + 200]
+        nums = []
+        for tok in re.findall(r"\d+/\d+|\d+", seg):
+            if "/" in tok:
+                break
+            nums.append(int(tok))
+            if len(nums) == need:
+                break
+        if len(nums) != need:
+            continue
+        try:
+            d = date(int(m.group(3)), int(m.group(2)), int(m.group(1))).isoformat()
+        except ValueError:
+            continue
+        if d in seen:
+            continue
+        seen.add(d)
+        k = cfg["k"]
+        main, ex = sorted(nums[:k]), nums[k:]
+        out.append({"date": d, "main": main, "extras": ex})
+    return out
+
+
+def _lwp_source(page, label, extra=None):
+    def fn(cfg, today):
+        url = LWP + "/" + page + "/Historico%20de%20sorteos.html"
+        html_txt = fetch(url, ua=UA_BROWSER)
+        draws = parse_lwp_text(cfg, html_txt)
+        if not draws:
+            raise RuntimeError("pagina sin sorteos legibles; empieza por: %r" % re.sub(r"\s+", " ", html_txt[:140]))
+        have = {d["date"] for d in draws}
+        # a\u00f1os anteriores (CSV oficial de la misma web); si algo falla se sigue con lo que hay
+        mcode = re.search(r"tipo_loteria=([A-Za-z]+)&(?:amp;)?action=descarga_historico", html_txt)
+        if mcode:
+            fallos = 0
+            for yr in range(today.year - 1, int(cfg["era"][:4]) - 1, -1):
+                try:
+                    u = "%s/?tipo_loteria=%s&action=descarga_historico&tipo_archivo=text/csv&anio=%d" % (LWP, mcode.group(1), yr)
+                    more = parse_lwp_text(cfg, fetch(u, ua=UA_BROWSER))
+                    if more:
+                        fallos = 0
+                        draws += [d for d in more if d["date"] not in have]
+                        have |= {d["date"] for d in more}
+                    else:
+                        fallos += 1
+                except Exception:  # noqa: BLE001
+                    fallos += 1
+                if fallos >= 2:
+                    break
+        if extra:
+            try:
+                hist, _ = extra(cfg, today)
+                draws += [d for d in hist if d["date"] not in have]
+            except Exception:  # noqa: BLE001
+                pass
+        draws.sort(key=lambda d: d["date"])
+        return draws, {"name": label, "page": url, "official": False}
+    fn.__name__ = "src_lwp_" + page.replace("%20", "_")
+    return fn
+
+
 SOURCES = {
     "es_primitiva": [src_api, _gh_source("primitiva_historico.csv", "Archivo público en GitHub (copia de los resultados oficiales)")],
-    "es_bonoloto": [src_api],
+    "es_bonoloto": [src_api, _lwp_source("Bonoloto", "La Web de la Primitiva (copia diaria de los resultados oficiales)")],
     "es_euromillones": [src_api, src_uk_euromillions, _gh_source("euro_historico.csv", "Archivo público en GitHub (copia de los resultados oficiales)")],
-    "es_elgordo": [src_api, _gh_source("gordo_historico.csv", "Archivo público en GitHub (copia de los resultados oficiales)")],
-    "es_eurodreams": [src_api],
-    "es_lototurf": [src_api],
+    "es_elgordo": [src_api, _lwp_source("El%20Gordo%20de%20la%20Primitiva", "La Web de la Primitiva (copia diaria de los resultados oficiales)", _gh_source("gordo_historico.csv", "historial")), _gh_source("gordo_historico.csv", "Archivo público en GitHub (copia de los resultados oficiales)")],
+    "es_eurodreams": [src_api, _lwp_source("Euro%20Dreams", "La Web de la Primitiva (copia diaria de los resultados oficiales)")],
+    "es_lototurf": [src_api, _lwp_source("Lototurf", "La Web de la Primitiva (copia diaria de los resultados oficiales)")],
 }
 
 
