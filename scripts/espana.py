@@ -443,7 +443,7 @@ def _lwp_source(page, label, extra=None):
 SOURCES = {
     "es_primitiva": [src_api, _gh_source("primitiva_historico.csv", "Archivo público en GitHub (copia de los resultados oficiales)")],
     "es_bonoloto": [src_api, _lwp_source("Bonoloto", "La Web de la Primitiva (copia diaria de los resultados oficiales)")],
-    "es_euromillones": [src_api, src_uk_euromillions, _gh_source("euro_historico.csv", "Archivo público en GitHub (copia de los resultados oficiales)")],
+    "es_euromillones": [src_api, _lwp_source("Euromillones", "La Web de la Primitiva (copia diaria de los resultados oficiales)", _gh_source("euro_historico.csv", "historial")), src_uk_euromillions, _gh_source("euro_historico.csv", "Archivo público en GitHub (copia de los resultados oficiales)")],
     "es_elgordo": [src_api, _lwp_source("El%20Gordo%20de%20la%20Primitiva", "La Web de la Primitiva (copia diaria de los resultados oficiales)", _gh_source("gordo_historico.csv", "historial")), _gh_source("gordo_historico.csv", "Archivo público en GitHub (copia de los resultados oficiales)")],
     "es_eurodreams": [src_api, _lwp_source("Euro%20Dreams", "La Web de la Primitiva (copia diaria de los resultados oficiales)")],
     "es_lototurf": [src_api, _lwp_source("Lototurf", "La Web de la Primitiva (copia diaria de los resultados oficiales)")],
