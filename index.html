@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LotoLab</title>
+<title>LotoPulse</title>
 <meta name="description" content="Estadística de loterías de España y EE. UU. con datos reales / Lottery statistics for Spain and the USA with real data.">
 <style>
   :root {
@@ -195,7 +195,7 @@
 
 <header>
   <div class="top">
-    <a class="logo" href="#" onclick="show('home');return false;"><i>L</i><div>Loto<span>Lab</span></div></a>
+    <a class="logo" href="#" onclick="show('home');return false;"><i>L</i><div>Loto<span>Pulse</span></div></a>
     <div class="actions">
       <a class="btn" id="tg-top" data-tg="auto"></a>
       <button class="btn alt" data-view="subs" data-i18n="subs_btn"></button>
@@ -320,7 +320,7 @@
     <section id="v-legal" class="view">
       <h1 data-i18n="legal_title"></h1>
       <p class="sub" data-i18n="legal_sub"></p>
-      <div class="card"><h3 data-i18n="legal_h1"></h3><p class="soon" data-i18n="legal_soon"></p><p class="note" data-i18n="legal_list"></p></div>
+      <div class="card" id="legal-body" data-i18n="legal_body"></div>
     </section>
   </main>
 
@@ -345,7 +345,7 @@
 </section>
 
 <footer>
-  <div>© <span id="year"></span> Community16 LLC · LotoLab</div>
+  <div>© <span id="year"></span> Community16 LLC · LotoPulse</div>
   <div class="flinks"><a href="#" data-view="legal" data-i18n="foot_legal"></a></div>
   <div data-i18n="foot_play"></div>
   <div id="rev"></div>
@@ -379,12 +379,12 @@ var T = {
     home_title:'Estadística de loterías con <span class="hl">datos reales</span>',
     home_sub:"Analizamos el histórico oficial de las loterías de España y EE. UU., publicamos los resultados con transparencia y no prometemos premios que nadie puede prometer.",
     st_lot:"loterías analizadas", st_draws:"sorteos oficiales analizados", st_last:"último sorteo cargado",
-    latest_title:"Últimos resultados", news_latest:"Últimas noticias", what_title:"Qué encontrarás en LotoLab",
+    latest_title:"Últimos resultados", news_latest:"Últimas noticias", what_title:"Qué encontrarás en LotoPulse",
     home_c1_t:"Números más frecuentes", home_c1_p:"Qué números han salido más veces en el histórico oficial de cada lotería.",
     home_c2_t:"Retrasos históricos", home_c2_p:"Cuánto tiempo lleva cada número sin salir.",
     home_c3_t:"Combinaciones sugeridas", home_c3_p:"Combinaciones equilibradas según criterios estadísticos. Son una ayuda, no una predicción.",
     home_c4_t:"Comprueba tu número", home_c4_p:"Escribe tus números y te decimos si hay premio.", home_c4_go:"Probar ahora →",
-    disclaimer:"Importante: cada sorteo es independiente y ningún método puede predecir el resultado. LotoLab ofrece estadística informativa y no garantiza premios. Juega con responsabilidad y solo si eres mayor de edad.",
+    disclaimer:"Importante: cada sorteo es independiente y ningún método puede predecir el resultado. LotoPulse ofrece estadística informativa y no garantiza premios. Juega con responsabilidad y solo si eres mayor de edad.",
     es_title:"Loterías de España", es_sub:"Loterías y Apuestas del Estado",
     us_title:"Loterías de EE. UU.", us_sub:"Las grandes loterías de Estados Unidos",
     qn_h:"Apuestas de fútbol", qn_title:"Quiniela y Quinigol", qn_text:"Para las apuestas de fútbol, visita nuestra web SportEVLab.", qn_btn:"Ir a SportEVLab →",
@@ -445,12 +445,12 @@ var T = {
     home_title:'Lottery statistics with <span class="hl">real data</span>',
     home_sub:"We analyze the official history of Spanish and US lotteries, publish results transparently and never promise prizes nobody can promise.",
     st_lot:"lotteries analyzed", st_draws:"official draws analyzed", st_last:"latest draw loaded",
-    latest_title:"Latest results", news_latest:"Latest news", what_title:"What you will find on LotoLab",
+    latest_title:"Latest results", news_latest:"Latest news", what_title:"What you will find on LotoPulse",
     home_c1_t:"Most frequent numbers", home_c1_p:"Which numbers have appeared most often in each lottery's official history.",
     home_c2_t:"Historical delays", home_c2_p:"How long each number has gone without being drawn.",
     home_c3_t:"Suggested combinations", home_c3_p:"Balanced combinations based on statistical criteria. They are an aid, not a prediction.",
     home_c4_t:"Check your numbers", home_c4_p:"Enter your numbers and we tell you if there is a prize.", home_c4_go:"Try it now →",
-    disclaimer:"Important: every draw is independent and no method can predict the result. LotoLab provides informational statistics and does not guarantee prizes. Play responsibly and only if you are of legal age.",
+    disclaimer:"Important: every draw is independent and no method can predict the result. LotoPulse provides informational statistics and does not guarantee prizes. Play responsibly and only if you are of legal age.",
     es_title:"Spanish lotteries", es_sub:"Loterías y Apuestas del Estado",
     us_title:"US lotteries", us_sub:"The major lotteries of the United States",
     qn_h:"Football betting", qn_title:"Quiniela and Quinigol", qn_text:"For football betting, visit our website SportEVLab.", qn_btn:"Go to SportEVLab →",
@@ -794,7 +794,7 @@ var TX3 = {
     jp_last_line:"Último sorteo ({d}): el bote era de <b>{j}</b>.", jp_roll:"Nadie acertó el premio gordo: el bote pasa al siguiente sorteo.",
     jp_won:"Hubo {n} ganador(es) del premio gordo.", jp_unver:"(dato pendiente de confirmar por la lotería)",
     jp_hist_h:"Historial del bote", jp_cols:"Fecha|Bote|Premio gordo", jp_pending:"pendiente",
-    jp_src:"Fuente: {src}. El historial se guarda desde que LotoLab empezó a registrarlo; no se inventa nada del pasado.",
+    jp_src:"Fuente: {src}. El historial se guarda desde que LotoPulse empezó a registrarlo; no se inventa nada del pasado.",
     jp_none:"Todavía no tenemos una fuente oficial comprobada para el bote de este sorteo. En cuanto la tengamos aparecerá aquí.",
     jp_winners_none:"El número de ganadores de cada categoría menor no está publicado en una fuente abierta, por eso aquí solo se muestran los premios fijos por categoría.",
     sx_date:"Se celebra cada año el {d}", sx_days:"Faltan {n} días", sx_today:"Es hoy", sx_nav:"Lotería de Navidad", sx_nino:"Lotería del Niño",
@@ -818,7 +818,7 @@ var TX3 = {
     jp_last_line:"Last draw ({d}): the jackpot was <b>{j}</b>.", jp_roll:"Nobody matched the jackpot: it rolls over to the next draw.",
     jp_won:"There were {n} jackpot winner(s).", jp_unver:"(figure pending confirmation by the lottery)",
     jp_hist_h:"Jackpot history", jp_cols:"Date|Jackpot|Top prize", jp_pending:"pending",
-    jp_src:"Source: {src}. The history is kept since LotoLab started recording it; nothing from the past is made up.",
+    jp_src:"Source: {src}. The history is kept since LotoPulse started recording it; nothing from the past is made up.",
     jp_none:"We do not have a verified official source for this draw's jackpot yet. It will appear here as soon as we do.",
     jp_winners_none:"The number of winners in each lower prize category is not published in an open source, so only the fixed prize per category is shown here.",
     sx_date:"Held every year on {d}", sx_days:"{n} days to go", sx_today:"It is today", sx_nav:"Christmas Lottery", sx_nino:"El Niño Lottery",
@@ -850,7 +850,7 @@ var TX4 = {
     prizes_cols5:"Con 5 combinaciones (≈)",
     prizes_col5_note:"Jugar 5 combinaciones distintas multiplica por cinco (aprox.) tu probabilidad de acertar cada premio, y también lo que gastas. Es el efecto de jugar más apuestas, no de que sean «mejores»: ninguna combinación tiene más probabilidad que otra. Lo comprobamos en el historial de aciertos: las sugeridas y las hechas al azar dan resultados parecidos.",
     odds_title:"Probabilidad de cada premio", odds_c1:"Premio", odds_c2:"Con 1 combinación", odds_c3:"Con 5 combinaciones (≈)",
-    odds_src:"Calculado por LotoLab con la fórmula matemática de cada sorteo. Los de La Primitiva y Euromillones coinciden con los de Loterías y Apuestas del Estado, salvo una cifra que parece errata en su web (Euromillones 4 + 1★: ponen 1 entre 31.705, la cuenta exacta da 1 entre 31.075).",
+    odds_src:"Calculado por LotoPulse con la fórmula matemática de cada sorteo. Los de La Primitiva y Euromillones coinciden con los de Loterías y Apuestas del Estado, salvo una cifra que parece errata en su web (Euromillones 4 + 1★: ponen 1 entre 31.705, la cuenta exacta da 1 entre 31.075).",
     es_nodata_t:"Resultados y bote",
     es_nodata:"Todavía no podemos mostrar aquí los resultados, el bote ni el reparto de premios de esta lotería: la web oficial bloquea la lectura automática y nunca publicamos datos que no podamos comprobar. Lo que ves debajo (cómo se juega, probabilidades y sugerencia) sí es fiable.",
     es_open:"Ver bote y resultados en la web oficial →",
@@ -877,7 +877,7 @@ var TX4 = {
     prizes_cols5:"With 5 combinations (≈)",
     prizes_col5_note:"Playing 5 different combinations multiplies (approximately) your chance of hitting each prize by five, and so does your spending. That is the effect of playing more bets, not of them being “better”: no combination has a higher chance than another. We check this in the hit history: suggested and random combinations give similar results.",
     odds_title:"Odds for each prize", odds_c1:"Prize", odds_c2:"With 1 combination", odds_c3:"With 5 combinations (≈)",
-    odds_src:"Calculated by LotoLab with each draw's mathematical formula. La Primitiva and Euromillones match those of Loterías y Apuestas del Estado, except one figure that looks like a typo on their site (Euromillones 4 + 1★: they print 1 in 31,705, the exact calculation gives 1 in 31,075).",
+    odds_src:"Calculated by LotoPulse with each draw's mathematical formula. La Primitiva and Euromillones match those of Loterías y Apuestas del Estado, except one figure that looks like a typo on their site (Euromillones 4 + 1★: they print 1 in 31,705, the exact calculation gives 1 in 31,075).",
     es_nodata_t:"Results and jackpot",
     es_nodata:"We can't show results, jackpot or prize breakdown for this lottery here yet: the official site blocks automatic reading and we never publish data we can't verify. What you see below (how to play, odds and suggestion) is reliable.",
     es_open:"See jackpot and results on the official site →",
@@ -917,7 +917,7 @@ var TX5 = {
     cmp_share:"Números con algún premio", cmp_how:"Cómo se sortea",
     cmp_nav_h:"Dos bombos: 100.000 números y 1.807 bolas de premios; se canta durante unas 4 horas", cmp_nino_h:"Por extracciones: 3 primeros premios, terminaciones de 4, 3 y 2 cifras y 3 reintegros; mucho más corto",
     cmp_which_t:"¿A cuál jugar?", cmp_which:"Si buscas el premio grande, la Navidad paga más (el Gordo es el doble que el primer premio del Niño y hay 1.794 premios de pedrea de 100 €). Si prefieres más opciones de que te toque algo, el Niño reparte premios a más números. Ninguno puede predecirse y todos los números tienen la misma probabilidad.",
-    cmp_src:"Información de Lotería Ópera (administración n.º 157, Madrid). Importes netos calculados por LotoLab: exentos los primeros 40.000 € y 20 % de lo que exceda. Los datos oficiales los publica Loterías y Apuestas del Estado."
+    cmp_src:"Información de Lotería Ópera (administración n.º 157, Madrid). Importes netos calculados por LotoPulse: exentos los primeros 40.000 € y 20 % de lo que exceda. Los datos oficiales los publica Loterías y Apuestas del Estado."
   },
   en: {
     es_bote:"Jackpot of the last draw:", es_src:"Source: {src}. {n} draws, from {a} to {b}.",
@@ -939,7 +939,7 @@ var TX5 = {
     cmp_share:"Numbers with some prize", cmp_how:"How it is drawn",
     cmp_nav_h:"Two drums: 100,000 numbers and 1,807 prize balls; sung for about 4 hours", cmp_nino_h:"By extractions: 3 top prizes, endings of 4, 3 and 2 digits and 3 refunds; much shorter",
     cmp_which_t:"Which one to play?", cmp_which:"If you want the big prize, Christmas pays more (the Gordo is double El Niño's first prize and there are 1,794 pedrea prizes of €100). If you prefer more chances of winning something, El Niño gives prizes to more numbers. Neither can be predicted and every number has the same chance.",
-    cmp_src:"Information from Lotería Ópera (administration no. 157, Madrid). Net amounts calculated by LotoLab: first €40,000 exempt and 20% of the excess. Official data is published by Loterías y Apuestas del Estado."
+    cmp_src:"Information from Lotería Ópera (administration no. 157, Madrid). Net amounts calculated by LotoPulse: first €40,000 exempt and 20% of the excess. Official data is published by Loterías y Apuestas del Estado."
   }
 };
 (function () { for (var l in TX5) for (var k in TX5[l]) T[l][k] = TX5[l][k]; })();
@@ -1017,6 +1017,12 @@ var TX8 = {
   }
 };
 (function () { for (var l in TX8) for (var k in TX8[l]) T[l][k] = TX8[l][k]; })();
+var TX9 = {
+  es: { legal_body: "<h3>Aviso legal</h3><p><b>Titular:</b> Community16 LLC, sociedad de responsabilidad limitada de Nuevo México (EE. UU.).<br><b>Domicilio:</b> 500 4th St NW, Suite 102 #1327, Albuquerque, NM 87102, USA.<br><b>Sitio web:</b> lotopulse.com<br><b>Contacto:</b> por correo postal a la dirección indicada.</p><h3>Qué es LotoPulse</h3><p>LotoPulse es una web informativa de estadística de loterías. No vende ni gestiona boletos, no es operador de ninguna lotería y no tiene relación con Loterías y Apuestas del Estado, Powerball, Mega Millions ni Millionaire for Life. Los resultados proceden de fuentes públicas y pueden tener errores o retrasos: comprueba siempre tu boleto en la fuente oficial.</p><h3>Sin garantía de premios</h3><p>Cada sorteo es independiente y ningún método, estadística o combinación puede predecir el resultado ni aumentar la probabilidad de ganar. Las combinaciones sugeridas son una ayuda informativa, no una promesa de premio.</p><h3>Juego responsable</h3><p>Juega solo si eres mayor de edad y con dinero que puedas permitirte perder. Si el juego deja de ser un entretenimiento, busca ayuda profesional.</p><h3>Privacidad</h3><p>No pedimos registro ni datos personales, y no usamos analítica ni publicidad de terceros. La web se aloja en GitHub Pages, que puede registrar datos técnicos de la visita (por ejemplo, la dirección IP) según su propia política. Las imágenes y enlaces de las noticias se cargan desde los sitios de los medios, que también pueden recibir tu dirección IP. Los números que escribes en “Comprueba tu número” se procesan en tu navegador y no se envían a nadie. Si en el futuro añadimos alertas o suscripciones, actualizaremos esta política antes de recoger ningún dato. Para cualquier duda sobre tus datos, escribe a la dirección postal del titular.</p><h3>Cookies y almacenamiento</h3><p>No usamos cookies. Solo guardamos en tu navegador, en el almacenamiento local, tu idioma y tu tema claro u oscuro. No se envía a nadie y puedes borrarlo desde los ajustes de tu navegador.</p><h3>Condiciones de uso</h3><p>El contenido se ofrece “tal cual”, con fines informativos, y no es asesoramiento legal, fiscal ni financiero. No nos hacemos responsables de las decisiones que tomes con esta información. El diseño y los textos son de Community16 LLC; los resultados de los sorteos pertenecen a sus organizadores. Los enlaces a otras webs son responsabilidad de sus titulares.</p><h3>Publicidad</h3><p>Los bloques de publicidad promocionan otras webs y negocios del mismo titular y están marcados como “Publicidad”.</p><p class=\"note\">Última actualización: 22 de noviembre de 2026.</p>" },
+  en: { legal_body: "<h3>Legal notice</h3><p><b>Owner:</b> Community16 LLC, a limited liability company of New Mexico (USA).<br><b>Address:</b> 500 4th St NW, Suite 102 #1327, Albuquerque, NM 87102, USA.<br><b>Website:</b> lotopulse.com<br><b>Contact:</b> by post to the address above.</p><h3>What LotoPulse is</h3><p>LotoPulse is an informational website with lottery statistics. It does not sell or manage tickets, it is not a lottery operator and it has no relationship with Loterías y Apuestas del Estado, Powerball, Mega Millions or Millionaire for Life. Results come from public sources and may contain errors or delays: always check your ticket with the official source.</p><h3>No guarantee of prizes</h3><p>Every draw is independent and no method, statistic or combination can predict the result or increase the probability of winning. Suggested combinations are an informational aid, not a promise of a prize.</p><h3>Responsible play</h3><p>Play only if you are of legal age and with money you can afford to lose. If gambling stops being entertainment, seek professional help.</p><h3>Privacy</h3><p>We do not ask for registration or personal data, and we do not use analytics or third-party advertising. The site is hosted on GitHub Pages, which may log technical data about your visit (for example, your IP address) under its own policy. News images and links load from the media sites, which may also receive your IP address. The numbers you type in “Check your number” are processed in your browser and are not sent to anyone. If we add alerts or subscriptions in the future, we will update this policy before collecting any data. For any question about your data, write to the owner's postal address.</p><h3>Cookies and storage</h3><p>We do not use cookies. We only keep in your browser, in local storage, your language and your light or dark theme. It is not sent to anyone and you can delete it from your browser settings.</p><h3>Terms of use</h3><p>Content is provided “as is”, for information only, and is not legal, tax or financial advice. We are not responsible for decisions you make with this information. The design and texts belong to Community16 LLC; draw results belong to their organizers. Links to other sites are the responsibility of their owners.</p><h3>Advertising</h3><p>Advertising blocks promote other websites and businesses of the same owner and are labelled “Advertising”.</p><p class=\"note\">Last updated: November 22, 2026.</p>" }
+};
+(function () { for (var l in TX9) for (var k in TX9[l]) T[l][k] = TX9[l][k]; })();
+
 
 
 
