@@ -196,11 +196,9 @@ def parse_uk_xml(txt):
         if not (md and mb):
             continue
         dd = parse_any_date(md.group(1)) or (md.group(1)[:10] if re.match(r"\d{4}-\d{2}-\d{2}", md.group(1)) else None)
-        nums = [int(x) for t, x in re.findall(r"<([a-zA-Z-]+)[^>]*>\s*(\d+)\s*</", mb.group(1)) if t.lower() != "set"]
+        nums = [int(x) for t, x in re.findall(r"<([a-zA-Z-]+)[^>]*>\s*(\d+)\s*</", mb.group(1)) if t.lower() not in ("set", "bonus-ball", "raffle")]
         sts = []
-        mbb = re.search(r"<bonus-ball[^>]*>(.*?)</bonus-ball>", p, re.S)
-        if mbb:
-            sts = [int(x) for x in re.findall(r">\s*(\d+)\s*<", ">" + mbb.group(1) + "<")] or [int(x) for x in re.findall(r"\d+", mbb.group(1))]
+        sts = [int(x) for x in re.findall(r"<bonus-ball[^>]*>\s*(\d+)\s*</bonus-ball>", p)]
         if len(nums) == 7 and not sts:
             nums, sts = nums[:5], nums[5:]
         if dd and len(nums) == 5 and len(sts) == 2:
@@ -261,10 +259,16 @@ def src_uk_euromillions(cfg, today):
     if txt.lstrip().startswith("<?xml") or "<draw-results" in txt[:300]:
         out = parse_uk_xml(txt)
         if not out:
-            print("DIAGNOSTICO archivo Euromillones UK (%d caracteres): %s" % (len(txt), re.sub(r"\s+", " ", txt)[:3600]))
             i = txt.find("<draw-number>")
             raise RuntimeError("XML sin sorteos legibles; largo=%d; ejemplo: %r" % (len(txt), re.sub(r"\s+", " ", txt[i:i + 1200])))
-        return out, {"name": "UK National Lottery (resultados oficiales de EuroMillions)", "page": "https://www.national-lottery.co.uk/results/euromillions/draw-history", "official": True}
+        # El archivo oficial trae solo el ultimo sorteo: se une al historial para que no pierda datos
+        try:
+            hist, _ = _gh_source("euro_historico.csv", "historial")(cfg, today)
+            have = {d["date"] for d in out}
+            out = sorted(out + [d for d in hist if d["date"] not in have], key=lambda d: d["date"])
+        except Exception:  # noqa: BLE001
+            pass
+        return out, {"name": "Resultado oficial más reciente (UK National Lottery) + historial público", "page": "https://www.national-lottery.co.uk/results/euromillions/draw-history", "official": True}
     rd = csv.DictReader(io.StringIO(txt))
     out = []
     for row in rd:
