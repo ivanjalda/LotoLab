@@ -1269,7 +1269,9 @@ function soonCardHtml(c, country, lang) {
     '</h3></div></div><p class="soon">' + t.soon + '</p></div>';
 }
 function statsHtml(list, lang) {
-  var t = T[lang], total = 0, last = "", i;
+  var t = T[lang], total = 0, last = "", i, k;
+  list = list.slice();
+  for (k in ESDATA) { if (ESDATA[k] && ESDATA[k].last_draw) list.push({ total_draws_in_source: ESDATA[k].total_draws || ESDATA[k].draws_used || 0, last_draw: ESDATA[k].last_draw }); }
   for (i = 0; i < list.length; i++) {
     total += list[i].total_draws_in_source;
     if (list[i].last_draw > last) last = list[i].last_draw;
