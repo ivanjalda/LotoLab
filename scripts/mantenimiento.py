@@ -344,7 +344,7 @@ def check_site(add, fetch=http_get):
     for sec in ("v-sug", "v-calc", "v-guide", "special-es", "rail-left", "rail-right", "bottom-mix"):
         if 'id="%s"' % sec not in html:
             add("web", "error", "A la web publicada le falta la seccion %s" % sec)
-    if "LotoLab" not in html or 'id="v-home"' not in html:
+    if ("LotoPulse" not in html and "LotoLab" not in html) or 'id="v-home"' not in html:
         add("web", "error", "La web carga pero le falta contenido esencial")
         return
     add("web", "ok", "La web responde y tiene su contenido principal")
