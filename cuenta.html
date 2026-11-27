@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mi cuenta · LotoPulse</title>
+<meta name="description" content="Suscríbete gratis a LotoPulse y recibe cada día los números con mejores estadísticas.">
+<link rel="icon" href="/logo.svg" type="image/svg+xml">
+<link rel="canonical" href="https://lotopulse.com/cuenta.html">
+<style>
+:root{--green:#177a43;--gold:#c99a1b;--bg:#f5f7f6;--ink:#17231c;--mut:#5c6b62}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+header{display:flex;align-items:center;gap:10px;padding:14px 20px;background:#fff;border-bottom:1px solid #e3e9e5}
+header a{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-weight:700;font-size:20px}
+header img{width:34px;height:34px;border-radius:9px}
+header .sp{flex:1}
+header button{border:1px solid #cfd8d2;background:#fff;border-radius:8px;padding:6px 10px;cursor:pointer}
+main{max-width:480px;margin:28px auto;padding:0 16px}
+.card{background:#fff;border:1px solid #e3e9e5;border-radius:14px;padding:22px;margin-bottom:16px}
+h1{font-size:22px;margin:0 0 6px}
+p{color:var(--mut);line-height:1.5;margin:6px 0 14px}
+label{display:block;font-size:14px;margin:10px 0 4px}
+input[type=email],input[type=password]{width:100%;padding:11px;border:1px solid #cfd8d2;border-radius:8px;font-size:16px}
+.btn{width:100%;margin-top:14px;padding:12px;border:0;border-radius:10px;background:var(--green);color:#fff;font-size:16px;font-weight:600;cursor:pointer}
+.btn.alt{background:#fff;color:var(--green);border:1px solid var(--green)}
+.chk{display:flex;gap:8px;align-items:flex-start;font-size:14px;margin-top:12px;color:var(--mut)}
+.msg{margin-top:12px;font-size:14px;min-height:20px}
+.ok{color:var(--green)}.err{color:#b3261e}
+.note{font-size:12px;color:var(--mut);margin-top:10px}
+.gold{color:var(--gold);font-weight:700}
+a{color:var(--green)}
+.hide{display:none}
+</style>
+</head>
+<body>
+<header>
+<a href="/"><img src="/logo.svg" alt="LotoPulse" width="34" height="34"><span>LotoPulse</span></a>
+<span class="sp"></span>
+<button id="lang" type="button">EN</button>
+</header>
+<main>
+<div id="out" class="card">
+<h1 data-i="t1">Suscríbete gratis</h1>
+<p data-i="p1">Recibe cada día los números más repetidos y mejor puntuados en nuestro análisis histórico. Es gratis y puedes darte de baja cuando quieras.</p>
+<label for="em" data-i="email">Correo electrónico</label>
+<input id="em" type="email" autocomplete="email">
+<label for="pw" data-i="pass">Contraseña (mínimo 8 caracteres)</label>
+<input id="pw" type="password" autocomplete="current-password">
+<label class="chk"><input id="ok" type="checkbox"><span data-i="consent">Quiero recibir por correo los números diarios y acepto la <a href="/privacidad.html">política de privacidad</a>. Tengo 18 años o más.</span></label>
+<button class="btn" id="reg" type="button" data-i="reg">Crear cuenta gratis</button>
+<button class="btn alt" id="log" type="button" data-i="log">Ya tengo cuenta: entrar</button>
+<div class="msg" id="m1"></div>
+<div class="note" data-i="disc">Aviso: la lotería es un juego de azar. Ninguna combinación aumenta la probabilidad de ganar. Los números se envían solo como información estadística histórica.</div>
+</div>
+<div id="in" class="card hide">
+<h1 data-i="t2">Tu cuenta</h1>
+<p id="who"></p>
+<p><span data-i="plan">Plan actual:</span> <span class="gold" id="plan">GRATIS</span></p>
+<label class="chk"><input id="mail" type="checkbox"><span data-i="mailopt">Recibir los números diarios por correo</span></label>
+<button class="btn" id="save" type="button" data-i="save">Guardar</button>
+<button class="btn alt" id="exit" type="button" data-i="exit">Salir</button>
+<button class="btn alt hide" id="adm" type="button" onclick="location.href='/admin.html'">Panel privado</button>
+<div class="msg" id="m2"></div>
+</div>
+</main>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged,sendEmailVerification} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {getFirestore,doc,getDoc,setDoc,updateDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+const cfg={apiKey:"AIzaSyBgkg3PsFgZhSS7hc2kBTomwRT54Ab51lU",authDomain:"lotopulse.firebaseapp.com",projectId:"lotopulse",storageBucket:"lotopulse.firebasestorage.app",messagingSenderId:"362842576324",appId:"1:362842576324:web:532f1bab8b2bd998cd4091"};
+const app=initializeApp(cfg),auth=getAuth(app),db=getFirestore(app);
+const ADMIN="community16jalda@gmail.com";
+const T={es:{t1:"Suscríbete gratis",p1:"Recibe cada día los números más repetidos y mejor puntuados en nuestro análisis histórico. Es gratis y puedes darte de baja cuando quieras.",email:"Correo electrónico",pass:"Contraseña (mínimo 8 caracteres)",consent:"Quiero recibir por correo los números diarios y acepto la <a href=\"/privacidad.html\">política de privacidad</a>. Tengo 18 años o más.",reg:"Crear cuenta gratis",log:"Ya tengo cuenta: entrar",disc:"Aviso: la lotería es un juego de azar. Ninguna combinación aumenta la probabilidad de ganar. Los números se envían solo como información estadística histórica.",t2:"Tu cuenta",plan:"Plan actual:",mailopt:"Recibir los números diarios por correo",save:"Guardar",exit:"Salir",free:"GRATIS",
+e_consent:"Marca la casilla para continuar.",e_pw:"La contraseña necesita al menos 8 caracteres.",e_mail:"Escribe un correo válido.",done:"Listo. Cuenta creada.",saved:"Guardado.",bad:"Correo o contraseña incorrectos.",used:"Ese correo ya tiene cuenta: pulsa «Ya tengo cuenta».",gen:"No se pudo completar. Inténtalo de nuevo."},
+en:{t1:"Subscribe for free",p1:"Get the most repeated and best-scored numbers from our historical analysis every day. It is free and you can unsubscribe at any time.",email:"Email",pass:"Password (at least 8 characters)",consent:"I want to receive the daily numbers by email and I accept the <a href=\"/privacidad.html\">privacy policy</a>. I am 18 or older.",reg:"Create free account",log:"I already have an account: sign in",disc:"Notice: lottery is a game of chance. No combination increases the probability of winning. Numbers are sent only as historical statistical information.",t2:"Your account",plan:"Current plan:",mailopt:"Receive the daily numbers by email",save:"Save",exit:"Sign out",free:"FREE",
+e_consent:"Tick the box to continue.",e_pw:"The password needs at least 8 characters.",e_mail:"Enter a valid email.",done:"Done. Account created.",saved:"Saved.",bad:"Wrong email or password.",used:"That email already has an account: press \"I already have an account\".",gen:"Could not complete. Please try again."}};
+let L=((navigator.language||"es").slice(0,2)==="en")?"en":"es";
+try{const s=localStorage.getItem("lp_lang");if(s==="es"||s==="en")L=s}catch(e){}
+const $=id=>document.getElementById(id);
+function paint(){document.documentElement.lang=L;document.querySelectorAll("[data-i]").forEach(e=>{const k=e.dataset.i;if(T[L][k])e.innerHTML=T[L][k]});$("lang").textContent=L==="es"?"EN":"ES";$("plan").textContent=T[L].free}
+$("lang").onclick=()=>{L=L==="es"?"en":"es";try{localStorage.setItem("lp_lang",L)}catch(e){}paint()};
+paint();
+const msg=(id,t,ok)=>{$(id).textContent=t;$(id).className="msg "+(ok?"ok":"err")};
+$("reg").onclick=async()=>{
+const e=$("em").value.trim(),p=$("pw").value;
+if(!/^\S+@\S+\.\S+$/.test(e))return msg("m1",T[L].e_mail);
+if(p.length<8)return msg("m1",T[L].e_pw);
+if(!$("ok").checked)return msg("m1",T[L].e_consent);
+try{
+const c=await createUserWithEmailAndPassword(auth,e,p);
+await setDoc(doc(db,"users",c.user.uid),{email:e,lang:L,plan:"free",mail:true,consent:true,created:serverTimestamp()});
+try{await sendEmailVerification(c.user)}catch(y){}
+msg("m1",T[L].done,true);
+}catch(x){msg("m1",x.code==="auth/email-already-in-use"?T[L].used:T[L].gen)}
+};
+$("log").onclick=async()=>{
+const e=$("em").value.trim(),p=$("pw").value;
+if(!/^\S+@\S+\.\S+$/.test(e))return msg("m1",T[L].e_mail);
+try{await signInWithEmailAndPassword(auth,e,p)}catch(x){msg("m1",T[L].bad)}
+};
+$("exit").onclick=()=>signOut(auth);
+$("save").onclick=async()=>{
+try{await updateDoc(doc(db,"users",auth.currentUser.uid),{mail:$("mail").checked,lang:L});msg("m2",T[L].saved,true)}catch(x){msg("m2",T[L].gen)}
+};
+onAuthStateChanged(auth,async u=>{
+$("out").classList.toggle("hide",!!u);$("in").classList.toggle("hide",!u);
+if(!u)return;
+$("who").textContent=u.email;
+if(u.email===ADMIN)$("adm").classList.remove("hide");
+try{const s=await getDoc(doc(db,"users",u.uid));if(s.exists()){$("mail").checked=!!s.data().mail;$("plan").textContent=(s.data().plan==="free")?T[L].free:s.data().plan}}catch(x){}
+});
+</script>
+</body>
+</html>
