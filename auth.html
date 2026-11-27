@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>LotoPulse</title>
+<link rel="icon" href="/logo.svg" type="image/svg+xml">
+<style>
+:root{--green:#177a43;--gold:#c99a1b;--bg:#f5f7f6;--ink:#17231c;--mut:#5c6b62}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+header{display:flex;align-items:center;gap:10px;padding:14px 20px;background:#fff;border-bottom:1px solid #e3e9e5}
+header a{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-weight:700;font-size:20px}
+header img{width:34px;height:34px;border-radius:9px}
+main{width:100%;padding:40px 16px}
+.card{max-width:560px;margin:0 auto;background:#fff;border:1px solid #e3e9e5;border-radius:14px;padding:26px}
+h1{font-size:24px;margin:0 0 8px}
+p{color:var(--mut);line-height:1.5;margin:8px 0 14px}
+input{width:100%;padding:11px;border:1px solid #cfd8d2;border-radius:8px;font-size:16px;margin-top:8px}
+.btn{display:block;width:100%;margin-top:14px;padding:13px;border:0;border-radius:10px;background:var(--green);color:#fff;font-size:16px;font-weight:600;cursor:pointer;text-align:center;text-decoration:none}
+.err{color:#b3261e}.ok{color:var(--green)}
+.hide{display:none}
+</style>
+</head>
+<body>
+<header><a href="/"><img src="/logo.svg" alt="LotoPulse" width="34" height="34"><span>LotoPulse</span></a></header>
+<main>
+<div class="card">
+<h1 id="t">...</h1>
+<p id="p"></p>
+<div id="f" class="hide">
+<input id="np" type="password" autocomplete="new-password">
+<button class="btn" id="go" type="button"></button>
+</div>
+<a class="btn hide" id="b" href="/cuenta.html"></a>
+</div>
+</main>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {getAuth,applyActionCode,verifyPasswordResetCode,confirmPasswordReset} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+const cfg={apiKey:"AIzaSyBgkg3PsFgZhSS7hc2kBTomwRT54Ab51lU",authDomain:"lotopulse.firebaseapp.com",projectId:"lotopulse",storageBucket:"lotopulse.firebasestorage.app",messagingSenderId:"362842576324",appId:"1:362842576324:web:532f1bab8b2bd998cd4091"};
+const auth=getAuth(initializeApp(cfg));
+const q=new URLSearchParams(location.search);
+const mode=q.get("mode"),code=q.get("oobCode");
+let L=(q.get("lang")||navigator.language||"es").slice(0,2)==="en"?"en":"es";
+try{const s=localStorage.getItem("lp_lang");if(s==="es"||s==="en")L=s}catch(e){}
+const T={es:{wait:"Un momento...",vt:"¡Correo verificado!",vp:"Tu correo ya está confirmado. Para activarlo, entra de nuevo en tu cuenta.",vb:"Entrar en mi cuenta",rt:"Nueva contraseña",rp:"Escribe tu nueva contraseña (mínimo 8 caracteres).",rg:"Guardar contraseña",rd:"Contraseña cambiada. Ya puedes entrar.",rs:"Entrar",bad:"Este enlace ya se usó o ha caducado.",badp:"Pide un correo nuevo desde tu cuenta.",bb:"Ir a mi cuenta",short:"La contraseña necesita al menos 8 caracteres."},en:{wait:"One moment...",vt:"Email verified!",vp:"Your email is confirmed. To activate it, sign in to your account again.",vb:"Sign in to my account",rt:"New password",rp:"Enter your new password (at least 8 characters).",rg:"Save password",rd:"Password changed. You can sign in now.",rs:"Sign in",bad:"This link was already used or has expired.",badp:"Request a new email from your account.",bb:"Go to my account",short:"The password needs at least 8 characters."}}[L];
+document.documentElement.lang=L;
+const $=id=>document.getElementById(id);
+function show(t,p,b,cls){$("t").textContent=t;$("p").textContent=p;$("p").className=cls||"";if(b){$("b").textContent=b;$("b").classList.remove("hide")}}
+(async()=>{
+show(T.wait,"");
+if(!code){return show(T.bad,T.badp,T.bb,"err")}
+try{
+if(mode==="verifyEmail"){await applyActionCode(auth,code);show(T.vt,T.vp,T.vb,"ok")}
+else if(mode==="resetPassword"){
+await verifyPasswordResetCode(auth,code);
+show(T.rt,T.rp);$("f").classList.remove("hide");$("go").textContent=T.rg;
+$("go").onclick=async()=>{
+const v=$("np").value;
+if(v.length<8){$("p").textContent=T.short;$("p").className="err";return}
+try{await confirmPasswordReset(auth,code,v);$("f").classList.add("hide");show(T.rd,"",T.rs,"ok")}catch(e){$("f").classList.add("hide");show(T.bad,T.badp,T.bb,"err")}
+};
+}else{show(T.bad,T.badp,T.bb,"err")}
+}catch(e){show(T.bad,T.badp,T.bb,"err")}
+})();
+</script>
+</body>
+</html>
