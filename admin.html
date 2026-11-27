@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Panel privado · LotoPulse</title>
+<link rel="icon" href="/logo.svg" type="image/svg+xml">
+<style>
+:root{--green:#177a43;--gold:#c99a1b;--bg:#f5f7f6;--ink:#17231c;--mut:#5c6b62}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+header{display:flex;align-items:center;gap:10px;padding:14px 20px;background:#fff;border-bottom:1px solid #e3e9e5}
+header img{width:34px;height:34px;border-radius:9px}
+header b{font-size:20px}header .sp{flex:1}
+main{max-width:900px;margin:24px auto;padding:0 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px}
+.k{background:#fff;border:1px solid #e3e9e5;border-radius:14px;padding:16px}
+.k small{color:var(--mut)}.k div{font-size:28px;font-weight:700;color:var(--green)}
+.card{background:#fff;border:1px solid #e3e9e5;border-radius:14px;padding:18px;margin-bottom:16px;overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px;border-bottom:1px solid #eef2ef}
+th{color:var(--mut);font-weight:600}
+button{border:0;border-radius:10px;background:var(--green);color:#fff;padding:10px 14px;font-size:15px;cursor:pointer}
+button.alt{background:#fff;color:var(--green);border:1px solid var(--green)}
+.err{color:#b3261e}.mut{color:var(--mut)}
+a{color:var(--green)}
+</style>
+</head>
+<body>
+<header><img src="/logo.svg" alt="" width="34" height="34"><b>LotoPulse · Panel privado</b><span class="sp"></span><button class="alt" id="exit" type="button">Salir</button></header>
+<main>
+<div id="deny" class="card" style="display:none"><p class="err" id="dmsg"></p><a href="/cuenta.html">Ir a entrar</a></div>
+<div id="panel" style="display:none">
+<div class="grid">
+<div class="k"><small>Suscriptores gratis</small><div id="n_free">0</div></div>
+<div class="k"><small>Reciben el correo diario</small><div id="n_mail">0</div></div>
+<div class="k"><small>En español</small><div id="n_es">0</div></div>
+<div class="k"><small>En inglés</small><div id="n_en">0</div></div>
+<div class="k"><small>Suscriptores de pago</small><div id="n_paid">0</div></div>
+</div>
+<div class="card">
+<button id="csv" type="button">Descargar lista (CSV)</button>
+<p class="mut">Esta lista es solo tuya: se guarda en tu base de datos privada y nadie más puede verla.</p>
+</div>
+<div class="card">
+<table><thead><tr><th>Correo</th><th>Idioma</th><th>Plan</th><th>Correo diario</th><th>Alta</th></tr></thead><tbody id="rows"></tbody></table>
+</div>
+</div>
+</main>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {getAuth,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {getFirestore,collection,getDocs} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+const cfg={apiKey:"AIzaSyBgkg3PsFgZhSS7hc2kBTomwRT54Ab51lU",authDomain:"lotopulse.firebaseapp.com",projectId:"lotopulse",storageBucket:"lotopulse.firebasestorage.app",messagingSenderId:"362842576324",appId:"1:362842576324:web:532f1bab8b2bd998cd4091"};
+const app=initializeApp(cfg),auth=getAuth(app),db=getFirestore(app);
+const ADMIN="community16jalda@gmail.com";
+const $=id=>document.getElementById(id);
+let data=[];
+$("exit").onclick=()=>signOut(auth).then(()=>location.href="/cuenta.html");
+function deny(t){$("panel").style.display="none";$("deny").style.display="block";$("dmsg").textContent=t}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+onAuthStateChanged(auth,async u=>{
+if(!u)return deny("Entra con tu cuenta para ver el panel.");
+if(u.email!==ADMIN)return deny("Este panel es privado.");
+try{
+const s=await getDocs(collection(db,"users"));
+data=s.docs.map(d=>d.data());
+$("deny").style.display="none";$("panel").style.display="block";
+$("n_free").textContent=data.filter(x=>x.plan==="free").length;
+$("n_paid").textContent=data.filter(x=>x.plan&&x.plan!=="free").length;
+$("n_mail").textContent=data.filter(x=>x.mail).length;
+$("n_es").textContent=data.filter(x=>x.lang==="es").length;
+$("n_en").textContent=data.filter(x=>x.lang==="en").length;
+$("rows").innerHTML=data.map(x=>"<tr><td>"+esc(x.email)+"</td><td>"+esc(x.lang)+"</td><td>"+esc(x.plan)+"</td><td>"+(x.mail?"Sí":"No")+"</td><td>"+(x.created&&x.created.toDate?x.created.toDate().toLocaleDateString():"")+"</td></tr>").join("");
+}catch(e){deny("No se pudo leer la lista. Comprueba que has verificado tu correo.")}
+});
+$("csv").onclick=()=>{
+const r=[["email","idioma","plan","correo_diario"]].concat(data.map(x=>[x.email,x.lang,x.plan,x.mail?"si":"no"]));
+const t=r.map(a=>a.map(v=>'"'+String(v==null?"":v).replace(/"/g,'""')+'"').join(",")).join("\n");
+const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([t],{type:"text/csv"}));a.download="suscriptores.csv";a.click();
+};
+</script>
+</body>
+</html>
